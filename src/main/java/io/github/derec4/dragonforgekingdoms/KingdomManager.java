@@ -4,15 +4,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class KingdomManager {
-    private static List<Kingdom> kingdoms;
+    private static KingdomManager instance;
+    private List<Kingdom> Kingdoms;
 
-    public KingdomManager() {
-        this.kingdoms = new ArrayList<>();
+    private KingdomManager() {
+        Kingdoms = new ArrayList<>();
     }
 
+    public static synchronized KingdomManager getInstance() {
+        if (instance == null) {
+            instance = new KingdomManager();
+        }
+        return instance;
+    }
+
+    // Add methods to manage factions (e.g., addFaction, getFactions, etc.)
+
+    // Example method to add a faction
     public void addKingdom(Kingdom k) {
-        kingdoms.add(k);
+        Kingdoms.add(k);
     }
 
-    // Constructor and methods for managing factions
+    // Example method to get all factions
+    public List<Kingdom> getKingdoms() {
+        return Kingdoms;
+    }
 }

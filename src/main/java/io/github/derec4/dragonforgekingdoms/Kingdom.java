@@ -1,12 +1,13 @@
 package io.github.derec4.dragonforgekingdoms;
 
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.world.Chunk;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class Kingdom {
     private String name;
@@ -26,6 +27,31 @@ public class Kingdom {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date date = new Date();
         creationTime = formatter.format(date);
+    }
+
+    public String printMembers() {
+        Optional<UserStorageService> userStorage = Sponge.getServiceManager().provide(UserStorageService.class);
+        if (!userStorage.isPresent()) {
+            // UserStorageService is not available, handle the error
+            System.out.println("ERROR");
+            return "Error";
+        }
+        StringBuilder memberNames = new StringBuilder("Members ");
+        for(UUID u: members) {
+            Optional<User> temp = userStorage.get().get(u);
+            if (!temp.isPresent()) {
+                // UserStorageService is not available, handle the error
+                System.out.println("ERROR2");
+                return "Error";
+            }
+            User user = temp.get();
+            memberNames.append(user.getName());
+            memberNames.append(", ");
+        }
+        memberNames.setLength(memberNames.length() - 1);
+
+        System.out.println(memberNames.toString());
+        return memberNames.toString();
     }
 
     // Getters
@@ -51,6 +77,27 @@ public class Kingdom {
 
     public Set<UUID> getMembers() {
         return members;
+    }
+
+    public Optional<User> getUser(UUID uuid) {
+        Optional<UserStorageService> userStorageOptional = Sponge.getServiceManager().provide(UserStorageService.class);
+        if (!userStorageOptional.isPresent()) {
+            // UserStorageService is not available, handle the error (return empty)
+            System.out.println("Optional is not present");
+            return Optional.empty();
+        }
+        UserStorageService userStorage = userStorageOptional.get();
+        Optional<User> userOptional = userStorage.get(uuid);
+
+        // Check if the user is online (a Player)
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            if (user instanceof Player) {
+                Player player = (Player) user;
+            }
+        }
+
+        return userOptional;
     }
 
     public Set<Chunk> getTerritory() {
@@ -82,5 +129,8 @@ public class Kingdom {
         this.territory = territory;
     }
 
-
+    @Override
+    public String toString() {
+        return this.name + ", created on " + this.creationTime;
+    }
 }
