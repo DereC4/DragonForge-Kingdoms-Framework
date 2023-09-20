@@ -9,6 +9,8 @@ import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.world.World;
+import org.spongepowered.api.world.storage.WorldProperties;
 
 import java.util.UUID;
 
@@ -16,17 +18,54 @@ public class KingdomCommands {
     public static CommandSpec getCreateCommand() {
         return CommandSpec.builder()
                 .description(Text.of("Creates a new Kingdom!"))
-                .permission("kingdom.command.createKingdom")
+                .permission("dragonforge.command.kingdom.createKingdom")
                 .arguments(GenericArguments.string(Text.of("name")))
                 .executor(new MyCommand())
                 .build();
     }
-    public static CommandSpec getCreateCommand() {
+
+    public static CommandSpec getRemoveCommand() {
         return CommandSpec.builder()
-                .description(Text.of("Creates a new Kingdom!"))
-                .permission("kingdom.command.createKingdom")
+                .description(Text.of("Destroys your Kingdom!"))
+                .permission("dragonforge.command.kingdom.removeKingdom")
                 .arguments(GenericArguments.string(Text.of("name")))
                 .executor(new MyCommand())
+                .build();
+    }
+
+    public static CommandSpec getClaimCommand() {
+        return CommandSpec.builder()
+                .description(Text.of("Creates a new Kingdom!"))
+                .permission("dragonforge.command.kingdom.claimLand")
+                .executor(new CommandExecutor() {
+                    @Override
+                    public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
+                        if(src instanceof Player) {
+                            KingdomManager temp = KingdomManager.getInstance();
+                            Player p = (Player) src;
+                            World world = p.getWorld();
+                            WorldProperties worldProperties = world.getProperties();
+                            int chunkX = p.getLocation().getChunkPosition().getX();
+                            int chunkZ = p.getLocation().getChunkPosition().getZ();
+                            String name = "TEMP";
+                            boolean success = temp.getKingdoms().
+                        } else {
+                            src.sendMessage(Text.of("Don't run this command on console!"));
+//                                    "This chunk may already be claimed or there was an error."));
+                        }
+                        return CommandResult.success();
+                    }
+                })
+                .build();
+    }
+
+    public static CommandSpec getKingdomParentCommand() {
+        return CommandSpec.builder()
+                .description(Text.of("Kingdom parent command"))
+                .permission("dragonforge.command.kingdom")
+                .child(getCreateCommand(), "create", "establish")
+                .child(getRemoveCommand(), "abolish", "destroy")
+                .child(getClaimCommand(), "claim")
                 .build();
     }
 }
