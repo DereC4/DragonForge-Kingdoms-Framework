@@ -47,8 +47,16 @@ public class KingdomCommands {
                             WorldProperties worldProperties = world.getProperties();
                             int chunkX = p.getLocation().getChunkPosition().getX();
                             int chunkZ = p.getLocation().getChunkPosition().getZ();
+                            System.out.println(chunkX + ", " + chunkZ);
                             String name = "TEMP";
-                            boolean success = temp.getKingdoms().
+                            Kingdom kingdom = temp.getKingdomByName(name);
+                            if(kingdom.claimChunk(chunkX, chunkZ)) {
+                                src.sendMessage(Text.of("You have successfully claimed this " +
+                                        "chunk for your kingdom."));
+                            } else {
+                                src.sendMessage(Text.of("Chunk claim failed. " +
+                                        "This chunk may already be claimed or there was an error."));
+                            }
                         } else {
                             src.sendMessage(Text.of("Don't run this command on console!"));
 //                                    "This chunk may already be claimed or there was an error."));
@@ -98,7 +106,7 @@ class MyCommand implements CommandExecutor {
 
         src.sendMessage(Text.of("The Kingdom of " + k.getName()));
         src.sendMessage(Text.of(k.printMembers()));
-        System.out.println(temp.getKingdoms());
+        System.out.println(temp.getAllKingdoms());
         return CommandResult.success();
     }
 }

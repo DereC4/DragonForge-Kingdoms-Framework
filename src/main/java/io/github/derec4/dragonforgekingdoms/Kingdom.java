@@ -16,19 +16,25 @@ public class Kingdom {
     private final String creationTime;
     private UUID leader;
     private Set<UUID> members;
-    private Set<Chunk> territory;
+    private Set<ChunkCoordinate> territory;
+
     public Kingdom(String name, UUID leader) {
         this.name = name;
         this.description = "";
         this.open = false;
         this.leader = leader;
         this.members = new HashSet<>();
+        this.territory = new HashSet<>();
         members.add(leader);
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date date = new Date();
         creationTime = formatter.format(date);
     }
 
+    /**
+     * Iterates through the memberlist, converting UUIDs to player usernames
+     * @return A string of members in the kingdom
+     */
     public String printMembers() {
         Optional<UserStorageService> userStorage = Sponge.getServiceManager().provide(UserStorageService.class);
         if (!userStorage.isPresent()) {
@@ -52,6 +58,19 @@ public class Kingdom {
 
         System.out.println(memberNames.toString());
         return memberNames.toString();
+    }
+
+    /**
+     * Claim a chunk. Chunks spawn 16x16 section on the world grid and they extend from the
+     * bottom void of the world, all the way up to the top sky, thus not needing a y coordinate
+     *
+     * @param chunkX Chunk x coordinate
+     * @param chunkZ Chunk z coordinate
+     * @return True on claim success, false on failure (which means it's already claimed)
+     */
+    public boolean claimChunk(int chunkX, int chunkZ) {
+        ChunkCoordinate chunkCoord = new ChunkCoordinate(chunkX, chunkZ);
+        return territory.add(chunkCoord);
     }
 
     // Getters
@@ -79,6 +98,14 @@ public class Kingdom {
         return members;
     }
 
+    // Print the territory (claimed chunks) of the kingdom
+    public void printTerritory() {
+        System.out.println("Territory of Kingdom " + name + ":");
+        for (ChunkCoordinate chunkCoord : territory) {
+            System.out.println("Chunk X: " + chunkCoord.getX() + ", Z: " + chunkCoord.getZ());
+        }
+    }
+
     public Optional<User> getUser(UUID uuid) {
         Optional<UserStorageService> userStorageOptional = Sponge.getServiceManager().provide(UserStorageService.class);
         if (!userStorageOptional.isPresent()) {
@@ -98,10 +125,6 @@ public class Kingdom {
         }
 
         return userOptional;
-    }
-
-    public Set<Chunk> getTerritory() {
-        return territory;
     }
 
     // Setters
@@ -125,12 +148,45 @@ public class Kingdom {
         this.members = members;
     }
 
-    public void setTerritory(Set<Chunk> territory) {
-        this.territory = territory;
-    }
-
     @Override
     public String toString() {
         return this.name + ", created on " + this.creationTime;
+    }
+
+    // Nested class to represent chunk coordinates
+    private static class ChunkCoordinate {
+        private final int x;
+        private final int z;
+
+        public ChunkCoordinate(int x, int z) {
+            this.x = x;
+            this.z = z;
+        }
+
+        public int getX() {
+            return x;
+        }
+
+        public int getZ() {
+            return z;
+        }
+
+        @Override
+        public int hashCode() {
+            // Implement a custom hash code that combines x and z values
+            return 31 * x + z;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null || getClass() != obj.getClass()) {
+                return false;
+            }
+            ChunkCoordinate other = (ChunkCoordinate) obj;
+            return x == other.x && z == other.z;
+        }
     }
 }
