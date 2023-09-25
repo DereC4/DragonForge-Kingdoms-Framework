@@ -34,9 +34,8 @@ public class DragonForgeKingdomsFramework {
 
         // Register the "test" command with Sponge
         Sponge.getCommandManager().register(this, testCommandSpec, "test");
-
-        Sponge.getCommandManager().register(this, KingdomCommands.getCreateCommand(),
-                "createKingdom");
+        Sponge.getCommandManager().register(this, KingdomCommands.getKingdomParentCommand(),
+                "kingdom");
         System.out.println("Registered Commands: " + Sponge.getCommandManager().getPrimaryAliases());
     }
 }

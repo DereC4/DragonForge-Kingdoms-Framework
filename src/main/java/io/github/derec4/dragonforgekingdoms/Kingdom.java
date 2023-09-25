@@ -100,10 +100,17 @@ public class Kingdom {
 
     // Print the territory (claimed chunks) of the kingdom
     public void printTerritory() {
-        System.out.println("Territory of Kingdom " + name + ":");
+        System.out.print("Territory of Kingdom " + name + ": [");
+        boolean first = true;
         for (ChunkCoordinate chunkCoord : territory) {
-            System.out.println("Chunk X: " + chunkCoord.getX() + ", Z: " + chunkCoord.getZ());
+            if (!first) {
+                System.out.print(", ");
+            } else {
+                first = false;
+            }
+            System.out.print("Chunk X: " + chunkCoord.getX() + ", Z: " + chunkCoord.getZ());
         }
+        System.out.println("]");
     }
 
     public Optional<User> getUser(UUID uuid) {
