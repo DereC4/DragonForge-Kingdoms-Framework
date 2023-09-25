@@ -1,0 +1,6 @@
+name: DragonForge Kingdoms
+version: '1.0-SNAPSHOT'
+main: io.github.derec4.dragonforgekingdoms.DragonForgeKingdoms
+api-version: '1.20'
+authors: [Derex]
+description: Framework for DragonForge Kingdoms server
