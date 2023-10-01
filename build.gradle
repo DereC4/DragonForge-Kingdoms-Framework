@@ -45,3 +45,6 @@ processResources {
         expand props
     }
 }
+
+//buildDir = '/Test_Server/plugins'
+
