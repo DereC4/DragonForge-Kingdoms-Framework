@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/DragonForgeKingdoms.iml" filepath="$PROJECT_DIR$/.idea/modules/DragonForgeKingdoms.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/DragonForgeKingdoms.main.iml" filepath="$PROJECT_DIR$/.idea/modules/DragonForgeKingdoms.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/io.github.derec4.DragonForgeKingdoms.main.iml" filepath="$PROJECT_DIR$/.idea/modules/io.github.derec4.DragonForgeKingdoms.main.iml" />
     </modules>
   </component>
 </project>

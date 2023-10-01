@@ -1,4 +1,4 @@
-name: DragonForge_Kingdoms_Framework
+name: DragonForge_Kingdoms
 version: 0.1.1
 main: io.github.derec4.dragonforgekingdoms.DragonForgeKingdoms
 description: Framework for kingdoms server
@@ -19,4 +19,4 @@ permissions:
 
 # Optional fields:
 website: https://github.com/DereC4
-prefix: DragonForge_Kingdoms
+prefix: DragonForge
