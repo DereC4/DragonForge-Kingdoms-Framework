@@ -11,7 +11,7 @@ public final class DragonForgeKingdoms extends JavaPlugin {
     public void onEnable() {
         // Plugin startup logic
         Bukkit.getLogger().info(ChatColor.GREEN + "Enabled " + this.getName());
-        this.getCommand("kit").setExecutor(new KingdomCommandManager());
+        this.getCommand("kingdom").setExecutor(new KingdomCommandManager());
 
     }
 

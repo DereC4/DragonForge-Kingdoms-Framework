@@ -8,3 +8,6 @@ description: Framework for DragonForge Kingdoms server
 # Optional fields:
 website: https://github.com/DereC4
 prefix: DragonForge
+
+commands:
+
