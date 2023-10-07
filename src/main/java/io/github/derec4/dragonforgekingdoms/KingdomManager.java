@@ -57,7 +57,7 @@ public class KingdomManager {
     }
 
     public boolean isPlayerMapped(UUID playerUUID) {
-        return playerMappings.containsKey(playerUUID);
+        return playerMappings.get(playerUUID) != null;
     }
 
     public boolean containsName(String name) {

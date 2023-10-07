@@ -47,6 +47,7 @@ public class KingdomCommandManager implements CommandExecutor {
      */
     @Override
     public boolean onCommand(CommandSender source, Command command, String label, String[] args) {
+        KingdomManager km = KingdomManager.getInstance();
         if (!(source instanceof Player player)) {
             source.sendMessage(ChatColor.RED + "This command can only be run by a player.");
             return false;
@@ -63,7 +64,6 @@ public class KingdomCommandManager implements CommandExecutor {
                     player.sendMessage("Creating a new kingdom...");
                     if (player.hasPermission("kingdom.create")) {
                         UUID playerID = player.getUniqueId();
-                        KingdomManager temp = KingdomManager.getInstance();
 
                         //Checks: Player already in a kingdom, and if said kingdom name exists
                         // already
@@ -72,14 +72,14 @@ public class KingdomCommandManager implements CommandExecutor {
                             return false;
                         }
                         String name = args[1];
-                        if(temp.containsName(name)) {
+                        if(km.containsName(name)) {
                             player.sendMessage(ChatColor.RED + "That name is already used by " +
                                     "another kingdom!");
                             return false;
                         }
                         Kingdom k = new Kingdom(name, playerID);
-                        temp.addKingdom(k, playerID);
-                        k = temp.getPlayerKingdom(playerID);
+                        km.addKingdom(k, playerID);
+                        k = km.getPlayerKingdom(playerID);
                         player.sendMessage(ChatColor.GREEN + "The Kingdom of " + k.getName() +
                                 " has been created by " + player.getName());
                         player.sendMessage(ChatColor.GREEN + k.printMembers());
@@ -119,8 +119,7 @@ public class KingdomCommandManager implements CommandExecutor {
                         }
                         String name = args[1];
                         UUID playerID = player.getUniqueId();
-                        KingdomManager temp = KingdomManager.getInstance();
-                        Kingdom k = temp.getPlayerKingdom(playerID);
+                        Kingdom k = km.getPlayerKingdom(playerID);
                         player.sendMessage(k.getName() + " has been renamed to " + name);
                         k.setName(name);
                     } else {
@@ -134,10 +133,9 @@ public class KingdomCommandManager implements CommandExecutor {
                             return false;
                         }
                         UUID playerID = player.getUniqueId();
-                        KingdomManager temp = KingdomManager.getInstance();
-                        Kingdom k = temp.getPlayerKingdom(playerID);
+                        Kingdom k = km.getPlayerKingdom(playerID);
                         String name = k.getName();
-                        if(temp.removePlayer(playerID)) {
+                        if(km.removePlayer(playerID)) {
                             player.sendMessage(ChatColor.RED + "You are no longer a member of " + name);
                         } else {
                             player.sendMessage(ChatColor.RED + "Could not remove player");
