@@ -13,6 +13,7 @@ public class Kingdom {
     private boolean open;
     private final String creationTime;
     private UUID leader;
+    private UUID ID;
     private Set<UUID> members;
     private Set<ChunkCoordinate> territory;
 
@@ -21,12 +22,15 @@ public class Kingdom {
         this.description = "";
         this.open = false;
         this.leader = leader;
+        this.ID = UUID.randomUUID();
         this.members = new HashSet<>();
         this.territory = new HashSet<>();
         members.add(leader);
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date date = new Date();
         creationTime = formatter.format(date);
+        KingdomManager temp = KingdomManager.getInstance();
+        temp.addPlayerToKingdom(leader, getID());
     }
 
     /**
@@ -84,6 +88,10 @@ public class Kingdom {
 
     public Set<UUID> getMembers() {
         return members;
+    }
+
+    public UUID getID() {
+        return ID;
     }
 
     // Print the territory (claimed chunks) of the kingdom

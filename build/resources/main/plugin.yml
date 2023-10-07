@@ -10,4 +10,7 @@ website: https://github.com/DereC4
 prefix: DragonForge
 
 commands:
-
+  kingdom:
+    description: Kingdom parent command
+    usage: /kingdom <arguments>
+    permission: dragonforge.kingdom

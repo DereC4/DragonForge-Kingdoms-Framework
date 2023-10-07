@@ -1,16 +1,15 @@
 package io.github.derec4.dragonforgekingdoms;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class KingdomManager {
     private static KingdomManager instance;
-    private Map<String, Kingdom> kingdoms;
+    private final Map<UUID, Kingdom> kingdoms;
+    private final Map<UUID, UUID> playerMappings;
 
     private KingdomManager() {
         kingdoms = new HashMap<>();
+        playerMappings = new HashMap<>();
     }
 
     public static synchronized KingdomManager getInstance() {
@@ -23,16 +22,30 @@ public class KingdomManager {
     // Add methods to manage factions (e.g., addFaction, getFactions, etc.)
 
     public void addKingdom(Kingdom kingdom) {
-        kingdoms.put(kingdom.getName(), kingdom);
+        kingdoms.put(kingdom.getID(), kingdom);
     }
 
-    // Example method to get a kingdom by name
-    public Kingdom getKingdomByName(String name) {
-        return kingdoms.get(name);
+    // Get a kingdom by ID
+    public Kingdom getKingdomByName(UUID id) {
+        return kingdoms.get(id);
     }
 
-    // Example method to get all kingdoms
+    // Get all kingdoms
     public List<Kingdom> getAllKingdoms() {
         return new ArrayList<>(kingdoms.values());
+    }
+
+    // Method to add player to a kingdom
+    public boolean addPlayerToKingdom(UUID playerUUID, UUID kingdomUUID) {
+        if(playerMappings.containsKey(playerUUID)) {
+            return false;
+        }
+        playerMappings.put(playerUUID, kingdomUUID);
+        return true;
+    }
+
+    // Method to get a player's kingdom UUID
+    public Kingdom getPlayerKingdom(UUID playerUUID) {
+        return kingdoms.get(playerMappings.get(playerUUID));
     }
 }

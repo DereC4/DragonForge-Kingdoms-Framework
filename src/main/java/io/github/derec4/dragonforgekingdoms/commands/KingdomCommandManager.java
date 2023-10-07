@@ -19,8 +19,8 @@ public class KingdomCommandManager implements CommandExecutor {
     public void claimLand(Player player) {
         int chunkX = player.getLocation().getChunk().getX();
         int chunkZ = player.getLocation().getChunk().getZ();
-        String name = "TEMP"; // Replace with the actual kingdom name retrieval logic
-        Kingdom kingdom = KingdomManager.getInstance().getKingdomByName(name);
+//        String name = "TEMP"; // Replace with the actual kingdom name retrieval logic
+        Kingdom kingdom = KingdomManager.getInstance().getPlayerKingdom(player.getUniqueId());
 
         if (kingdom.claimChunk(chunkX, chunkZ)) {
             player.sendMessage("You have successfully claimed this chunk for your kingdom.");
@@ -81,6 +81,14 @@ public class KingdomCommandManager implements CommandExecutor {
                 case "claim" -> {
                     if (player.hasPermission("kingdom.claim")) {
                         player.sendMessage("Claiming land for your kingdom...");
+                        claimLand(player);
+                    } else {
+                        player.sendMessage(permsError);
+                    }
+                }
+                case "rename" -> {
+                    if (player.hasPermission("kingdom.rename")) {
+                        player.sendMessage("Renaming kingdom...");
                         claimLand(player);
                     } else {
                         player.sendMessage(permsError);
