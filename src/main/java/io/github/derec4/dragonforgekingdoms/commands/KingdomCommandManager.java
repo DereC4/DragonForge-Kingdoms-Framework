@@ -120,7 +120,7 @@ public class KingdomCommandManager implements CommandExecutor {
                         String name = args[1];
                         UUID playerID = player.getUniqueId();
                         KingdomManager temp = KingdomManager.getInstance();
-                        Kingdom k = temp.getKingdomByName(playerID);
+                        Kingdom k = temp.getPlayerKingdom(playerID);
                         player.sendMessage(k.getName() + " has been renamed to " + name);
                         k.setName(name);
                     } else {
@@ -135,7 +135,7 @@ public class KingdomCommandManager implements CommandExecutor {
                         }
                         UUID playerID = player.getUniqueId();
                         KingdomManager temp = KingdomManager.getInstance();
-                        Kingdom k = temp.getKingdomByName(playerID);
+                        Kingdom k = temp.getPlayerKingdom(playerID);
                         String name = k.getName();
                         if(temp.removePlayer(playerID)) {
                             player.sendMessage(ChatColor.RED + "You are no longer a member of " + name);
