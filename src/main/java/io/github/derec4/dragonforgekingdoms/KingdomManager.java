@@ -21,8 +21,15 @@ public class KingdomManager {
 
     // Add methods to manage factions (e.g., addFaction, getFactions, etc.)
 
-    public void addKingdom(Kingdom kingdom) {
+    /**
+     * Adds a new kingdom to the list and associates the provided player to it in the
+     * playerMappings list
+     * @param kingdom
+     * @param playerID
+     */
+    public void addKingdom(Kingdom kingdom, UUID playerID) {
         kingdoms.put(kingdom.getID(), kingdom);
+        playerMappings.put(playerID, kingdom.getID());
     }
 
     // Get a kingdom by ID
@@ -47,5 +54,24 @@ public class KingdomManager {
     // Method to get a player's kingdom UUID
     public Kingdom getPlayerKingdom(UUID playerUUID) {
         return kingdoms.get(playerMappings.get(playerUUID));
+    }
+
+    public boolean isPlayerMapped(UUID playerUUID) {
+        return playerMappings.containsKey(playerUUID);
+    }
+
+    public boolean containsName(String name) {
+        for(UUID uuid: kingdoms.keySet()) {
+            if(kingdoms.get(uuid).getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean removePlayer(UUID playerUUID) {
+        boolean res = kingdoms.get(playerMappings.get(playerUUID)).removePlayer(playerUUID);
+        playerMappings.put(playerUUID, null);
+        return res;
     }
 }

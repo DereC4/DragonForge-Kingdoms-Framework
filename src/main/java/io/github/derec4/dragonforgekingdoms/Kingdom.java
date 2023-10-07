@@ -15,22 +15,20 @@ public class Kingdom {
     private UUID leader;
     private UUID ID;
     private Set<UUID> members;
-    private Set<ChunkCoordinate> territory;
+    private final Set<ChunkCoordinate> territory;
 
     public Kingdom(String name, UUID leader) {
         this.name = name;
         this.description = "";
         this.open = false;
         this.leader = leader;
-        this.ID = UUID.randomUUID();
+        this.ID = UUID.randomUUID(); // Change this later when we save kingdoms
         this.members = new HashSet<>();
         this.territory = new HashSet<>();
         members.add(leader);
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date date = new Date();
         creationTime = formatter.format(date);
-        KingdomManager temp = KingdomManager.getInstance();
-        temp.addPlayerToKingdom(leader, getID());
     }
 
     /**
@@ -140,6 +138,14 @@ public class Kingdom {
 
     public void setMembers(Set<UUID> members) {
         this.members = members;
+    }
+
+    public boolean addPlayer(UUID uuid) {
+        return members.add(uuid);
+    }
+
+    public boolean removePlayer(UUID uuid) {
+        return members.remove(uuid);
     }
 
     @Override
