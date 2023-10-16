@@ -8,6 +8,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -15,7 +16,6 @@ import java.util.UUID;
 public class KingdomCommandManager implements CommandExecutor {
     final String permsError = ChatColor.RED + "You do not have permission to use this command! Check" +
             " with the server staff?";
-
     public boolean inAKingdom(UUID playerID) {
         KingdomManager temp = KingdomManager.getInstance();
         return temp.isPlayerMapped(playerID);
@@ -77,7 +77,7 @@ public class KingdomCommandManager implements CommandExecutor {
                                     "another kingdom!");
                             return false;
                         }
-                        Kingdom k = new Kingdom(name, playerID);
+                        Kingdom k = new Kingdom(name, playerID, player.getLocation());
                         km.addKingdom(k, playerID);
                         k = km.getPlayerKingdom(playerID);
                         player.sendMessage(ChatColor.GREEN + "The Kingdom of " + k.getName() +
@@ -141,6 +141,26 @@ public class KingdomCommandManager implements CommandExecutor {
                             player.sendMessage(ChatColor.RED + "Could not remove player");
                         }
 
+                    }
+                }
+                case "description" -> {
+                    if (player.hasPermission("kingdom.description")) {
+                        if (!inAKingdom(player.getUniqueId())) {
+                            player.sendMessage("You are not in a kingdom!");
+                            return false;
+                        }
+                        if (args.length < 2) {
+                            player.sendMessage(ChatColor.RED + "Usage: /kingdom description <description>");
+                            return false;
+                        }
+
+                        String description = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+                        UUID playerID = player.getUniqueId();
+                        Kingdom k = km.getPlayerKingdom(playerID);
+                        k.setDescription(description);
+                        player.sendMessage(ChatColor.GREEN + "Kingdom description set to: " + description);
+                    } else {
+                        player.sendMessage(permsError);
                     }
                 }
                 default -> player.sendMessage(ChatColor.RED + "Unknown sub-command. Usage: /kingdom <sub-command>");

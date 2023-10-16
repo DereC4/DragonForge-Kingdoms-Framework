@@ -2,6 +2,7 @@ package io.github.derec4.dragonforgekingdoms;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.text.SimpleDateFormat;
@@ -16,8 +17,9 @@ public class Kingdom {
     private UUID ID;
     private Set<UUID> members;
     private final Set<ChunkCoordinate> territory;
+    private Location home;
 
-    public Kingdom(String name, UUID leader) {
+    public Kingdom(String name, UUID leader, Location home) {
         this.name = name;
         this.description = "";
         this.open = false;
@@ -25,10 +27,12 @@ public class Kingdom {
         this.ID = UUID.randomUUID(); // Change this later when we save kingdoms
         this.members = new HashSet<>();
         this.territory = new HashSet<>();
+        this.home = home;
+
         members.add(leader);
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date date = new Date();
-        creationTime = formatter.format(date);
+        this.creationTime = formatter.format(date);
     }
 
     /**
@@ -119,7 +123,6 @@ public class Kingdom {
         }
     }
 
-    // Setters
     public void setName(String name) {
         this.name = name;
     }
@@ -136,8 +139,8 @@ public class Kingdom {
         this.leader = leader;
     }
 
-    public void setMembers(Set<UUID> members) {
-        this.members = members;
+    public void setHome(Location home) {
+        this.home = home;
     }
 
     public boolean addPlayer(UUID uuid) {
