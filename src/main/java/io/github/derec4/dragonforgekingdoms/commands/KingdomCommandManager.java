@@ -24,10 +24,11 @@ public class KingdomCommandManager implements CommandExecutor {
     public void claimLand(Player player) {
         int chunkX = player.getLocation().getChunk().getX();
         int chunkZ = player.getLocation().getChunk().getZ();
+        UUID worldID = player.getWorld().getUID();
 //        String name = "TEMP"; // Replace with the actual kingdom name retrieval logic
         Kingdom kingdom = KingdomManager.getInstance().getPlayerKingdom(player.getUniqueId());
 
-        if (kingdom.claimChunk(chunkX, chunkZ)) {
+        if (kingdom.claimChunk(chunkX, chunkZ, worldID)) {
             player.sendMessage("You have successfully claimed this chunk for your kingdom.");
         } else {
             player.sendMessage("Chunk claim failed. This chunk may already be claimed " +
@@ -53,7 +54,7 @@ public class KingdomCommandManager implements CommandExecutor {
             source.sendMessage(ChatColor.RED + "This command can only be run by a player.");
             return false;
         }
-
+        UUID playerID = player.getUniqueId();
         if (args.length == 0) {
             // Handle the /kingdom command without sub-commands
             player.sendMessage("Usage: /kingdom <sub-command>");
@@ -64,8 +65,6 @@ public class KingdomCommandManager implements CommandExecutor {
                 case "create" -> {
                     player.sendMessage("Creating a new kingdom...");
                     if (player.hasPermission("kingdom.create")) {
-                        UUID playerID = player.getUniqueId();
-
                         //Checks: Player already in a kingdom, and if said kingdom name exists
                         // already
                         if(inAKingdom(playerID)) {
@@ -119,7 +118,6 @@ public class KingdomCommandManager implements CommandExecutor {
                             return false;
                         }
                         String name = args[1];
-                        UUID playerID = player.getUniqueId();
                         Kingdom k = km.getPlayerKingdom(playerID);
                         player.sendMessage(k.getName() + " has been renamed to " + name);
                         k.setName(name);
@@ -133,7 +131,6 @@ public class KingdomCommandManager implements CommandExecutor {
                             player.sendMessage("You are not in a kingdom!");
                             return false;
                         }
-                        UUID playerID = player.getUniqueId();
                         Kingdom k = km.getPlayerKingdom(playerID);
                         String name = k.getName();
                         if(km.removePlayer(playerID)) {
@@ -156,7 +153,6 @@ public class KingdomCommandManager implements CommandExecutor {
                         }
 
                         String description = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-                        UUID playerID = player.getUniqueId();
                         Kingdom k = km.getPlayerKingdom(playerID);
                         k.setDescription(description);
                         player.sendMessage(ChatColor.GREEN + "Kingdom description set to: " + description);
@@ -170,13 +166,21 @@ public class KingdomCommandManager implements CommandExecutor {
                             player.sendMessage("You are not in a kingdom!");
                             return false;
                         }
-                        UUID playerID = player.getUniqueId();
                         Kingdom k = km.getPlayerKingdom(playerID);
                         Location homeLocation = player.getLocation();
                         k.setHome(homeLocation);
                         player.sendMessage(ChatColor.GREEN + "Home location set to " + homeLocation.toString());
                     } else {
                         player.sendMessage(permsError);
+                    }
+                }
+                case "territory" -> {
+                    if (player.hasPermission("kingdom.territory")) {
+                        if (!inAKingdom(player.getUniqueId())) {
+                            player.sendMessage("You are not in a kingdom!");
+                            return false;
+                        }
+
                     }
                 }
                 default -> player.sendMessage(ChatColor.RED + "Unknown sub-command. Usage: /kingdom <sub-command>");

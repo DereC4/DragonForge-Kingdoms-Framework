@@ -1,8 +1,6 @@
 package io.github.derec4.dragonforgekingdoms;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.text.SimpleDateFormat;
@@ -62,8 +60,8 @@ public class Kingdom {
      * @param chunkZ Chunk z coordinate
      * @return True on claim success, false on failure (which means it's already claimed)
      */
-    public boolean claimChunk(int chunkX, int chunkZ) {
-        ChunkCoordinate chunkCoord = new ChunkCoordinate(chunkX, chunkZ);
+    public boolean claimChunk(int chunkX, int chunkZ, UUID worldID) {
+        ChunkCoordinate chunkCoord = new ChunkCoordinate(chunkX, chunkZ, worldID);
         return territory.add(chunkCoord);
     }
 
@@ -96,19 +94,19 @@ public class Kingdom {
         return ID;
     }
 
-    // Print the territory (claimed chunks) of the kingdom
-    public void printTerritory() {
-        System.out.print("Territory of Kingdom " + name + ": [");
+    // Print the territory (claimed chunks) of the kingdom to the player source
+    public void printTerritory(Player player) {
+        player.sendMessage(ChatColor.GREEN + "Territory of Kingdom " + name + ": [");
         boolean first = true;
         for (ChunkCoordinate chunkCoord : territory) {
             if (!first) {
-                System.out.print(", ");
+                player.sendMessage(", ");
             } else {
                 first = false;
             }
-            System.out.print("Chunk X: " + chunkCoord.getX() + ", Z: " + chunkCoord.getZ());
+            player.sendMessage("Chunk X: " + chunkCoord.getX() + ", Z: " + chunkCoord.getZ() + " in the world of " + chunkCoord.getWorldID());
         }
-        System.out.println("]");
+        player.sendMessage(ChatColor.GREEN + "]");
     }
 
     public Optional<Player> getPlayer(UUID uuid) {
@@ -160,10 +158,12 @@ public class Kingdom {
     private static class ChunkCoordinate {
         private final int x;
         private final int z;
+        private final UUID worldID;
 
-        public ChunkCoordinate(int x, int z) {
+        public ChunkCoordinate(int x, int z, UUID worldID) {
             this.x = x;
             this.z = z;
+            this.worldID = worldID;
         }
 
         public int getX() {
@@ -172,6 +172,10 @@ public class Kingdom {
 
         public int getZ() {
             return z;
+        }
+
+        public UUID getWorldID() {
+            return worldID;
         }
 
         @Override
