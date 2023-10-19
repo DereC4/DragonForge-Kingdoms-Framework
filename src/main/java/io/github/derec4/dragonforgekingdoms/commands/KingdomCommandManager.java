@@ -3,6 +3,7 @@ package io.github.derec4.dragonforgekingdoms.commands;
 import io.github.derec4.dragonforgekingdoms.Kingdom;
 import io.github.derec4.dragonforgekingdoms.KingdomManager;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -159,6 +160,21 @@ public class KingdomCommandManager implements CommandExecutor {
                         Kingdom k = km.getPlayerKingdom(playerID);
                         k.setDescription(description);
                         player.sendMessage(ChatColor.GREEN + "Kingdom description set to: " + description);
+                    } else {
+                        player.sendMessage(permsError);
+                    }
+                }
+                case "sethome" -> {
+                    if (player.hasPermission("kingdom.sethome")) {
+                        if (!inAKingdom(player.getUniqueId())) {
+                            player.sendMessage("You are not in a kingdom!");
+                            return false;
+                        }
+                        UUID playerID = player.getUniqueId();
+                        Kingdom k = km.getPlayerKingdom(playerID);
+                        Location homeLocation = player.getLocation();
+                        k.setHome(homeLocation);
+                        player.sendMessage(ChatColor.GREEN + "Home location set to " + homeLocation.toString());
                     } else {
                         player.sendMessage(permsError);
                     }

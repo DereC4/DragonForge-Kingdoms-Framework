@@ -1,21 +1,65 @@
+package io.github.derec4.dragonforgekingdoms.database;
+
+import org.bukkit.Bukkit;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class CreateSQLiteDatabase {
-    public static void main(String[] args) {
-        // Define the SQLite database URL (e.g., a file path)
-        String url = "jdbc:sqlite:/path/to/your/database.db";
+public class CreateDB {
+    private static Connection connection;
+//    private final String databasePath = "plugins/YourPluginName/database.db";
 
-        try (Connection conn = DriverManager.getConnection(url)) {
-            if (conn != null) {
-                System.out.println("Connected to the database");
+    public boolean connect() {
+        try {
+            Class.forName("org.sqlite.JDBC");
+            connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
+            return true;
+        } catch (SQLException | ClassNotFoundException e) {
+            Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
+            return false;
+        }
+    }
 
-                // If the database does not exist, it will be created
-
+    public void disconnect() {
+        try {
+            if (connection != null) {
+                connection.close();
             }
         } catch (SQLException e) {
-            System.err.println("Error: " + e.getMessage());
+            Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
+        }
+    }
+
+    public void createLogTable() {
+        try {
+            connection.createStatement().executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS log_data (" +
+                            "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                            "timestamp TIMESTAMP," +
+                            "message TEXT" +
+                            ")"
+            );
+        } catch (SQLException e) {
+            Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
+        }
+    }
+
+    public void createKingdomTable() {
+        try {
+            connection.createStatement().executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS kingdoms (" +
+                            "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                            "name TEXT," +
+                            "description TEXT," +
+                            "open INTEGER," +
+                            "creationTime TEXT," +
+                            "leader TEXT," +
+                            "home TEXT" +
+                            ")"
+            );
+        } catch (SQLException e) {
+            Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
         }
     }
 }

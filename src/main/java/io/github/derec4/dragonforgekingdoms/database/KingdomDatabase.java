@@ -18,7 +18,7 @@ public class KingdomDatabase {
            // database operation here
 
             // once you get the database operation, load from cache
-           return new Kingdom("poop", null);
+            return null;
         });
     }
 
