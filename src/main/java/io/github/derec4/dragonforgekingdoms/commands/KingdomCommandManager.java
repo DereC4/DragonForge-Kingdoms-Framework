@@ -169,7 +169,7 @@ public class KingdomCommandManager implements CommandExecutor {
                         Kingdom k = km.getPlayerKingdom(playerID);
                         Location homeLocation = player.getLocation();
                         k.setHome(homeLocation);
-                        player.sendMessage(ChatColor.GREEN + "Home location set to " + homeLocation.toString());
+                        player.sendMessage(ChatColor.GREEN + "Home location set to " + homeLocation);
                     } else {
                         player.sendMessage(permsError);
                     }

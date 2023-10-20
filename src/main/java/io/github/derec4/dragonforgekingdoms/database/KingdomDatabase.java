@@ -49,19 +49,19 @@ public class KingdomDatabase {
 
         // doing an operation, such as changing a claim
         doKingdomOperation("kingdomName", kingdom -> {
-            kingdom.claimChunk(5, 5);
+            kingdom.claimChunk(5, 5, null);
         });
 
         doKingdomOperation("kingdomName", kingdom -> {
-            kingdom.claimChunk(55, 2345);
+            kingdom.claimChunk(55, 2345, null);
         });
 
         doKingdomOperation("kingdomName", kingdom -> {
-            kingdom.claimChunk(2345, 5234);
+            kingdom.claimChunk(2345, 5234, null);
         });
 
         doKingdomOperation("kingdomName", kingdom -> {
-            kingdom.claimChunk(5234, 2345);
+            kingdom.claimChunk(5234, 2345, null);
         });
 
     }
