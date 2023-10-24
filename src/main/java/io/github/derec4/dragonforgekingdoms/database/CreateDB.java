@@ -49,16 +49,16 @@ public class CreateDB {
         try {
             connection.createStatement().executeUpdate(
                     "CREATE TABLE IF NOT EXISTS kingdoms (" +
-                            "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                            "ID INTEGER" +
                             "name TEXT," +
                             "description TEXT," +
                             "open INTEGER," +
                             "leader TEXT," +
-                            "creationTime TEXT," +
                             "home_location_x DOUBLE," +
                             "home_location_y DOUBLE," +
                             "home_location_z DOUBLE," +
                             "home_location_world TEXT" +
+                            "creationTime TEXT," +
                             ")"
             );
         } catch (SQLException e) {

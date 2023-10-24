@@ -156,16 +156,17 @@ public class Kingdom {
     public void saveToDatabase(Connection connection) {
         try (PreparedStatement statement = connection.prepareStatement(
                 "INSERT INTO kingdoms (name, description, open, leader, id, home_location_x, home_location_y, home_location_z, home_location_world) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-            statement.setString(1, name);
-            statement.setString(2, description);
-            statement.setBoolean(3, open);
-            statement.setString(4, leader.toString());
-            statement.setString(5, ID.toString());
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+            statement.setString(1, ID.toString());
+            statement.setString(2, name);
+            statement.setString(3, description);
+            statement.setBoolean(4, open);
+            statement.setString(5, leader.toString());
             statement.setDouble(6, home.getX()); // Assuming home is a Location object
             statement.setDouble(7, home.getY());
             statement.setDouble(8, home.getZ());
             statement.setString(9, Objects.requireNonNull(home.getWorld()).getUID().toString());
+            statement.setString(10, creationTime);
             statement.executeUpdate();
         } catch (SQLException e) {
             Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
