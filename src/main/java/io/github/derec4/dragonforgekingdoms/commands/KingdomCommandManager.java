@@ -2,6 +2,8 @@ package io.github.derec4.dragonforgekingdoms.commands;
 
 import io.github.derec4.dragonforgekingdoms.Kingdom;
 import io.github.derec4.dragonforgekingdoms.KingdomManager;
+import io.github.derec4.dragonforgekingdoms.database.CreateDB;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -9,6 +11,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.sql.Connection;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -80,12 +83,12 @@ public class KingdomCommandManager implements CommandExecutor {
                         }
                         Kingdom k = new Kingdom(name, playerID, player.getLocation());
                         // Save the new kingdom to the database
-                        try {
-                            k.saveToDatabase(databaseManager.getConnection());
-                        } catch (SQLException e) {
-                            player.sendMessage(ChatColor.RED + "Failed to save the kingdom to the database.");
-                            e.printStackTrace();
-                            return false;
+
+                        CreateDB databaseManager = new CreateDB();
+                        try (Connection connection = databaseManager.getConnection()) {
+                            k.saveToDatabase(connection);
+                        } catch (Exception e) {
+                            Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
                         }
                         km.addKingdom(k, playerID);
                         k = km.getPlayerKingdom(playerID);

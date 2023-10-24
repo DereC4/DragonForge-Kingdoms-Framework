@@ -53,13 +53,24 @@ public class CreateDB {
                             "name TEXT," +
                             "description TEXT," +
                             "open INTEGER," +
-                            "creationTime TEXT," +
                             "leader TEXT," +
-                            "home TEXT" +
+                            "creationTime TEXT," +
+                            "home_location_x DOUBLE," +
+                            "home_location_y DOUBLE," +
+                            "home_location_z DOUBLE," +
+                            "home_location_world TEXT" +
                             ")"
             );
         } catch (SQLException e) {
             Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
         }
+    }
+
+    public Connection getConnection() throws SQLException {
+        if (connection == null || connection.isClosed()) {
+            // Reconnect or create a new connection if it's closed or doesn't exist
+            connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
+        }
+        return connection;
     }
 }

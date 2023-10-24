@@ -18,6 +18,7 @@ public final class DragonForgeKingdoms extends JavaPlugin {
         if (databaseManager.connect()) {
             getLogger().info("Connected to database!");
             databaseManager.createLogTable();
+            databaseManager.createKingdomTable();
         } else {
             getLogger().severe("Failed to connect to the database!");
         }
