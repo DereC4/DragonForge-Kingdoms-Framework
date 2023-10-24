@@ -21,6 +21,7 @@ public class KingdomCommandManager implements CommandExecutor {
         KingdomManager temp = KingdomManager.getInstance();
         return temp.isPlayerMapped(playerID);
     }
+
     public void claimLand(Player player) {
         int chunkX = player.getLocation().getChunk().getX();
         int chunkZ = player.getLocation().getChunk().getZ();
@@ -78,6 +79,14 @@ public class KingdomCommandManager implements CommandExecutor {
                             return false;
                         }
                         Kingdom k = new Kingdom(name, playerID, player.getLocation());
+                        // Save the new kingdom to the database
+                        try {
+                            k.saveToDatabase(databaseManager.getConnection());
+                        } catch (SQLException e) {
+                            player.sendMessage(ChatColor.RED + "Failed to save the kingdom to the database.");
+                            e.printStackTrace();
+                            return false;
+                        }
                         km.addKingdom(k, playerID);
                         k = km.getPlayerKingdom(playerID);
                         player.sendMessage(ChatColor.GREEN + "The Kingdom of " + k.getName() +

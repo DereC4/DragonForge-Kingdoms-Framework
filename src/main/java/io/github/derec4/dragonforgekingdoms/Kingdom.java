@@ -3,6 +3,10 @@ package io.github.derec4.dragonforgekingdoms;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -147,6 +151,21 @@ public class Kingdom {
 
     public boolean removePlayer(UUID uuid) {
         return members.remove(uuid);
+    }
+
+    public void saveToDatabase(Connection connection) {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "INSERT INTO kingdoms (name, description, open, leader, id, home_location) " +
+                        "VALUES (?, ?, ?, ?, ?, ?)")) {
+            statement.setString(1, name);
+            statement.setString(2, description);
+            statement.setBoolean(3, open);
+            statement.setString(4, leader.toString());
+            statement.setString(5, ID.toString());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
+        }
     }
 
     @Override
