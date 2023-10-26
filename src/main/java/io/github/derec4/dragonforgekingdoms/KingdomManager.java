@@ -1,11 +1,16 @@
 package io.github.derec4.dragonforgekingdoms;
 
+import org.bukkit.Bukkit;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.*;
 
 public class KingdomManager {
     private static KingdomManager instance;
-    private final Map<UUID, Kingdom> kingdoms;
-    private final Map<UUID, UUID> playerMappings;
+    private final Map<UUID, Kingdom> kingdoms; // Maps UUID to a Kingdom Object
+    private final Map<UUID, UUID> playerMappings; // Maps player UUID to their kingdom UUID
 
     private KingdomManager() {
         kingdoms = new HashMap<>();
@@ -73,5 +78,26 @@ public class KingdomManager {
         boolean res = kingdoms.get(playerMappings.get(playerUUID)).removePlayer(playerUUID);
         playerMappings.put(playerUUID, null);
         return res;
+    }
+
+    public void removeKingdom(UUID playerUUID, Connection connection) {
+        UUID kingdomUUID = playerMappings.get(playerUUID);
+
+        if (kingdomUUID != null) {
+            // Remove the kingdom from the in-memory map
+            kingdoms.remove(kingdomUUID);
+
+            // Connect to the database and delete the corresponding row
+            if (connection != null) {
+                try (PreparedStatement statement = connection.prepareStatement(
+                        "DELETE FROM kingdoms WHERE ID = ?")) {
+                    statement.setString(1, kingdomUUID.toString());
+                    statement.executeUpdate();
+                    Bukkit.getServer().getConsoleSender().sendMessage("Kingdom has been removed");
+                } catch (SQLException e) {
+                    Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
+                }
+            }
+        }
     }
 }

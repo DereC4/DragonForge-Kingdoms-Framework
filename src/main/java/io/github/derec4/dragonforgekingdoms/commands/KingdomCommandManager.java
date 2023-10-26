@@ -107,6 +107,14 @@ public class KingdomCommandManager implements CommandExecutor {
                         }
                         // Implement the logic
                         player.sendMessage("Removing your kingdom...");
+                        CreateDB databaseManager = new CreateDB();
+
+                        // Send in connection and try to remove the kingdom row from table
+                        try (Connection connection = databaseManager.getConnection()) {
+                            km.removeKingdom(playerID, connection);
+                        } catch (Exception e) {
+                            Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
+                        }
                     } else {
                         player.sendMessage(permsError);
                     }
