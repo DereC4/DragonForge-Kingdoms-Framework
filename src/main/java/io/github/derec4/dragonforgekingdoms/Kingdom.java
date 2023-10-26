@@ -155,7 +155,8 @@ public class Kingdom {
 
     public void saveToDatabase(Connection connection) {
         try (PreparedStatement statement = connection.prepareStatement(
-                "INSERT INTO kingdoms (name, description, open, leader, id, home_location_x, home_location_y, home_location_z, home_location_world) " +
+                "INSERT INTO kingdoms (ID, name, description, open, leader, home_location_x, home_location_y, " +
+                        "home_location_z, home_location_world, creationTime) " +
                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
             statement.setString(1, ID.toString());
             statement.setString(2, name);

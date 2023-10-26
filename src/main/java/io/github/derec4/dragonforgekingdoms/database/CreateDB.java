@@ -49,7 +49,7 @@ public class CreateDB {
         try {
             connection.createStatement().executeUpdate(
                     "CREATE TABLE IF NOT EXISTS kingdoms (" +
-                            "ID INTEGER" +
+                            "ID INTEGER," +
                             "name TEXT," +
                             "description TEXT," +
                             "open INTEGER," +
@@ -57,10 +57,11 @@ public class CreateDB {
                             "home_location_x DOUBLE," +
                             "home_location_y DOUBLE," +
                             "home_location_z DOUBLE," +
-                            "home_location_world TEXT" +
-                            "creationTime TEXT," +
+                            "home_location_world TEXT," +
+                            "creationTime TEXT" +
                             ")"
             );
+            Bukkit.getServer().getConsoleSender().sendMessage("Kingdoms Database Created!");
         } catch (SQLException e) {
             Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
         }
