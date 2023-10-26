@@ -14,3 +14,4 @@ commands:
     description: Kingdom parent command
     usage: /kingdom <arguments>
     permission: dragonforge.kingdom
+    aliases: [k]

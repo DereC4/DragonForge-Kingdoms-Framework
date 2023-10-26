@@ -100,4 +100,22 @@ public class KingdomManager {
             }
         }
     }
+
+    /**
+     * Admin command to directly remove a kingdom based on name. Not to be used normally.
+     * Does not update the existing manager too, so may have to restart server.
+     * @param name
+     */
+    public void removeKingdomAdmin(String name, Connection connection) {
+        if (connection != null) {
+            try (PreparedStatement statement = connection.prepareStatement(
+                    "DELETE FROM kingdoms WHERE name = ?")) {
+                statement.setString(1, name);
+                statement.executeUpdate();
+                Bukkit.getServer().getConsoleSender().sendMessage("Kingdom has been removed");
+            } catch (SQLException e) {
+                Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
+            }
+        }
+    }
 }

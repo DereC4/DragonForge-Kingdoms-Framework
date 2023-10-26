@@ -1,5 +1,6 @@
 package io.github.derec4.dragonforgekingdoms;
 
+import io.github.derec4.dragonforgekingdoms.commands.Admin;
 import io.github.derec4.dragonforgekingdoms.commands.KingdomCommandManager;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
 import org.bukkit.Bukkit;
@@ -14,6 +15,7 @@ public final class DragonForgeKingdoms extends JavaPlugin {
         // Plugin startup logic
         Bukkit.getLogger().info(ChatColor.GREEN + "Enabled " + this.getName());
         this.getCommand("kingdom").setExecutor(new KingdomCommandManager());
+        this.getCommand("kingdom").setExecutor(new Admin());
         databaseManager = new CreateDB();
         if (databaseManager.connect()) {
             getLogger().info("Connected to database!");
