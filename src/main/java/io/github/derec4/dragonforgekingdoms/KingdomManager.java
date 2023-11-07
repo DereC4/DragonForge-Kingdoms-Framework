@@ -1,5 +1,6 @@
 package io.github.derec4.dragonforgekingdoms;
 
+import io.github.derec4.dragonforgekingdoms.database.CreateDB;
 import org.bukkit.Bukkit;
 
 import java.sql.Connection;
@@ -11,6 +12,7 @@ public class KingdomManager {
     private static KingdomManager instance;
     private final Map<UUID, Kingdom> kingdoms; // Maps UUID to a Kingdom Object
     private final Map<UUID, UUID> playerMappings; // Maps player UUID to their kingdom UUID
+    private final Map<ChunkCoordinate, UUID> territoryMappings; // Maps chunk coordinates to a Kingdom UUID
 
     private KingdomManager() {
         kingdoms = new HashMap<>();
@@ -95,7 +97,7 @@ public class KingdomManager {
                     statement.executeUpdate();
                     Bukkit.getServer().getConsoleSender().sendMessage("Kingdom has been removed");
                 } catch (SQLException e) {
-                    Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
+                    throw new RuntimeException(e);
                 }
             }
         }
@@ -114,8 +116,68 @@ public class KingdomManager {
                 statement.executeUpdate();
                 Bukkit.getServer().getConsoleSender().sendMessage("Kingdom has been removed");
             } catch (SQLException e) {
-                Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
+                throw new RuntimeException(e);
             }
         }
     }
+
+    // Add a chunk to a kingdom's territory
+    public boolean addChunkToKingdom(UUID kingdomUUID, ChunkCoordinate chunkCoord) {
+        territoryMappings.put(chunkCoord, kingdomUUID);
+        // Save the updated territory to the database
+        CreateDB temp = new CreateDB();
+        try {
+            Connection connection = temp.getConnection();
+            saveTerritoryToDatabase(connection, chunkCoord, kingdomUUID);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return true;
+    }
+
+    // Remove a chunk from a kingdom's territory
+    public boolean removeChunkFromKingdom(ChunkCoordinate chunkCoord) {
+        territoryMappings.remove(chunkCoord);
+        // Remove the chunk from the database
+        CreateDB temp = new CreateDB();
+        try {
+            Connection connection = temp.getConnection();
+            removeTerritoryFromDatabase(connection, chunkCoord);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return true;
+    }
+
+    // Get the kingdom UUID that owns a given chunk
+    public UUID getKingdomByChunk(ChunkCoordinate chunkCoord) {
+        return territoryMappings.get(chunkCoord);
+    }
+
+    public void saveTerritoryToDatabase(Connection connection, ChunkCoordinate chunkCoord, UUID ID) {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "INSERT INTO chunks (chunk_owner, chunk_x, chunk_z, world_id)")) {
+            statement.setString(1, ID.toString());
+            statement.setInt(2, chunkCoord.getX());
+            statement.setInt(3, chunkCoord.getZ());
+            statement.setString(4, chunkCoord.getWorldID().toString());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public void removeTerritoryFromDatabase(Connection connection, ChunkCoordinate chunkCoord) {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "DELETE FROM territory WHERE chunk_x = ? AND chunk_z = ? AND world_id = ?")) {
+            statement.setInt(1, chunkCoord.getX());
+            statement.setInt(2, chunkCoord.getZ());
+            statement.setString(3, chunkCoord.getWorldID().toString());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
 }

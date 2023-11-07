@@ -1,5 +1,6 @@
 package io.github.derec4.dragonforgekingdoms;
 
+import io.github.derec4.dragonforgekingdoms.database.CreateDB;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -127,6 +128,26 @@ public class Kingdom {
 
     public void setName(String name) {
         this.name = name;
+        updateNameInDatabase();
+    }
+
+    private void updateNameInDatabase() {
+        CreateDB databaseManager = new CreateDB();
+        Connection connection = null;
+        try {
+            connection = databaseManager.getConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        if (connection != null) {
+            try (PreparedStatement statement = connection.prepareStatement("UPDATE kingdoms SET name = ? WHERE ID = ?")) {
+                statement.setString(1, this.name);
+                statement.setString(2, this.ID.toString());
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
+            }
+        }
     }
 
     public void setDescription(String description) {
@@ -179,46 +200,46 @@ public class Kingdom {
         return this.name + ", created on " + this.creationTime;
     }
 
-    // Nested class to represent chunk coordinates
-    private static class ChunkCoordinate {
-        private final int x;
-        private final int z;
-        private final UUID worldID;
-
-        public ChunkCoordinate(int x, int z, UUID worldID) {
-            this.x = x;
-            this.z = z;
-            this.worldID = worldID;
-        }
-
-        public int getX() {
-            return x;
-        }
-
-        public int getZ() {
-            return z;
-        }
-
-        public UUID getWorldID() {
-            return worldID;
-        }
-
-        @Override
-        public int hashCode() {
-            // Implement a custom hash code that combines x and z values
-            return 31 * x + z;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null || getClass() != obj.getClass()) {
-                return false;
-            }
-            ChunkCoordinate other = (ChunkCoordinate) obj;
-            return x == other.x && z == other.z;
-        }
-    }
+//    // Nested class to represent chunk coordinates
+//    private static class ChunkCoordinate {
+//        private final int x;
+//        private final int z;
+//        private final UUID worldID;
+//
+//        public ChunkCoordinate(int x, int z, UUID worldID) {
+//            this.x = x;
+//            this.z = z;
+//            this.worldID = worldID;
+//        }
+//
+//        public int getX() {
+//            return x;
+//        }
+//
+//        public int getZ() {
+//            return z;
+//        }
+//
+//        public UUID getWorldID() {
+//            return worldID;
+//        }
+//
+//        @Override
+//        public int hashCode() {
+//            // Implement a custom hash code that combines x and z values
+//            return 31 * x + z;
+//        }
+//
+//        @Override
+//        public boolean equals(Object obj) {
+//            if (this == obj) {
+//                return true;
+//            }
+//            if (obj == null || getClass() != obj.getClass()) {
+//                return false;
+//            }
+//            ChunkCoordinate other = (ChunkCoordinate) obj;
+//            return x == other.x && z == other.z;
+//        }
+//    }
 }
