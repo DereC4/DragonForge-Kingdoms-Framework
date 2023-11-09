@@ -1,5 +1,6 @@
 package io.github.derec4.dragonforgekingdoms.commands;
 
+import io.github.derec4.dragonforgekingdoms.ChunkCoordinate;
 import io.github.derec4.dragonforgekingdoms.Kingdom;
 import io.github.derec4.dragonforgekingdoms.KingdomManager;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
@@ -30,9 +31,12 @@ public class KingdomCommandManager implements CommandExecutor {
         int chunkZ = player.getLocation().getChunk().getZ();
         UUID worldID = player.getWorld().getUID();
 //        String name = "TEMP"; // Replace with the actual kingdom name retrieval logic
-        Kingdom kingdom = KingdomManager.getInstance().getPlayerKingdom(player.getUniqueId());
+//        Kingdom kingdom = KingdomManager.getInstance().getPlayerKingdom(player.getUniqueId());
+        KingdomManager temp = KingdomManager.getInstance();
+        ChunkCoordinate chunk = new ChunkCoordinate(chunkX, chunkZ, worldID);
+        UUID playerKingdom = temp.getPlayerKingdom(player.getUniqueId()).getID();
 
-        if (kingdom.claimChunk(chunkX, chunkZ, worldID)) {
+        if (temp.claimChunk(playerKingdom, chunk)) {
             player.sendMessage("You have successfully claimed this chunk for your kingdom.");
         } else {
             player.sendMessage("Chunk claim failed. This chunk may already be claimed " +

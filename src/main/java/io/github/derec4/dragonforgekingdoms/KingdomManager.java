@@ -17,6 +17,7 @@ public class KingdomManager {
     private KingdomManager() {
         kingdoms = new HashMap<>();
         playerMappings = new HashMap<>();
+        territoryMappings = new HashMap<>();
     }
 
     public static synchronized KingdomManager getInstance() {
@@ -58,7 +59,11 @@ public class KingdomManager {
         return true;
     }
 
-    // Method to get a player's kingdom UUID
+    /**
+     * Returns the Kingdom a player UUID belongs to
+     * @param playerUUID
+     * @return
+     */
     public Kingdom getPlayerKingdom(UUID playerUUID) {
         return kingdoms.get(playerMappings.get(playerUUID));
     }
@@ -121,14 +126,22 @@ public class KingdomManager {
         }
     }
 
-    // Add a chunk to a kingdom's territory
-    public boolean addChunkToKingdom(UUID kingdomUUID, ChunkCoordinate chunkCoord) {
-        territoryMappings.put(chunkCoord, kingdomUUID);
-        // Save the updated territory to the database
+    /**
+     * Claims a chunk for a kingdom and adds it to the set of Chunk - Kingdom Mappings
+     * @param kingdomUUID
+     * @param chunkCoord
+     * @return
+     */
+    public boolean claimChunk(UUID kingdomUUID, ChunkCoordinate chunkCoord) {
         CreateDB temp = new CreateDB();
         try {
             Connection connection = temp.getConnection();
             saveTerritoryToDatabase(connection, chunkCoord, kingdomUUID);
+            if(territoryMappings.get(chunkCoord) == null) {
+                territoryMappings.put(chunkCoord, kingdomUUID);
+            } else {
+                return false;
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -149,7 +162,11 @@ public class KingdomManager {
         return true;
     }
 
-    // Get the kingdom UUID that owns a given chunk
+    /**
+     * Gets the kingdom that claims the chunkcoord
+     * @param chunkCoord
+     * @return
+     */
     public UUID getKingdomByChunk(ChunkCoordinate chunkCoord) {
         return territoryMappings.get(chunkCoord);
     }

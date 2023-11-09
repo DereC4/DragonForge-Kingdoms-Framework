@@ -16,6 +16,7 @@ public final class DragonForgeKingdoms extends JavaPlugin {
         Bukkit.getLogger().info(ChatColor.GREEN + "Enabled " + this.getName());
         this.getCommand("kingdom").setExecutor(new KingdomCommandManager());
         this.getCommand("kingdom").setExecutor(new Admin());
+        getServer().getPluginManager().registerEvents(new KingdomProtectionListener(), this);
         databaseManager = new CreateDB();
         if (databaseManager.connect()) {
             getLogger().info("Connected to database!");
