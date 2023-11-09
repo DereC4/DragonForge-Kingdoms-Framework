@@ -45,6 +45,21 @@ public class CreateDB {
         }
     }
 
+    public void createChunkTable() {
+        try {
+            connection.createStatement().executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS chunks (" +
+                            "chunk_owner INTEGER," +
+                            "chunk_x DOUBLE," +
+                            "chunk_z DOUBLE," +
+                            "world_id TEXT" +
+                            ")"
+            );
+        } catch (SQLException e) {
+            Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
+        }
+    }
+
     public void createKingdomTable() {
         try {
             connection.createStatement().executeUpdate(

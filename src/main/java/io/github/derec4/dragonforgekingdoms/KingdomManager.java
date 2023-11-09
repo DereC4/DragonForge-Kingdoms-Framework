@@ -111,7 +111,6 @@ public class KingdomManager {
     /**
      * Admin command to directly remove a kingdom based on name. Not to be used normally.
      * Does not update the existing manager too, so may have to restart server.
-     * @param name
      */
     public void removeKingdomAdmin(String name, Connection connection) {
         if (connection != null) {
@@ -128,9 +127,6 @@ public class KingdomManager {
 
     /**
      * Claims a chunk for a kingdom and adds it to the set of Chunk - Kingdom Mappings
-     * @param kingdomUUID
-     * @param chunkCoord
-     * @return
      */
     public boolean claimChunk(UUID kingdomUUID, ChunkCoordinate chunkCoord) {
         CreateDB temp = new CreateDB();
