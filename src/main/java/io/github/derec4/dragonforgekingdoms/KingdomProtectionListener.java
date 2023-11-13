@@ -29,17 +29,17 @@ public class KingdomProtectionListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        ChunkCoordinate chunk = new ChunkCoordinate(event.getClickedBlock().getChunk().getX(),
-                event.getClickedBlock().getChunk().getZ(), event.getClickedBlock().getWorld().getUID());
-
-        if (!canPlayerModifyChunk(player, chunk)) {
-            event.setCancelled(true);
-            player.sendMessage("You can't interact with blocks in this kingdom's territory!");
-        }
-    }
+//    @EventHandler
+//    public void onPlayerInteract(PlayerInteractEvent event) {
+//        Player player = event.getPlayer();
+//        ChunkCoordinate chunk = new ChunkCoordinate(event.getClickedBlock().getChunk().getX(),
+//                event.getClickedBlock().getChunk().getZ(), event.getClickedBlock().getWorld().getUID());
+//
+//        if (!canPlayerModifyChunk(player, chunk)) {
+//            event.setCancelled(true);
+//            player.sendMessage("You can't interact with blocks in this kingdom's territory!");
+//        }
+//    }
 
     private boolean canPlayerModifyChunk(Player player, ChunkCoordinate chunk) {
         UUID playerUUID = player.getUniqueId();
@@ -47,6 +47,11 @@ public class KingdomProtectionListener implements Listener {
         UUID chunkKingdomUUID = kingdomManager.getKingdomByChunk(chunk);
         if(chunkKingdomUUID == null) {
             return true;
+        }
+
+        // Not wild territory; is owned by kingdom. Now check if player is homeless
+        if(playerKingdomUUID == null) {
+            return false;
         }
         return playerKingdomUUID.equals(chunkKingdomUUID);
     }

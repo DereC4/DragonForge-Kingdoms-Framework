@@ -21,6 +21,10 @@ import java.util.UUID;
 public class KingdomCommandManager implements CommandExecutor {
     final String permsError = ChatColor.RED + "You do not have permission to use this command! Check" +
             " with the server staff?";
+
+    /**
+     * Checks if a player is in a kingdom
+     */
     public boolean inAKingdom(UUID playerID) {
         KingdomManager temp = KingdomManager.getInstance();
         return temp.isPlayerMapped(playerID);
@@ -205,6 +209,32 @@ public class KingdomCommandManager implements CommandExecutor {
                             return false;
                         }
 
+                    } else {
+                        player.sendMessage(permsError);
+                    }
+                }
+                case "join" -> {
+                    if(player.hasPermission("kingdom.join")) {
+                        if(inAKingdom(player.getUniqueId())) {
+                            player.sendMessage("You are already in a kingdom!");
+                            return false;
+                        }
+                        String name = args[1];
+                        UUID id = km.getKingdomFromName(name);
+                        if(id == null) {
+                            player.sendMessage("Couldn't find a kingdom with that name!");
+                            return false;
+                        }
+
+                        /*
+                        To join a kingdom, update the player mappings
+                        Also add the player to that kingdom's members
+                        TODO Finally, update the player database
+                         */
+                        km.addPlayerToKingdom(player.getUniqueId(), id);
+                        km.getKingdoms().get(id).addPlayer(player.getUniqueId());
+                    } else {
+                        player.sendMessage(permsError);
                     }
                 }
                 default -> player.sendMessage(ChatColor.RED + "Unknown sub-command. Usage: /kingdom <sub-command>");

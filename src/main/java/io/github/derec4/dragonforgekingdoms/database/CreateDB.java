@@ -55,6 +55,7 @@ public class CreateDB {
                             "world_id TEXT" +
                             ")"
             );
+            Bukkit.getServer().getConsoleSender().sendMessage("Chunk Database Code Reached!");
         } catch (SQLException e) {
             Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
         }
@@ -67,7 +68,7 @@ public class CreateDB {
                             "ID INTEGER," +
                             "name TEXT," +
                             "description TEXT," +
-                            "open INTEGER," +
+                            "open BOOLEAN," +
                             "leader TEXT," +
                             "home_location_x DOUBLE," +
                             "home_location_y DOUBLE," +
@@ -76,7 +77,7 @@ public class CreateDB {
                             "creationTime TEXT" +
                             ")"
             );
-            Bukkit.getServer().getConsoleSender().sendMessage("Kingdoms Database Created!");
+            Bukkit.getServer().getConsoleSender().sendMessage("Kingdoms Database Code Reached!");
         } catch (SQLException e) {
             Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
         }

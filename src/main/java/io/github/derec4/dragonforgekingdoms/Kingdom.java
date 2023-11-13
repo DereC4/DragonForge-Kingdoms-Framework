@@ -39,6 +39,23 @@ public class Kingdom {
     }
 
     /**
+     * Constructor for loading in from a database
+     */
+    public Kingdom(UUID ID, String name, UUID leader, Location home, String description, boolean open,
+                   String creationTime) {
+        this.name = name;
+        this.description = description;
+        this.open = open;
+        this.leader = leader;
+        this.ID = ID;
+        this.members = new HashSet<>();
+        this.territory = new HashSet<>();
+        this.home = home;
+        members.add(leader);
+        this.creationTime = creationTime;
+    }
+
+    /**
      * Iterates through the memberlist, converting UUIDs to player usernames
      * @return A string of members in the kingdom
      */

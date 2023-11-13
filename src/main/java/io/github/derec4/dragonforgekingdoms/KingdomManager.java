@@ -2,10 +2,14 @@ package io.github.derec4.dragonforgekingdoms;
 
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class KingdomManager {
@@ -27,6 +31,44 @@ public class KingdomManager {
         return instance;
     }
 
+    //TODO FINISH
+    private void loadKingdomsFromDatabase(Connection connection) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "SELECT * FROM kingdoms")) {
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                UUID kingdomID = UUID.fromString(resultSet.getString("ID"));
+                String name = resultSet.getString("name");
+                String description = resultSet.getString("description");
+                boolean open = resultSet.getBoolean("open");
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                String creationTime = dateFormat.format(resultSet.getDate("creationTime"));
+                UUID leader = UUID.fromString(resultSet.getString("leader"));
+                UUID worldID = UUID.fromString(resultSet.getString("home_location_world"));
+                Location home = new Location(null, resultSet.getInt("home_location_x"), resultSet.getInt(
+                        "home_location_y"), resultSet.getInt("home_location_z"));
+            }
+        }
+    }
+
+    /**
+     * Load in all chunks kingdoms own from the database
+     */
+    private void loadTerritoryMappingsFromDatabase(Connection connection) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "SELECT * FROM chunks")) {
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                int x = resultSet.getInt("chunk_x");
+                int z = resultSet.getInt("chunk_z");
+                UUID worldID = UUID.fromString(resultSet.getString("world_id"));
+                ChunkCoordinate chunkCoord = new ChunkCoordinate(x, z, worldID);
+                UUID kingdomUUID = UUID.fromString(resultSet.getString("chunk_owner"));
+                territoryMappings.put(chunkCoord, kingdomUUID);
+            }
+        }
+    }
+
     // Add methods to manage factions (e.g., addFaction, getFactions, etc.)
 
     /**
@@ -38,16 +80,6 @@ public class KingdomManager {
     public void addKingdom(Kingdom kingdom, UUID playerID) {
         kingdoms.put(kingdom.getID(), kingdom);
         playerMappings.put(playerID, kingdom.getID());
-    }
-
-    // Get a kingdom by ID
-    public Kingdom getKingdomByName(UUID id) {
-        return kingdoms.get(id);
-    }
-
-    // Get all kingdoms
-    public List<Kingdom> getAllKingdoms() {
-        return new ArrayList<>(kingdoms.values());
     }
 
     // Method to add player to a kingdom
@@ -68,6 +100,9 @@ public class KingdomManager {
         return kingdoms.get(playerMappings.get(playerUUID));
     }
 
+    /**
+     * Checks if a player is in a kingdom
+     */
     public boolean isPlayerMapped(UUID playerUUID) {
         return playerMappings.get(playerUUID) != null;
     }
@@ -85,6 +120,18 @@ public class KingdomManager {
         boolean res = kingdoms.get(playerMappings.get(playerUUID)).removePlayer(playerUUID);
         playerMappings.put(playerUUID, null);
         return res;
+    }
+
+    /**
+     * Gets a kingdom's UUID from a given name
+     */
+    public UUID getKingdomFromName(String name) {
+        for(UUID u : kingdoms.keySet()) {
+            if(kingdoms.get(u).getName().equals(name)) {
+                return u;
+            }
+        }
+        return null;
     }
 
     public void removeKingdom(UUID playerUUID, Connection connection) {
@@ -158,6 +205,10 @@ public class KingdomManager {
         return true;
     }
 
+    public Map<UUID, Kingdom> getKingdoms() {
+        return kingdoms;
+    }
+
     /**
      * Gets the kingdom that claims the chunkcoord
      * @param chunkCoord
@@ -169,7 +220,8 @@ public class KingdomManager {
 
     public void saveTerritoryToDatabase(Connection connection, ChunkCoordinate chunkCoord, UUID ID) {
         try (PreparedStatement statement = connection.prepareStatement(
-                "INSERT INTO chunks (chunk_owner, chunk_x, chunk_z, world_id)")) {
+                "INSERT INTO chunks (chunk_owner, chunk_x, chunk_z, world_id)" +
+                        "VALUES (?, ?, ?, ?)")) {
             statement.setString(1, ID.toString());
             statement.setInt(2, chunkCoord.getX());
             statement.setInt(3, chunkCoord.getZ());
