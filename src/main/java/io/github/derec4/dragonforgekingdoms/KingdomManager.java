@@ -83,13 +83,42 @@ public class KingdomManager {
     }
 
     // Method to add player to a kingdom
-    public boolean addPlayerToKingdom(UUID playerUUID, UUID kingdomUUID) {
+    public void addPlayerToKingdom(UUID playerUUID, UUID kingdomUUID) {
         if(playerMappings.containsKey(playerUUID)) {
-            return false;
+            return;
         }
         playerMappings.put(playerUUID, kingdomUUID);
-        return true;
+
+        // Update the player's kingdom in the database
+        CreateDB temp = new CreateDB();
+        try {
+            Connection connection = temp.getConnection();
+            updatePlayerKingdom(connection, playerUUID, kingdomUUID);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
+
+    public void updatePlayerKingdom(Connection connection, UUID playerUUID, UUID kingdomUUID) {
+//        try (PreparedStatement statement = connection.prepareStatement(
+//                "UPDATE players SET kingdom = ? WHERE id = ?")) {
+//            statement.setString(1, kingdomUUID.toString());
+//            statement.setString(2, playerUUID.toString());
+//            statement.executeUpdate();
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+        try (PreparedStatement statement = connection.prepareStatement(
+                "INSERT INTO players (id, kingdom) VALUES (?,?) ON DUPLICATE KEY UPDATE kingdom = VALUES(kingdom)"
+        )) {
+            statement.setString(1, playerUUID.toString());
+            statement.setString(2, kingdomUUID.toString());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     /**
      * Returns the Kingdom a player UUID belongs to
@@ -104,7 +133,7 @@ public class KingdomManager {
      * Checks if a player is in a kingdom
      */
     public boolean isPlayerMapped(UUID playerUUID) {
-        return playerMappings.get(playerUUID) != null;
+        return playerMappings.containsKey(playerUUID);
     }
 
     public boolean containsName(String name) {
@@ -118,7 +147,7 @@ public class KingdomManager {
 
     public boolean removePlayer(UUID playerUUID) {
         boolean res = kingdoms.get(playerMappings.get(playerUUID)).removePlayer(playerUUID);
-        playerMappings.put(playerUUID, null);
+        playerMappings.remove(playerUUID);
         return res;
     }
 

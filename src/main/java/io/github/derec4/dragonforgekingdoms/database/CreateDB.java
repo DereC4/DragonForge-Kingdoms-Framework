@@ -31,6 +31,19 @@ public class CreateDB {
         }
     }
 
+    public void createPlayerTable() {
+        try {
+            connection.createStatement().executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS players (" +
+                            "id TEXT," +
+                            "kingdom TEXT" +
+                            ")"
+            );
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void createLogTable() {
         try {
             connection.createStatement().executeUpdate(
