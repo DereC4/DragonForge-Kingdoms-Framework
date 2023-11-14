@@ -148,7 +148,24 @@ public class KingdomManager {
     public boolean removePlayer(UUID playerUUID) {
         boolean res = kingdoms.get(playerMappings.get(playerUUID)).removePlayer(playerUUID);
         playerMappings.remove(playerUUID);
+        CreateDB temp = new CreateDB();
+        try {
+            Connection connection = temp.getConnection();
+            removePlayerFromDatabase(connection, playerUUID);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return res;
+    }
+
+    public void removePlayerFromDatabase(Connection connection, UUID playerUUID) {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "DELETE FROM players WHERE id = ?")) {
+            statement.setString(1, playerUUID.toString());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

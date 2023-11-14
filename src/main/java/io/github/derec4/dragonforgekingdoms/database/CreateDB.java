@@ -53,6 +53,7 @@ public class CreateDB {
                             "message TEXT" +
                             ")"
             );
+            Bukkit.getServer().getConsoleSender().sendMessage("Player Database Code Reached!");
         } catch (SQLException e) {
             Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
         }

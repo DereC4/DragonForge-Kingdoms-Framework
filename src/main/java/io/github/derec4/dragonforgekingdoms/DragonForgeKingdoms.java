@@ -22,6 +22,7 @@ public final class DragonForgeKingdoms extends JavaPlugin {
             databaseManager.createLogTable();
             databaseManager.createKingdomTable();
             databaseManager.createChunkTable();
+            databaseManager.createPlayerTable();
         } else {
             getLogger().severe("Failed to connect to the database!");
         }
