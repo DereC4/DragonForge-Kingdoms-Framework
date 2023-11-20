@@ -12,15 +12,17 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Kingdom {
+    private boolean open;
+    private int level;
     private String name;
     private String description;
-    private boolean open;
-    private final String creationTime;
+    private String creationTime;
     private UUID leader;
     private UUID ID;
     private Set<UUID> members;
-    private final Set<ChunkCoordinate> territory;
     private Location home;
+    private EggData eggData;
+    private Set<ChunkCoordinate> territory;
 
     public Kingdom(String name, UUID leader, Location home) {
         this.name = name;
@@ -31,7 +33,7 @@ public class Kingdom {
         this.members = new HashSet<>();
         this.territory = new HashSet<>();
         this.home = home;
-
+        this.level = 0;
         members.add(leader);
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date date = new Date();
@@ -42,7 +44,7 @@ public class Kingdom {
      * Constructor for loading in from a database
      */
     public Kingdom(UUID ID, String name, UUID leader, Location home, String description, boolean open,
-                   String creationTime) {
+                   String creationTime, int level) {
         this.name = name;
         this.description = description;
         this.open = open;
@@ -51,6 +53,7 @@ public class Kingdom {
         this.members = new HashSet<>();
         this.territory = new HashSet<>();
         this.home = home;
+        this.level = level;
         members.add(leader);
         this.creationTime = creationTime;
     }
@@ -114,6 +117,10 @@ public class Kingdom {
 
     public UUID getID() {
         return ID;
+    }
+
+    public int getLevel() {
+        return level;
     }
 
     // Print the territory (claimed chunks) of the kingdom to the player source
@@ -217,7 +224,19 @@ public class Kingdom {
         return this.name + ", created on " + this.creationTime;
     }
 
-//    // Nested class to represent chunk coordinates
+    public EggData getEggData() {
+        return eggData;
+    }
+
+    public void setEggData(EggData eggData) {
+        if(eggData != null) {
+            throw new IllegalStateException("eggData must be null, overwritten detect");
+        }
+
+        this.eggData = eggData;
+    }
+
+    //    // Nested class to represent chunk coordinates
 //    private static class ChunkCoordinate {
 //        private final int x;
 //        private final int z;
