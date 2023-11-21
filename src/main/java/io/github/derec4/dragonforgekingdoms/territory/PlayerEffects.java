@@ -10,27 +10,28 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.UUID;
 
 public class PlayerEffects {
+
     public static void applyEffects(Player player) {
         ChunkCoordinate playerChunk = getPlayerCurrentChunk(player);
 
-        if (playerChunk != null) {
-            KingdomManager km = KingdomManager.getInstance();
-            UUID playerUUID = player.getUniqueId();
-            UUID kingdomUUID = km.getKingdomByChunk(playerChunk);
-
-            if (kingdomUUID != null && KingdomManager.getInstance().isPlayerMapped(playerUUID)) {
-                UUID playerKingdomUUID = KingdomManager.getInstance().getPlayerKingdom(playerUUID).getID();
-
-                if (kingdomUUID.equals(playerKingdomUUID)) {
-                    // Player is in their own kingdom
-                    applySpeedEffect(player);
-                } else {
-                    // Player is in an enemy kingdom
-                    applyMiningFatigueEffect(player);
-                }
+        KingdomManager km = KingdomManager.getInstance();
+        UUID playerUUID = player.getUniqueId();
+        UUID kingdomUUID = km.getKingdomByChunk(playerChunk);
+        UUID playerKingdomUUID = km.getPlayerKingdom(playerUUID).getID();
+        if (kingdomUUID != null && playerKingdomUUID != null) {
+            if (kingdomUUID.equals(playerKingdomUUID)) {
+                // Player is in their own kingdom
+                applySpeedEffect(player);
+            } else {
+                // Player is in an enemy kingdom
+                applyMiningFatigueEffect(player);
             }
+        } else if (kingdomUUID != null) {
+            // Player is not in any kingdom but on another kingdom's territory
+            applyMiningFatigueEffect(player);
         }
     }
+
 
     private static ChunkCoordinate getPlayerCurrentChunk(Player player) {
         Location playerLocation = player.getLocation();
