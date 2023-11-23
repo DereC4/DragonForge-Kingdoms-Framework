@@ -33,7 +33,7 @@ public class Kingdom {
         this.members = new HashSet<>();
         this.territory = new HashSet<>();
         this.home = home;
-        this.level = 0;
+        this.level = 1;
         members.add(leader);
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date date = new Date();
@@ -123,6 +123,9 @@ public class Kingdom {
         return level;
     }
 
+    public Location getHome() {
+        return home;
+    }
     // Print the territory (claimed chunks) of the kingdom to the player source
     public void printTerritory(Player player) {
         player.sendMessage(ChatColor.GREEN + "Territory of Kingdom " + name + ": [");

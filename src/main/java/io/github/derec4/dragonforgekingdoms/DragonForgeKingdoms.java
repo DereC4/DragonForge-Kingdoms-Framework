@@ -1,8 +1,8 @@
 package io.github.derec4.dragonforgekingdoms;
 
-import io.github.derec4.dragonforgekingdoms.commands.Admin;
 import io.github.derec4.dragonforgekingdoms.commands.KingdomCommandManager;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
+import io.github.derec4.dragonforgekingdoms.territory.KingdomProtectionListener;
 import io.github.derec4.dragonforgekingdoms.territory.PlayerEffects;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

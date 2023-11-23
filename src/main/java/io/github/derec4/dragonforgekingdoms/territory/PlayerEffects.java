@@ -17,7 +17,7 @@ public class PlayerEffects {
         KingdomManager km = KingdomManager.getInstance();
         UUID playerUUID = player.getUniqueId();
         UUID kingdomUUID = km.getKingdomByChunk(playerChunk);
-        UUID playerKingdomUUID = km.getPlayerKingdom(playerUUID).getID();
+        UUID playerKingdomUUID = km.getPlayerKingdom(playerUUID) != null ? km.getPlayerKingdom(playerUUID).getID() : null;
         if (kingdomUUID != null && playerKingdomUUID != null) {
             if (kingdomUUID.equals(playerKingdomUUID)) {
                 // Player is in their own kingdom

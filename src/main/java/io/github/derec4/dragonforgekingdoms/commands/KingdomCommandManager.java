@@ -7,6 +7,7 @@ import io.github.derec4.dragonforgekingdoms.database.CreateDB;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -14,8 +15,6 @@ import org.bukkit.entity.Player;
 
 import java.sql.Connection;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class KingdomCommandManager implements CommandExecutor {
@@ -233,6 +232,21 @@ public class KingdomCommandManager implements CommandExecutor {
                          */
                         km.addPlayerToKingdom(player.getUniqueId(), id);
                         km.getKingdoms().get(id).addPlayer(player.getUniqueId());
+                    } else {
+                        player.sendMessage(permsError);
+                    }
+                }
+                case "home" -> {
+                    if(player.hasPermission("kingdom.home")) {
+                        if (!inAKingdom(player.getUniqueId())) {
+                            player.sendMessage("You are not in a kingdom!");
+                            return false;
+                        }
+                        Kingdom k = km.getPlayerKingdom(playerID);
+                        Location home = k.getHome();
+                        player.sendMessage("Teleporting you to your kingdom's home!");
+                        player.teleport(home);
+                        player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
                     } else {
                         player.sendMessage(permsError);
                     }

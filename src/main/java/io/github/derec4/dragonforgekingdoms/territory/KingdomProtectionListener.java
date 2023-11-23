@@ -1,5 +1,7 @@
-package io.github.derec4.dragonforgekingdoms;
+package io.github.derec4.dragonforgekingdoms.territory;
 
+import io.github.derec4.dragonforgekingdoms.ChunkCoordinate;
+import io.github.derec4.dragonforgekingdoms.KingdomManager;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,17 +19,17 @@ public class KingdomProtectionListener implements Listener {
         this.kingdomManager = KingdomManager.getInstance();
     }
 
-    @EventHandler
-    public void onBlockBreak(BlockBreakEvent event) {
-        Player player = event.getPlayer();
-        ChunkCoordinate chunk = new ChunkCoordinate(event.getBlock().getChunk().getX(),
-                event.getBlock().getChunk().getZ(), event.getBlock().getWorld().getUID());
-
-        if (!canPlayerModifyChunk(player, chunk)) {
-            event.setCancelled(true);
-            player.sendMessage("You can't break blocks in this kingdom's territory!");
-        }
-    }
+//    @EventHandler
+//    public void onBlockBreak(BlockBreakEvent event) {
+//        Player player = event.getPlayer();
+//        ChunkCoordinate chunk = new ChunkCoordinate(event.getBlock().getChunk().getX(),
+//                event.getBlock().getChunk().getZ(), event.getBlock().getWorld().getUID());
+//
+//        if (!canPlayerModifyChunk(player, chunk)) {
+//            event.setCancelled(true);
+//            player.sendMessage("You can't break blocks in this kingdom's territory!");
+//        }
+//    }
 
 //    @EventHandler
 //    public void onPlayerInteract(PlayerInteractEvent event) {
