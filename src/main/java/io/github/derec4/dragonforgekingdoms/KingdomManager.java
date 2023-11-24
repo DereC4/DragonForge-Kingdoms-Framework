@@ -2,6 +2,7 @@ package io.github.derec4.dragonforgekingdoms;
 
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
 import java.sql.Connection;
@@ -120,6 +121,7 @@ public class KingdomManager {
     }
 
 
+
     /**
      * Returns the Kingdom a player UUID belongs to
      * @param playerUUID
@@ -193,12 +195,19 @@ public class KingdomManager {
                         "DELETE FROM kingdoms WHERE ID = ?")) {
                     statement.setString(1, kingdomUUID.toString());
                     statement.executeUpdate();
-                    Bukkit.getServer().getConsoleSender().sendMessage("Kingdom has been removed");
+                    Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Kingdom has been removed");
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
             }
         }
+    }
+
+    /**
+     * Gets a kingdom corresponding to the given UUID, or null if none
+     */
+    public Kingdom getKingdomFromID(UUID id) {
+        return kingdoms.get(id);
     }
 
     /**

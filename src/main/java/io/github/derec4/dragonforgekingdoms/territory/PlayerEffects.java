@@ -1,6 +1,7 @@
 package io.github.derec4.dragonforgekingdoms.territory;
 
 import io.github.derec4.dragonforgekingdoms.ChunkCoordinate;
+import io.github.derec4.dragonforgekingdoms.Kingdom;
 import io.github.derec4.dragonforgekingdoms.KingdomManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -17,18 +18,21 @@ public class PlayerEffects {
         KingdomManager km = KingdomManager.getInstance();
         UUID playerUUID = player.getUniqueId();
         UUID kingdomUUID = km.getKingdomByChunk(playerChunk);
-        UUID playerKingdomUUID = km.getPlayerKingdom(playerUUID) != null ? km.getPlayerKingdom(playerUUID).getID() : null;
+        Kingdom k = km.getPlayerKingdom(playerUUID);
+        UUID playerKingdomUUID = k != null ? k.getID() : null;
         if (kingdomUUID != null && playerKingdomUUID != null) {
+            int level = km.getKingdomFromID(kingdomUUID).getLevel();
             if (kingdomUUID.equals(playerKingdomUUID)) {
                 // Player is in their own kingdom
-                applySpeedEffect(player);
+                applyBuffs(player, level);
             } else {
                 // Player is in an enemy kingdom
-                applyMiningFatigueEffect(player);
+                applyDebuffs(player, level);
             }
         } else if (kingdomUUID != null) {
             // Player is not in any kingdom but on another kingdom's territory
-            applyMiningFatigueEffect(player);
+            int level = km.getKingdomFromID(kingdomUUID).getLevel();
+            applyDebuffs(player, level);
         }
     }
 
@@ -41,16 +45,88 @@ public class PlayerEffects {
         return new ChunkCoordinate(x, z, worldID);
     }
 
-    private static void applySpeedEffect(Player player) {
+    private static void applyBuffs(Player player, int level) {
         // Apply the speed effect to the player
-        player.removePotionEffect(PotionEffectType.SLOW);
-        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1, true, false));
+        switch (level) {
+            case 1 -> player.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 40, 1, true, false));
+            case 2 -> {
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 40, 1, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 40, 1, true, false));
+            }
+            case 3 -> {
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 40, 2, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 40, 2, true, false));
+            }
+            case 4 -> {
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 40, 2, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 40, 2, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 40, 1, true, false));
+            }
+            case 5 -> {
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 40, 2, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 40, 2, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 40, 1, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.LUCK, 40, 1, true, false));
+            }
+            case 6 -> {
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 40, 2, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 40, 2, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 40, 1, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.LUCK, 40, 2, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 40, 1, true, false));
+            }
+            case 7 -> {
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 40, 2, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 40, 2, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 40, 1, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.LUCK, 40, 3, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 40, 1, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 1, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, 40, 1, true, false));
+            }
+            default -> {
+            }
+            // No buffs for other levels
+        }
     }
 
-    private static void applyMiningFatigueEffect(Player player) {
-        // Apply the mining fatigue effect to the player
-        player.removePotionEffect(PotionEffectType.SPEED);
-        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 1, true, false));
+    private static void applyDebuffs(Player player, int level) {
+        switch (level) {
+            case 1 -> player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 40, 1, true, false));
+            case 2 -> {
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 40, 1, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 40, 1, true, false));
+            }
+            case 3 -> {
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 40, 1, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 40, 2, true, false));
+            }
+            case 4 -> {
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 40, 1, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 40, 2, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 40, 1, true, false));
+            }
+            case 5 -> {
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 40, 1, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 40, 2, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 40, 1, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.UNLUCK, 40, 3, true, false));
+            }
+            case 6 -> {
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 40, 2, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 40, 2, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 40, 1, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.UNLUCK, 40, 3, true, false));
+            }
+            case 7 -> {
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 40, 2, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 40, 3, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 40, 1, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.UNLUCK, 40, 3, true, false));
+            }
+            default -> {
+            }
+            // No buffs for other levels
+        }
     }
-
 }
