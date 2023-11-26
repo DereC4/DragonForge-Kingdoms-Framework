@@ -98,6 +98,12 @@ public class KingdomManager {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        Kingdom k = kingdoms.get(kingdomUUID);
+        int level = k.getLevel();
+        int members = k.getMembers().size();
+        if(members > 1) {
+            k.levelUp();
+        }
     }
 
     public void updatePlayerKingdom(Connection connection, UUID playerUUID, UUID kingdomUUID) {

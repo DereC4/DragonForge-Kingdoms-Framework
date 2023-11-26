@@ -177,6 +177,10 @@ public class Kingdom {
         }
     }
 
+    public void levelUp() {
+        this.level++;
+    }
+
     public void setDescription(String description) {
         this.description = description;
     }

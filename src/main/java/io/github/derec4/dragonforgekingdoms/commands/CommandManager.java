@@ -213,6 +213,7 @@ public class CommandManager implements CommandExecutor {
                         player.sendMessage(permsError);
                     }
                 }
+                //TODO pledging and adjusting level
                 case "join" -> {
                     if(player.hasPermission("kingdom.join")) {
                         if(inAKingdom(player.getUniqueId())) {
