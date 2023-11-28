@@ -1,9 +1,10 @@
 package io.github.derec4.dragonforgekingdoms;
 
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,6 +14,7 @@ import java.util.*;
 
 public class Kingdom {
     private boolean open;
+    private int claimedChunks;
     private int level;
     private String name;
     private String description;
@@ -34,6 +36,7 @@ public class Kingdom {
         this.territory = new HashSet<>();
         this.home = home;
         this.level = 1;
+        this.claimedChunks = 1;
         members.add(leader);
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date date = new Date();
@@ -44,7 +47,7 @@ public class Kingdom {
      * Constructor for loading in from a database
      */
     public Kingdom(UUID ID, String name, UUID leader, Location home, String description, boolean open,
-                   String creationTime, int level) {
+                   String creationTime, int level, int claimedChunks) {
         this.name = name;
         this.description = description;
         this.open = open;
@@ -56,6 +59,7 @@ public class Kingdom {
         this.level = level;
         members.add(leader);
         this.creationTime = creationTime;
+        this.claimedChunks = claimedChunks;
     }
 
     /**
@@ -175,6 +179,15 @@ public class Kingdom {
                 Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
             }
         }
+    }
+
+    public BaseComponent[] getStats() {
+        return new ComponentBuilder(this.name + " (level" + this.level  + ") ").color(net.md_5.bungee.api.ChatColor.BLUE)
+                .append("Home to " + this.members.size() + " people")
+                .append("Money: $0")
+                .append("Destroyed Kingdoms: 0")
+                .append("Land Power: " + this.claimedChunks)
+                .append("Led by Lord " + Bukkit.getOfflinePlayer(this.leader).getName()).create();
     }
 
     public void levelUp() {

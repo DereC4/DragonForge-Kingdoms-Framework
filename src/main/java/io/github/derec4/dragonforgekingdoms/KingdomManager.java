@@ -45,8 +45,9 @@ public class KingdomManager {
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 String creationTime = dateFormat.format(resultSet.getDate("creationTime"));
                 UUID leader = UUID.fromString(resultSet.getString("leader"));
-                UUID worldID = UUID.fromString(resultSet.getString("home_location_world"));
-                Location home = new Location(null, resultSet.getInt("home_location_x"), resultSet.getInt(
+                Location home = new Location(Bukkit.getWorld(resultSet.getString("home_world_id")), resultSet.getInt(
+                        "home_location_x"),
+                        resultSet.getInt(
                         "home_location_y"), resultSet.getInt("home_location_z"));
             }
         }

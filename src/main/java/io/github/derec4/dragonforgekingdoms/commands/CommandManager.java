@@ -34,13 +34,11 @@ public class CommandManager implements CommandExecutor {
         int chunkX = player.getLocation().getChunk().getX();
         int chunkZ = player.getLocation().getChunk().getZ();
         UUID worldID = player.getWorld().getUID();
-//        String name = "TEMP"; // Replace with the actual kingdom name retrieval logic
-//        Kingdom kingdom = KingdomManager.getInstance().getPlayerKingdom(player.getUniqueId());
-        KingdomManager temp = KingdomManager.getInstance();
+        KingdomManager km = KingdomManager.getInstance();
         ChunkCoordinate chunk = new ChunkCoordinate(chunkX, chunkZ, worldID);
-        UUID playerKingdom = temp.getPlayerKingdom(player.getUniqueId()).getID();
+        UUID playerKingdom = km.getPlayerKingdom(player.getUniqueId()).getID();
 
-        if (temp.claimChunk(playerKingdom, chunk)) {
+        if (km.claimChunk(playerKingdom, chunk)) {
             player.sendMessage(ChatColor.GREEN + "You have successfully claimed this chunk for your kingdom.");
         } else {
             player.sendMessage(ChatColor.RED + "Chunk claim failed. This chunk may already be claimed " +
@@ -100,6 +98,7 @@ public class CommandManager implements CommandExecutor {
                         }
                         km.addKingdom(k, playerID);
                         k = km.getPlayerKingdom(playerID);
+                        claimLand(player);
                         player.sendMessage(ChatColor.GREEN + "The Kingdom of " + k.getName() +
                                 " has been created by " + player.getName());
                         player.sendMessage(ChatColor.GREEN + k.printMembers());
@@ -164,7 +163,7 @@ public class CommandManager implements CommandExecutor {
                         if(km.removePlayer(playerID)) {
                             player.sendMessage(ChatColor.RED + "You are no longer a member of " + name);
                         } else {
-                            player.sendMessage(ChatColor.RED + "Could not remove player");
+                            player.sendMessage(ChatColor.RED + "Failed to leave kingdom!");
                         }
 
                     }
