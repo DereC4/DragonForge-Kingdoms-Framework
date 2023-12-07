@@ -82,16 +82,14 @@ public class Kingdom {
     }
 
     /**
-     * Claim a chunk. Chunks spawn 16x16 section on the world grid and they extend from the
-     * bottom void of the world, all the way up to the top sky, thus not needing a y coordinate
-     *
-     * @param chunkX Chunk x coordinate
-     * @param chunkZ Chunk z coordinate
-     * @return True on claim success, false on failure (which means it's already claimed)
+     * Chunk claiming is handled in the command manager, here it simply updates the kingdom total chunks assuming
+     * a chunk was claimed
      */
-    public boolean claimChunk(int chunkX, int chunkZ, UUID worldID) {
-        ChunkCoordinate chunkCoord = new ChunkCoordinate(chunkX, chunkZ, worldID);
-        return territory.add(chunkCoord);
+    public void claimChunk() {
+//        ChunkCoordinate chunkCoord = new ChunkCoordinate(chunkX, chunkZ, worldID);
+//        boolean res = territory.add(chunkCoord);
+        claimedChunks++;
+        checkLevelUp();
     }
 
     // Getters
@@ -190,8 +188,27 @@ public class Kingdom {
                 .append("Led by Lord " + Bukkit.getOfflinePlayer(this.leader).getName()).create();
     }
 
-    public void levelUp() {
-        this.level++;
+    /**
+     * Checks if a kingdom has met the criteria for leveling up
+     */
+    public void checkLevelUp() {
+        int memberCount = this.members.size();
+        int chunksClaimed = this.claimedChunks;
+        if(memberCount >= 200 && chunksClaimed >= 500) {
+            this.level = 7;
+        } else if(memberCount >= 100 && chunksClaimed >= 250) {
+            this.level = 6;
+        } else if(memberCount >= 50 && chunksClaimed >= 200) {
+            this.level = 5;
+        } else if(memberCount >= 25 && chunksClaimed >= 125) {
+            this.level = 4;
+        } else if(memberCount >= 10 && chunksClaimed >= 100) {
+            this.level = 3;
+        } else if(memberCount >= 3 && chunksClaimed >= 50) {
+            this.level = 2;
+        } else if(memberCount >= 1 && chunksClaimed >= 1) {
+            this.level = 1;
+        }
     }
 
     public void setDescription(String description) {
@@ -211,7 +228,9 @@ public class Kingdom {
     }
 
     public boolean addPlayer(UUID uuid) {
-        return members.add(uuid);
+        boolean res = members.add(uuid);
+        checkLevelUp();
+        return res;
     }
 
     public boolean removePlayer(UUID uuid) {

@@ -89,22 +89,18 @@ public class KingdomManager {
         if(playerMappings.containsKey(playerUUID)) {
             return;
         }
-        playerMappings.put(playerUUID, kingdomUUID);
 
-        // Update the player's kingdom in the database
+        // Update the player's kingdom in the database and then in the hashmap
         CreateDB temp = new CreateDB();
         try {
             Connection connection = temp.getConnection();
             updatePlayerKingdom(connection, playerUUID, kingdomUUID);
+            playerMappings.put(playerUUID, kingdomUUID);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         Kingdom k = kingdoms.get(kingdomUUID);
-        int level = k.getLevel();
-        int members = k.getMembers().size();
-        if(members > 1) {
-            k.levelUp();
-        }
+        k.addPlayer(playerUUID);
     }
 
     public void updatePlayerKingdom(Connection connection, UUID playerUUID, UUID kingdomUUID) {
@@ -244,6 +240,7 @@ public class KingdomManager {
             saveTerritoryToDatabase(connection, chunkCoord, kingdomUUID);
             if(territoryMappings.get(chunkCoord) == null) {
                 territoryMappings.put(chunkCoord, kingdomUUID);
+                kingdoms.get(kingdomUUID).claimChunk();
             } else {
                 return false;
             }
