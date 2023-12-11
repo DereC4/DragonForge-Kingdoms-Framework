@@ -23,6 +23,7 @@ public class KingdomManager {
         kingdoms = new HashMap<>();
         playerMappings = new HashMap<>();
         territoryMappings = new HashMap<>();
+
     }
 
     public static synchronized KingdomManager getInstance() {
@@ -32,8 +33,7 @@ public class KingdomManager {
         return instance;
     }
 
-    //TODO FINISH
-    private void loadKingdomsFromDatabase(Connection connection) throws SQLException {
+    public void loadKingdomsFromDatabase(Connection connection) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
                 "SELECT * FROM kingdoms")) {
             ResultSet resultSet = statement.executeQuery();
@@ -42,16 +42,27 @@ public class KingdomManager {
                 String name = resultSet.getString("name");
                 String description = resultSet.getString("description");
                 boolean open = resultSet.getBoolean("open");
-                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                String creationTime = dateFormat.format(resultSet.getDate("creationTime"));
+                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS");
+                String creationTime = formatter.format(resultSet.getDate("creationTime"));
                 UUID leader = UUID.fromString(resultSet.getString("leader"));
-                Location home = new Location(Bukkit.getWorld(resultSet.getString("home_world_id")), resultSet.getInt(
-                        "home_location_x"),
-                        resultSet.getInt(
-                        "home_location_y"), resultSet.getInt("home_location_z"));
+                int level = resultSet.getInt("level");
+                int claimedChunks = resultSet.getInt("claimedChunks");
+                Location home = new Location(
+                        Bukkit.getWorld(resultSet.getString("home_world_id")),
+                        resultSet.getInt("home_location_x"),
+                        resultSet.getInt("home_location_y"),
+                        resultSet.getInt("home_location_z")
+                );
+
+                // Create a Kingdom object and add it to the map
+                Kingdom k = new Kingdom(kingdomID, name, leader, home, description, open, creationTime, level, claimedChunks);
+                // You may want to set other properties of the Kingdom based on your design
+                kingdoms.put(kingdomID, k);
+                System.out.println("Message is here " + k.getID());
             }
         }
     }
+
 
     /**
      * Load in all chunks kingdoms own from the database

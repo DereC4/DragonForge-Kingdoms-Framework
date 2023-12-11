@@ -1,6 +1,7 @@
 package io.github.derec4.dragonforgekingdoms;
 
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
+import lombok.Getter;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.*;
@@ -12,10 +13,13 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+@Getter
 public class Kingdom {
     private boolean open;
     private int claimedChunks;
     private int level;
+    // Getters
+    @Getter
     private String name;
     private String description;
     private String creationTime;
@@ -23,6 +27,7 @@ public class Kingdom {
     private UUID ID;
     private Set<UUID> members;
     private Location home;
+    @Getter
     private EggData eggData;
     private Set<ChunkCoordinate> territory;
 
@@ -92,42 +97,6 @@ public class Kingdom {
         checkLevelUp();
     }
 
-    // Getters
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public boolean isOpen() {
-        return open;
-    }
-
-    public String getCreationTime() {
-        return creationTime;
-    }
-
-    public UUID getLeader() {
-        return leader;
-    }
-
-    public Set<UUID> getMembers() {
-        return members;
-    }
-
-    public UUID getID() {
-        return ID;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public Location getHome() {
-        return home;
-    }
     // Print the territory (claimed chunks) of the kingdom to the player source
     public void printTerritory(Player player) {
         player.sendMessage(ChatColor.GREEN + "Territory of Kingdom " + name + ": [");
@@ -239,32 +208,31 @@ public class Kingdom {
 
     public void saveToDatabase(Connection connection) {
         try (PreparedStatement statement = connection.prepareStatement(
-                "INSERT INTO kingdoms (ID, name, description, open, leader, home_location_x, home_location_y, " +
-                        "home_location_z, home_location_world, creationTime) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                "INSERT INTO kingdoms (ID, name, description, open, creationTime, leader, level, " +
+                        "claimedChunks, home_world_id, home_x, home_y, home_z) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
             statement.setString(1, ID.toString());
             statement.setString(2, name);
             statement.setString(3, description);
             statement.setBoolean(4, open);
-            statement.setString(5, leader.toString());
-            statement.setDouble(6, home.getX()); // Assuming home is a Location object
-            statement.setDouble(7, home.getY());
-            statement.setDouble(8, home.getZ());
+            statement.setDate(5, java.sql.Date.valueOf(creationTime));
+            statement.setString(6, leader.toString());
+            statement.setInt(7, level);
+            statement.setInt(8, claimedChunks);
             statement.setString(9, Objects.requireNonNull(home.getWorld()).getUID().toString());
-            statement.setString(10, creationTime);
+            statement.setInt(10, home.getBlockX());
+            statement.setInt(11, home.getBlockY());
+            statement.setInt(12, home.getBlockZ());
             statement.executeUpdate();
         } catch (SQLException e) {
             Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
         }
     }
 
+
     @Override
     public String toString() {
         return this.name + ", created on " + this.creationTime;
-    }
-
-    public EggData getEggData() {
-        return eggData;
     }
 
     public void setEggData(EggData eggData) {

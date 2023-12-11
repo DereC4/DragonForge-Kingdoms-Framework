@@ -9,9 +9,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 public final class DragonForgeKingdoms extends JavaPlugin {
     private CreateDB databaseManager;
     private static DragonForgeKingdoms instance; // Static variable to store the instance of the plugin
+    private KingdomManager kingdomManager;
 
     @Override
     public void onEnable() {
@@ -29,6 +33,13 @@ public final class DragonForgeKingdoms extends JavaPlugin {
             databaseManager.createPlayerTable();
         } else {
             getLogger().severe("Failed to connect to the database!");
+        }
+        this.kingdomManager = KingdomManager.getInstance();
+        try {
+            Connection connection = databaseManager.getConnection();
+            kingdomManager.loadKingdomsFromDatabase(connection);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
         int taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
             for (Player player : Bukkit.getOnlinePlayers()) {

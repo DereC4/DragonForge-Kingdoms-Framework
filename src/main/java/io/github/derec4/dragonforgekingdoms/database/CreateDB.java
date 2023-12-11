@@ -13,7 +13,8 @@ public class CreateDB {
     public boolean connect() {
         try {
             Class.forName("org.sqlite.JDBC");
-            connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:kingdoms.db");
+//            connection = DriverManager.getConnection("jdbc:sqlite://plugins/DragonForgeKingdoms/kingdoms.db");
             return true;
         } catch (SQLException | ClassNotFoundException e) {
             Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
@@ -79,16 +80,18 @@ public class CreateDB {
         try {
             connection.createStatement().executeUpdate(
                     "CREATE TABLE IF NOT EXISTS kingdoms (" +
-                            "ID INTEGER," +
+                            "ID TEXT," +
                             "name TEXT," +
                             "description TEXT," +
                             "open BOOLEAN," +
+                            "creationTime DATE," +
                             "leader TEXT," +
-                            "home_location_x DOUBLE," +
-                            "home_location_y DOUBLE," +
-                            "home_location_z DOUBLE," +
-                            "home_location_world TEXT," +
-                            "creationTime TEXT" +
+                            "level INT," +
+                            "claimedChunks INT," +
+                            "home_world_id TEXT," +
+                            "home_x INT," +
+                            "home_y INT," +
+                            "home_z INT" +
                             ")"
             );
             Bukkit.getServer().getConsoleSender().sendMessage("Kingdoms Database Code Reached!");
@@ -100,7 +103,7 @@ public class CreateDB {
     public Connection getConnection() throws SQLException {
         if (connection == null || connection.isClosed()) {
             // Reconnect or create a new connection if it's closed or doesn't exist
-            connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:kingdoms.db");
         }
         return connection;
     }
