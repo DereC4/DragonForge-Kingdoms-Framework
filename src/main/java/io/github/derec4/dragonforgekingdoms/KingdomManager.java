@@ -49,9 +49,9 @@ public class KingdomManager {
                 int claimedChunks = resultSet.getInt("claimedChunks");
                 Location home = new Location(
                         Bukkit.getWorld(resultSet.getString("home_world_id")),
-                        resultSet.getInt("home_location_x"),
-                        resultSet.getInt("home_location_y"),
-                        resultSet.getInt("home_location_z")
+                        resultSet.getInt("home_x"),
+                        resultSet.getInt("home_y"),
+                        resultSet.getInt("home_z")
                 );
 
                 // Create a Kingdom object and add it to the map
