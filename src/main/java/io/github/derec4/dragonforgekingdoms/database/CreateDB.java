@@ -84,7 +84,7 @@ public class CreateDB {
                             "name TEXT," +
                             "description TEXT," +
                             "open BOOLEAN," +
-                            "creationTime DATE," +
+                            "creationTime TEXT," +
                             "leader TEXT," +
                             "level INT," +
                             "claimedChunks INT," +

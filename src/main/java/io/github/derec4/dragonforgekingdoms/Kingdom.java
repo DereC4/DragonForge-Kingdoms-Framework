@@ -215,7 +215,7 @@ public class Kingdom {
             statement.setString(2, name);
             statement.setString(3, description);
             statement.setBoolean(4, open);
-            statement.setDate(5, java.sql.Date.valueOf(creationTime));
+            statement.setString(5, creationTime);
             statement.setString(6, leader.toString());
             statement.setInt(7, level);
             statement.setInt(8, claimedChunks);

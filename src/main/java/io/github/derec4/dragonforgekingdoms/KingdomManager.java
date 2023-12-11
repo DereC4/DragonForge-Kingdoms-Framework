@@ -42,8 +42,8 @@ public class KingdomManager {
                 String name = resultSet.getString("name");
                 String description = resultSet.getString("description");
                 boolean open = resultSet.getBoolean("open");
-                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS");
-                String creationTime = formatter.format(resultSet.getDate("creationTime"));
+//                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS");
+                String creationTime = resultSet.getString("creationTime");
                 UUID leader = UUID.fromString(resultSet.getString("leader"));
                 int level = resultSet.getInt("level");
                 int claimedChunks = resultSet.getInt("claimedChunks");
