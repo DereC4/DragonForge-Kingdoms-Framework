@@ -67,7 +67,7 @@ public class KingdomManager {
     /**
      * Load in all chunks kingdoms own from the database
      */
-    private void loadTerritoryMappingsFromDatabase(Connection connection) throws SQLException {
+    public void loadTerritoryMappingsFromDatabase(Connection connection) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
                 "SELECT * FROM chunks")) {
             ResultSet resultSet = statement.executeQuery();

@@ -38,6 +38,7 @@ public final class DragonForgeKingdoms extends JavaPlugin {
         try {
             Connection connection = databaseManager.getConnection();
             kingdomManager.loadKingdomsFromDatabase(connection);
+            kingdomManager.loadTerritoryMappingsFromDatabase(connection);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
