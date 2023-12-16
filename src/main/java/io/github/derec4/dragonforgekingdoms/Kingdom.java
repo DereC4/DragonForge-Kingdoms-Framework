@@ -243,6 +243,14 @@ public class Kingdom {
         this.eggData = eggData;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof Kingdom)) {
+            return false;
+        }
+        return this.ID.equals(((Kingdom) obj).ID);
+    }
+
     //    // Nested class to represent chunk coordinates
 //    private static class ChunkCoordinate {
 //        private final int x;

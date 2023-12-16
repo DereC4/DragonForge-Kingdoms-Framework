@@ -5,6 +5,13 @@ import io.github.derec4.dragonforgekingdoms.DragonForgeKingdoms;
 import io.github.derec4.dragonforgekingdoms.Kingdom;
 import io.github.derec4.dragonforgekingdoms.KingdomManager;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.model.group.Group;
+import net.luckperms.api.model.user.User;
+import net.luckperms.api.node.Node;
+import net.luckperms.api.node.NodeType;
+import net.luckperms.api.node.types.InheritanceNode;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -45,6 +52,39 @@ public class CommandManager implements CommandExecutor {
                     "or there was an error.");
         }
     }
+
+    private void promotePlayer(Player player, Player targetPlayer) {
+        LuckPerms api = LuckPermsProvider.get();
+//        User user = api.getPlayerAdapter(Player.class).getUser(targetPlayer);
+        if (targetPlayer.hasPermission("group.vassal") && !targetPlayer.hasPermission("group.duke")) {
+            // Promote vassal to duke
+//            targetPlayer.addAttachment(DragonForgeKingdoms.getInstance(), "kingdom.role.duke", true, 1);
+            Group group = api.getGroupManager().getGroup("duke");
+
+            // Group doesn't exist?
+            if (group == null) {
+                player.sendMessage(ChatColor.RED +  " group does not exist!");
+                return;
+            }
+
+            api.getUserManager().modifyUser(player.getUniqueId(), (User user) -> {
+                // Create a node to add to the player.
+                Node node = InheritanceNode.builder(group).build();
+
+                // Add the node to the user.
+                user.data().add(node);
+
+                targetPlayer.sendMessage(ChatColor.GREEN + "You have been promoted to Duke. " +
+                        "You can now add, remove, and banish players, as well as access the kingdom store.");
+                player.sendMessage(ChatColor.GREEN + "Player has been successfully promoted.");
+            });
+        } else if (targetPlayer.hasPermission("group.duke")) {
+            player.sendMessage(ChatColor.YELLOW + targetPlayer.getName() + " cannot be promoted any higher than Duke.");
+        } else {
+            player.sendMessage(ChatColor.RED + targetPlayer.getName() + " could not be promoted.");
+        }
+    }
+
     /**
      * Executes the given command, returning its success.
      * <br>
@@ -253,7 +293,7 @@ public class CommandManager implements CommandExecutor {
                     }
                 }
                 case "promote" -> {
-                    if(player.hasPermission("kingdom.home")) {
+                    if(player.hasPermission("kingdom.promote")) {
                         if (!inAKingdom(player.getUniqueId())) {
                             player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
                             return false;
@@ -265,22 +305,15 @@ public class CommandManager implements CommandExecutor {
                             return false;
                         }
                         String name = args[1];
-                        Player targetPlayer = Bukkit.getPlayerExact(name);
+                        Player targetPlayer = Bukkit.getPlayer(name);
+                        LuckPerms api = LuckPermsProvider.get();
 
-                        // Check if the player is online
+                        // Check if the player is online and in the same kingdom
                         if (targetPlayer != null) {
-                            Kingdom playerKingdom = km.getPlayerKingdom(player.getUniqueId());
-                            if (targetPlayer.hasPermission("kingdom.role.vassal")) {
-                                // Promote vassal to duke
-                                targetPlayer.addAttachment(DragonForgeKingdoms.getInstance(), "kingdom.role.duke",
-                                        true, 1);
-//                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + name + " group add " +
-//                                        "duke");
-                                targetPlayer.sendMessage(ChatColor.GREEN + "You have been promoted to Duke. " +
-                                        "You can now add, remove, and banish players, as well as access the kingdom store.");
-                                player.sendMessage(ChatColor.GREEN + "Player has been successfully promoted.");
-                            } else if (targetPlayer.hasPermission("kingdom.role.duke")) {
-                                player.sendMessage(ChatColor.YELLOW + name + " cannot be promoted any higher than Duke.");
+                            Kingdom sourceKingdom = km.getPlayerKingdom(playerID);
+                            Kingdom targetKingdom = km.getPlayerKingdom(targetPlayer.getUniqueId());
+                            if(sourceKingdom.equals(targetKingdom)) {
+                                promotePlayer(player, targetPlayer);
                             } else {
                                 player.sendMessage(ChatColor.YELLOW + name + " is not in your kingdom.");
                             }
