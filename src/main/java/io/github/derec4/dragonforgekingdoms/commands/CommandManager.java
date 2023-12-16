@@ -274,13 +274,15 @@ public class CommandManager implements CommandExecutor {
                                 // Promote vassal to duke
                                 targetPlayer.addAttachment(DragonForgeKingdoms.getInstance(), "kingdom.role.duke",
                                         true, 1);
-                                targetPlayer.sendMessage(ChatColor.GREEN + "You have been promoted to Duke. You can now add, remove, and banish players, as well as access the kingdom store.");
-
+//                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + name + " group add " +
+//                                        "duke");
+                                targetPlayer.sendMessage(ChatColor.GREEN + "You have been promoted to Duke. " +
+                                        "You can now add, remove, and banish players, as well as access the kingdom store.");
                                 player.sendMessage(ChatColor.GREEN + "Player has been successfully promoted.");
                             } else if (targetPlayer.hasPermission("kingdom.role.duke")) {
                                 player.sendMessage(ChatColor.YELLOW + name + " cannot be promoted any higher than Duke.");
                             } else {
-                                player.sendMessage(ChatColor.YELLOW + name + " is not a vassal in your kingdom.");
+                                player.sendMessage(ChatColor.YELLOW + name + " is not in your kingdom.");
                             }
                         } else {
                             // The player is not online or the name is not valid

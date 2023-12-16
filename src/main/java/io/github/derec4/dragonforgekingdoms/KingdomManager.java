@@ -58,7 +58,7 @@ public class KingdomManager {
                 Kingdom k = new Kingdom(kingdomID, name, leader, home, description, open, creationTime, level, claimedChunks);
                 // You may want to set other properties of the Kingdom based on your design
                 kingdoms.put(kingdomID, k);
-                System.out.println("Message is here " + k.getID());
+//                System.out.println("Message is here " + k.getID());
             }
         }
     }
@@ -82,6 +82,24 @@ public class KingdomManager {
         }
     }
 
+    public void loadPlayersFromDatabase(Connection connection) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "SELECT * FROM players")) {
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                UUID playerUUID = UUID.fromString(resultSet.getString("id"));
+                UUID kingdomUUID = resultSet.getString("kingdom") != null ?
+                        UUID.fromString(resultSet.getString("kingdom")) : null;
+
+                // You can do something with the loaded player and kingdom UUID, such as updating your data structures.
+                // For example, you might want to associate the player UUID with the kingdom UUID in your data structures.
+
+                // Assuming you have a method like addPlayerToKingdom in your KingdomManager class:
+                playerMappings.put(playerUUID, kingdomUUID);
+            }
+        }
+    }
+
     // Add methods to manage factions (e.g., addFaction, getFactions, etc.)
 
     /**
@@ -91,8 +109,16 @@ public class KingdomManager {
      * @param playerID
      */
     public void addKingdom(Kingdom kingdom, UUID playerID) {
-        kingdoms.put(kingdom.getID(), kingdom);
-        playerMappings.put(playerID, kingdom.getID());
+        // Update the player's kingdom in the database
+        CreateDB temp = new CreateDB();
+        try {
+            kingdoms.put(kingdom.getID(), kingdom);
+            playerMappings.put(playerID, kingdom.getID());
+            Connection connection = temp.getConnection();
+            updatePlayerKingdom(connection, playerID, kingdom.getID());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // Method to add player to a kingdom
@@ -124,7 +150,7 @@ public class KingdomManager {
 //            throw new RuntimeException(e);
 //        }
         try (PreparedStatement statement = connection.prepareStatement(
-                "INSERT INTO players (id, kingdom) VALUES (?,?) ON DUPLICATE KEY UPDATE kingdom = VALUES(kingdom)"
+                "INSERT INTO players (id, kingdom) VALUES (?,?)"
         )) {
             statement.setString(1, playerUUID.toString());
             statement.setString(2, kingdomUUID.toString());
