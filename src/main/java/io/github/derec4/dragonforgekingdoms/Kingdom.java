@@ -151,6 +151,7 @@ public class Kingdom {
     public BaseComponent[] getStats() {
         return new ComponentBuilder(this.name + " (level" + this.level  + ") ").color(net.md_5.bungee.api.ChatColor.BLUE)
                 .append("Home to " + this.members.size() + " people")
+                .append("Description: " + this.description)
                 .append("Money: $0")
                 .append("Destroyed Kingdoms: 0")
                 .append("Land Power: " + this.claimedChunks)

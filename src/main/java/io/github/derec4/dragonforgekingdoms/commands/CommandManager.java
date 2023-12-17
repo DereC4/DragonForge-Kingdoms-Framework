@@ -319,6 +319,18 @@ public class CommandManager implements CommandExecutor {
                         player.sendMessage(permsError);
                     }
                 }
+                case "stats" -> {
+                    if(player.hasPermission("kingdom.stats")) {
+                        if (!inAKingdom(player.getUniqueId())) {
+                            player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
+                            return false;
+                        }
+                        Kingdom k = km.getPlayerKingdom(playerID);
+                        player.spigot().sendMessage(k.getStats());
+                    } else {
+                        player.sendMessage(permsError);
+                    }
+                }
                 default -> player.sendMessage(ChatColor.RED + "Unknown sub-command. Usage: /kingdom <sub-command>");
             }
         }
