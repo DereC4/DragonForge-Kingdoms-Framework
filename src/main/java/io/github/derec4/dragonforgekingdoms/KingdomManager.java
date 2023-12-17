@@ -1,9 +1,16 @@
 package io.github.derec4.dragonforgekingdoms;
 
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.model.group.Group;
+import net.luckperms.api.model.user.User;
+import net.luckperms.api.node.Node;
+import net.luckperms.api.node.types.InheritanceNode;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,7 +30,6 @@ public class KingdomManager {
         kingdoms = new HashMap<>();
         playerMappings = new HashMap<>();
         territoryMappings = new HashMap<>();
-
     }
 
     public static synchronized KingdomManager getInstance() {
@@ -100,7 +106,28 @@ public class KingdomManager {
         }
     }
 
-    // Add methods to manage factions (e.g., addFaction, getFactions, etc.)
+    public void createKingdom(Kingdom kingdom, UUID playerID) {
+        // Update the player's kingdom in the database
+        CreateDB databaseManager = new CreateDB();
+        try (Connection connection = databaseManager.getConnection()) {
+            kingdom.saveToDatabase(connection);
+            kingdoms.put(kingdom.getID(), kingdom);
+            playerMappings.put(playerID, kingdom.getID());
+            LuckPerms api = LuckPermsProvider.get();
+            Group group = api.getGroupManager().getGroup("lord");
+            api.getUserManager().modifyUser(playerID, (User user) -> {
+                // Create a node to add to the player.
+                assert group != null;
+                Node node = InheritanceNode.builder(group).build();
+
+                // Add the node to the user.
+                user.data().add(node);
+            });
+            updatePlayerKingdom(connection, playerID, kingdom.getID());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /**
      * Adds a new kingdom to the list and associates the provided player to it in the
@@ -194,6 +221,26 @@ public class KingdomManager {
         try {
             Connection connection = temp.getConnection();
             removePlayerFromDatabase(connection, playerUUID);
+            LuckPerms api = LuckPermsProvider.get();
+            Player player = Bukkit.getPlayer(playerUUID);
+            assert player != null;
+            Group group;
+            if(player.hasPermission("group.vassal")) {
+                group = api.getGroupManager().getGroup("vassal");
+            } else if(player.hasPermission("group.duke")) {
+                group = api.getGroupManager().getGroup("duke");
+            } else if(player.hasPermission("group.lord")) {
+                group = api.getGroupManager().getGroup("lord");
+            } else {
+                group = null;
+            }
+            if(group != null) {
+                api.getUserManager().modifyUser(playerUUID, (User user) -> {
+                    // Create a node to add to the player.
+                    Node node = InheritanceNode.builder(group).build();
+                    user.data().remove(node);
+                });
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

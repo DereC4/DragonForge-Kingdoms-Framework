@@ -73,7 +73,6 @@ public class CommandManager implements CommandExecutor {
 
                 // Add the node to the user.
                 user.data().add(node);
-
                 targetPlayer.sendMessage(ChatColor.GREEN + "You have been promoted to Duke. " +
                         "You can now add, remove, and banish players, as well as access the kingdom store.");
                 player.sendMessage(ChatColor.GREEN + "Player has been successfully promoted.");
@@ -129,19 +128,13 @@ public class CommandManager implements CommandExecutor {
                         }
                         Kingdom k = new Kingdom(name, playerID, player.getLocation());
                         // Save the new kingdom to the database
-
-                        CreateDB databaseManager = new CreateDB();
-                        try (Connection connection = databaseManager.getConnection()) {
-                            k.saveToDatabase(connection);
-                        } catch (Exception e) {
-                            Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
-                        }
+                        km.createKingdom(k, playerID);
                         km.addKingdom(k, playerID);
                         k = km.getPlayerKingdom(playerID);
                         claimLand(player);
                         player.sendMessage(ChatColor.GREEN + "The Kingdom of " + k.getName() +
                                 " has been created by " + player.getName());
-                        player.sendMessage(ChatColor.GREEN + k.printMembers());
+//                        player.sendMessage(ChatColor.GREEN + k.printMembers());
                     } else {
                         player.sendMessage(permsError);
                     }
