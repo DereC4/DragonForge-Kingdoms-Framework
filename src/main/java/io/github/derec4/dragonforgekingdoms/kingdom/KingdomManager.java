@@ -1,5 +1,6 @@
-package io.github.derec4.dragonforgekingdoms;
+package io.github.derec4.dragonforgekingdoms.kingdom;
 
+import io.github.derec4.dragonforgekingdoms.ChunkCoordinate;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
@@ -16,8 +17,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class KingdomManager {
@@ -318,13 +317,18 @@ public class KingdomManager {
      * Claims a chunk for a kingdom and adds it to the set of Chunk - Kingdom Mappings
      */
     public boolean claimChunk(UUID kingdomUUID, ChunkCoordinate chunkCoord) {
+        // First, check if the kingdom can even claim the chunk
+        Kingdom k = kingdoms.get(kingdomUUID);
+        if(!k.canClaimMoreChunks()) {
+            return false;
+        }
         CreateDB temp = new CreateDB();
         try {
             Connection connection = temp.getConnection();
             saveTerritoryToDatabase(connection, chunkCoord, kingdomUUID);
             if(territoryMappings.get(chunkCoord) == null) {
                 territoryMappings.put(chunkCoord, kingdomUUID);
-                kingdoms.get(kingdomUUID).claimChunk();
+                k.claimChunk();
             } else {
                 return false;
             }

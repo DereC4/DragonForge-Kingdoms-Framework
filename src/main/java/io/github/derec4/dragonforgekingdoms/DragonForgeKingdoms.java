@@ -2,6 +2,7 @@ package io.github.derec4.dragonforgekingdoms;
 
 import io.github.derec4.dragonforgekingdoms.commands.CommandManager;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
+import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import io.github.derec4.dragonforgekingdoms.territory.KingdomProtectionListener;
 import io.github.derec4.dragonforgekingdoms.territory.PlayerEffects;
 import org.bukkit.Bukkit;

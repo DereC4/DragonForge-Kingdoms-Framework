@@ -1,13 +1,9 @@
 package io.github.derec4.dragonforgekingdoms.territory;
 
 import io.github.derec4.dragonforgekingdoms.ChunkCoordinate;
-import io.github.derec4.dragonforgekingdoms.KingdomManager;
-import org.bukkit.Chunk;
+import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.UUID;
 

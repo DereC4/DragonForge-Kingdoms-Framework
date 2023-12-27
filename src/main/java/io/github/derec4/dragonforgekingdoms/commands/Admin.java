@@ -1,7 +1,6 @@
 package io.github.derec4.dragonforgekingdoms.commands;
 
-import io.github.derec4.dragonforgekingdoms.Kingdom;
-import io.github.derec4.dragonforgekingdoms.KingdomManager;
+import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -11,7 +10,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.Connection;
-import java.util.UUID;
 
 public class Admin implements CommandExecutor {
 

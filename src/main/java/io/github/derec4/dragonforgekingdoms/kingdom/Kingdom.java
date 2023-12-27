@@ -1,5 +1,7 @@
-package io.github.derec4.dragonforgekingdoms;
+package io.github.derec4.dragonforgekingdoms.kingdom;
 
+import io.github.derec4.dragonforgekingdoms.ChunkCoordinate;
+import io.github.derec4.dragonforgekingdoms.EggData;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
 import lombok.Getter;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -42,7 +44,7 @@ public class Kingdom {
         this.home = home;
         this.level = 1;
         this.claimedChunks = 1;
-        members.add(leader);
+        this.members.add(leader);
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date date = new Date();
         this.creationTime = formatter.format(date);
@@ -95,6 +97,13 @@ public class Kingdom {
 //        boolean res = territory.add(chunkCoord);
         claimedChunks++;
         checkLevelUp();
+    }
+
+    /**
+     * TODO Get actual territory limits per level and then limit it as such
+     */
+    public boolean canClaimMoreChunks() {
+        return true;
     }
 
     // Print the territory (claimed chunks) of the kingdom to the player source
@@ -150,12 +159,12 @@ public class Kingdom {
 
     public BaseComponent[] getStats() {
         return new ComponentBuilder(this.name + " (level" + this.level  + ") ").color(net.md_5.bungee.api.ChatColor.BLUE)
-                .append("Home to " + this.members.size() + " people")
-                .append("Description: " + this.description)
-                .append("Money: $0")
-                .append("Destroyed Kingdoms: 0")
-                .append("Land Power: " + this.claimedChunks)
-                .append("Led by Lord " + Bukkit.getOfflinePlayer(this.leader).getName()).create();
+                .append("\nHome to " + this.members.size() + " people")
+                .append("\nDescription: " + this.description)
+                .append("\nMoney: $0")
+                .append("\nDestroyed Kingdoms: 0")
+                .append("\nLand Power: " + this.claimedChunks + " out of (max chunks to be inputted later)")
+                .append("\nLed by Lord " + Bukkit.getOfflinePlayer(this.leader).getName()).create();
     }
 
     /**
@@ -198,13 +207,13 @@ public class Kingdom {
     }
 
     public boolean addPlayer(UUID uuid) {
-        boolean res = members.add(uuid);
+        boolean res = this.members.add(uuid);
         checkLevelUp();
         return res;
     }
 
     public boolean removePlayer(UUID uuid) {
-        return members.remove(uuid);
+        return this.members.remove(uuid);
     }
 
     public void saveToDatabase(Connection connection) {
@@ -212,18 +221,18 @@ public class Kingdom {
                 "INSERT INTO kingdoms (ID, name, description, open, creationTime, leader, level, " +
                         "claimedChunks, home_world_id, home_x, home_y, home_z) " +
                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-            statement.setString(1, ID.toString());
-            statement.setString(2, name);
-            statement.setString(3, description);
-            statement.setBoolean(4, open);
-            statement.setString(5, creationTime);
-            statement.setString(6, leader.toString());
-            statement.setInt(7, level);
-            statement.setInt(8, claimedChunks);
-            statement.setString(9, Objects.requireNonNull(home.getWorld()).getUID().toString());
-            statement.setInt(10, home.getBlockX());
-            statement.setInt(11, home.getBlockY());
-            statement.setInt(12, home.getBlockZ());
+            statement.setString(1, this.ID.toString());
+            statement.setString(2, this.name);
+            statement.setString(3, this.description);
+            statement.setBoolean(4, this.open);
+            statement.setString(5, this.creationTime);
+            statement.setString(6, this.leader.toString());
+            statement.setInt(7, this.level);
+            statement.setInt(8, this.claimedChunks);
+            statement.setString(9, Objects.requireNonNull(this.home.getWorld()).getUID().toString());
+            statement.setInt(10, this.home.getBlockX());
+            statement.setInt(11, this.home.getBlockY());
+            statement.setInt(12, this.home.getBlockZ());
             statement.executeUpdate();
         } catch (SQLException e) {
             Bukkit.getServer().getConsoleSender().sendMessage(e.toString());

@@ -1,16 +1,14 @@
 package io.github.derec4.dragonforgekingdoms.commands;
 
 import io.github.derec4.dragonforgekingdoms.ChunkCoordinate;
-import io.github.derec4.dragonforgekingdoms.DragonForgeKingdoms;
-import io.github.derec4.dragonforgekingdoms.Kingdom;
-import io.github.derec4.dragonforgekingdoms.KingdomManager;
+import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
+import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.Node;
-import net.luckperms.api.node.NodeType;
 import net.luckperms.api.node.types.InheritanceNode;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -32,12 +30,12 @@ public class CommandManager implements CommandExecutor {
     /**
      * Checks if a player is in a kingdom
      */
-    public boolean inAKingdom(UUID playerID) {
+    private boolean inAKingdom(UUID playerID) {
         KingdomManager temp = KingdomManager.getInstance();
         return temp.isPlayerMapped(playerID);
     }
 
-    public void claimLand(Player player) {
+    private void claimLand(Player player) {
         int chunkX = player.getLocation().getChunk().getX();
         int chunkZ = player.getLocation().getChunk().getZ();
         UUID worldID = player.getWorld().getUID();
@@ -82,6 +80,30 @@ public class CommandManager implements CommandExecutor {
         } else {
             player.sendMessage(ChatColor.RED + targetPlayer.getName() + " could not be promoted.");
         }
+    }
+
+    private boolean mapCommand(Player player, ChunkCoordinate centerChunk) {
+        int mapRadius = 8;
+        KingdomManager km = KingdomManager.getInstance();
+        for (int dz = -mapRadius; dz <= mapRadius; dz++) {
+            for (int dx = -mapRadius; dx <= mapRadius; dx++) {
+                int x = centerChunk.getX() + dx;
+                int z = centerChunk.getZ() + dz;
+                ChunkCoordinate chunkCoord = new ChunkCoordinate(x, z, centerChunk.getWorldID());
+
+                // Check if the chunk is claimed
+                UUID kingdomUUID = km.getKingdomByChunk(chunkCoord);
+
+                if (kingdomUUID == null) {
+                    // Unclaimed chunk
+                    player.sendMessage("-");
+                } else {
+                    // Chunk claimed by a kingdom
+                    player.sendMessage("+");
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -165,7 +187,7 @@ public class CommandManager implements CommandExecutor {
                             player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
                             return false;
                         }
-                        player.sendMessage("Claiming land for your kingdom...");
+//                        player.sendMessage("Claiming land for your kingdom...");
                         claimLand(player);
                     } else {
                         player.sendMessage(permsError);
@@ -331,10 +353,30 @@ public class CommandManager implements CommandExecutor {
                         player.sendMessage(permsError);
                     }
                 }
+                case "map" -> {
+                    if(player.hasPermission("kingdom.map")) {
+                        if (!inAKingdom(player.getUniqueId())) {
+                            player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
+                            return false;
+                        }
+                        ChunkCoordinate playerChunk = getPlayerCurrentChunk(player);
+
+                        return mapCommand(player, playerChunk);
+                    } else {
+                        player.sendMessage(permsError);
+                    }
+                }
                 default -> player.sendMessage(ChatColor.RED + "Unknown sub-command. Usage: /kingdom <sub-command>");
             }
         }
         return true;
     }
 
+    private static ChunkCoordinate getPlayerCurrentChunk(Player player) {
+        Location playerLocation = player.getLocation();
+        int x = playerLocation.getBlockX() >> 4;
+        int z = playerLocation.getBlockZ() >> 4;
+        UUID worldID = playerLocation.getWorld().getUID();
+        return new ChunkCoordinate(x, z, worldID);
+    }
 }

@@ -2,7 +2,7 @@ package io.github.derec4.dragonforgekingdoms.database;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import io.github.derec4.dragonforgekingdoms.Kingdom;
+import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.concurrent.CompletableFuture;
