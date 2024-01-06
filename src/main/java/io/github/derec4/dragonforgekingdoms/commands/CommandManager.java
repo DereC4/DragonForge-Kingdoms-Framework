@@ -10,6 +10,8 @@ import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.Node;
 import net.luckperms.api.node.types.InheritanceNode;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -19,6 +21,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.awt.*;
 import java.sql.Connection;
 import java.util.Arrays;
 import java.util.UUID;
@@ -82,9 +85,10 @@ public class CommandManager implements CommandExecutor {
         }
     }
 
-    private boolean mapCommand(Player player, ChunkCoordinate centerChunk) {
+    private BaseComponent[] mapCommand(Player player, ChunkCoordinate centerChunk) {
         int mapRadius = 8;
         KingdomManager km = KingdomManager.getInstance();
+        ComponentBuilder message = new ComponentBuilder();
         for (int dz = -mapRadius; dz <= mapRadius; dz++) {
             for (int dx = -mapRadius; dx <= mapRadius; dx++) {
                 int x = centerChunk.getX() + dx;
@@ -96,14 +100,15 @@ public class CommandManager implements CommandExecutor {
 
                 if (kingdomUUID == null) {
                     // Unclaimed chunk
-                    player.sendMessage("-");
+                    message.append("-");
                 } else {
                     // Chunk claimed by a kingdom
-                    player.sendMessage("+");
+                    message.append("+");
                 }
             }
+            message.append("\n");
         }
-        return false;
+        return message.create();
     }
 
     /**
@@ -361,7 +366,8 @@ public class CommandManager implements CommandExecutor {
                         }
                         ChunkCoordinate playerChunk = getPlayerCurrentChunk(player);
 
-                        return mapCommand(player, playerChunk);
+                        player.spigot().sendMessage(mapCommand(player, playerChunk));
+                        return true;
                     } else {
                         player.sendMessage(permsError);
                     }
