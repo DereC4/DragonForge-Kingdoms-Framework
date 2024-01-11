@@ -92,8 +92,10 @@ public class CommandManager implements CommandExecutor {
         ComponentBuilder message = new ComponentBuilder();
 
         // Title
+        String kingdomName = km.getPlayerKingdom(player.getUniqueId()) == null ? "Wilderness" :
+                km.getPlayerKingdom(player.getUniqueId()).getName();
         message.append(String.format("o0o0o [ X: %d, Y: %d, %s ] o0o0o", centerChunk.getX(), centerChunk.getZ(),
-                km.getPlayerKingdom(player.getUniqueId()).getName())).color(ChatColor.AQUA.asBungee());
+                kingdomName)).color(ChatColor.AQUA.asBungee());
         message.append("\n");
         for (int dz = -mapHeight; dz <= mapHeight; dz++) {
             for (int dx = -mapLength; dx <= mapLength; dx++) {
