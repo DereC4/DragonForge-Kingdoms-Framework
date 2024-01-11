@@ -86,9 +86,14 @@ public class CommandManager implements CommandExecutor {
     }
 
     private BaseComponent[] mapCommand(Player player, ChunkCoordinate centerChunk) {
-        int mapRadius = 8;
+        int mapRadius = 16;
         KingdomManager km = KingdomManager.getInstance();
         ComponentBuilder message = new ComponentBuilder();
+
+        // Title
+        message.append(String.format("[ %d, %d, %s ]", centerChunk.getX(), centerChunk.getZ(),
+                km.getPlayerKingdom(player.getUniqueId()).getName())).color(ChatColor.AQUA.asBungee());
+        message.append("\n");
         for (int dz = -mapRadius; dz <= mapRadius; dz++) {
             for (int dx = -mapRadius; dx <= mapRadius; dx++) {
                 int x = centerChunk.getX() + dx;
@@ -98,17 +103,32 @@ public class CommandManager implements CommandExecutor {
                 // Check if the chunk is claimed
                 UUID kingdomUUID = km.getKingdomByChunk(chunkCoord);
 
+                // Determine the character based on the claimed status
+                char mapChar;
                 if (kingdomUUID == null) {
-                    // Unclaimed chunk
-                    message.append("-");
+                    // Wilderness
+                    mapChar = '-';
+                } else if (kingdomUUID.equals(km.getPlayerKingdom(player.getUniqueId()))) {
+                    // Ally Kingdom
+                    mapChar = '$';
                 } else {
-                    // Chunk claimed by a kingdom
-                    message.append("+");
+                    // Enemy Kingdom
+                    mapChar = '#';
                 }
+                message.append(String.valueOf(mapChar)).color(getColor(mapChar).asBungee());
             }
             message.append("\n");
         }
         return message.create();
+    }
+
+    private ChatColor getColor(char mapChar) {
+        return switch (mapChar) {
+            case '-' -> ChatColor.GRAY;
+            case '#' -> ChatColor.RED;
+            case '$' -> ChatColor.GREEN;
+            default -> ChatColor.WHITE;
+        };
     }
 
     /**
