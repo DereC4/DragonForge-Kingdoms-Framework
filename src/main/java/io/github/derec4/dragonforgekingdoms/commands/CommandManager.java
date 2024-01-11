@@ -86,16 +86,17 @@ public class CommandManager implements CommandExecutor {
     }
 
     private BaseComponent[] mapCommand(Player player, ChunkCoordinate centerChunk) {
-        int mapRadius = 16;
+        int mapLength = 16;
+        int mapHeight = 8;
         KingdomManager km = KingdomManager.getInstance();
         ComponentBuilder message = new ComponentBuilder();
 
         // Title
-        message.append(String.format("[ %d, %d, %s ]", centerChunk.getX(), centerChunk.getZ(),
+        message.append(String.format("o0o0o [ X: %d, Y: %d, %s ] o0o0o", centerChunk.getX(), centerChunk.getZ(),
                 km.getPlayerKingdom(player.getUniqueId()).getName())).color(ChatColor.AQUA.asBungee());
         message.append("\n");
-        for (int dz = -mapRadius; dz <= mapRadius; dz++) {
-            for (int dx = -mapRadius; dx <= mapRadius; dx++) {
+        for (int dz = -mapHeight; dz <= mapHeight; dz++) {
+            for (int dx = -mapLength; dx <= mapLength; dx++) {
                 int x = centerChunk.getX() + dx;
                 int z = centerChunk.getZ() + dz;
                 ChunkCoordinate chunkCoord = new ChunkCoordinate(x, z, centerChunk.getWorldID());
@@ -110,10 +111,10 @@ public class CommandManager implements CommandExecutor {
                     mapChar = '-';
                 } else if (kingdomUUID.equals(km.getPlayerKingdom(player.getUniqueId()))) {
                     // Ally Kingdom
-                    mapChar = '$';
+                    mapChar = '#';
                 } else {
                     // Enemy Kingdom
-                    mapChar = '#';
+                    mapChar = '$';
                 }
                 message.append(String.valueOf(mapChar)).color(getColor(mapChar).asBungee());
             }
@@ -380,12 +381,8 @@ public class CommandManager implements CommandExecutor {
                 }
                 case "map" -> {
                     if(player.hasPermission("kingdom.map")) {
-                        if (!inAKingdom(player.getUniqueId())) {
-                            player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
-                            return false;
-                        }
+                        // Can execute without being in a kingdom
                         ChunkCoordinate playerChunk = getPlayerCurrentChunk(player);
-
                         player.spigot().sendMessage(mapCommand(player, playerChunk));
                         return true;
                     } else {
