@@ -226,20 +226,36 @@ public class KingdomManager {
             Group group;
             if(player.hasPermission("group.vassal")) {
                 group = api.getGroupManager().getGroup("vassal");
+                api.getUserManager().modifyUser(playerUUID, (User user) -> {
+                    assert group != null;
+                    Node node = InheritanceNode.builder(group).build();
+                    user.data().remove(node);
+                });
             } else if(player.hasPermission("group.duke")) {
                 group = api.getGroupManager().getGroup("duke");
+                api.getUserManager().modifyUser(playerUUID, (User user) -> {
+                    assert group != null;
+                    Node node = InheritanceNode.builder(group).build();
+                    user.data().remove(node);
+                });
             } else if(player.hasPermission("group.lord")) {
                 group = api.getGroupManager().getGroup("lord");
-            } else {
-                group = null;
-            }
-            if(group != null) {
                 api.getUserManager().modifyUser(playerUUID, (User user) -> {
                     // Create a node to add to the player.
+                    assert group != null;
                     Node node = InheritanceNode.builder(group).build();
                     user.data().remove(node);
                 });
             }
+//            assert group != null;
+//            System.out.println(group.getName());
+//            if(group != null) {
+//                api.getUserManager().modifyUser(playerUUID, (User user) -> {
+//                    // Create a node to add to the player.
+//                    Node node = InheritanceNode.builder(group).build();
+//                    user.data().remove(node);
+//                });
+//            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

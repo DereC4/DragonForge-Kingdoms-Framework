@@ -113,15 +113,18 @@ public class CommandManager implements CommandExecutor {
                     mapChar = '-';
                 } else if (kingdomUUID.equals(km.getPlayerKingdom(player.getUniqueId()))) {
                     // Ally Kingdom
-                    mapChar = '#';
+                    mapChar = '$';
                 } else {
                     // Enemy Kingdom
-                    mapChar = '$';
+                    mapChar = '#';
                 }
                 message.append(String.valueOf(mapChar)).color(getColor(mapChar).asBungee());
             }
             message.append("\n");
         }
+        message.append("-").color(ChatColor.GRAY.asBungee()).append(": Wilderness ")
+                .append("#").color(ChatColor.RED.asBungee()).append(": Ally ")
+                .append("$").color(ChatColor.GREEN.asBungee()).append(": Enemy");
         return message.create();
     }
 
