@@ -223,31 +223,22 @@ public class KingdomManager {
             LuckPerms api = LuckPermsProvider.get();
             Player player = Bukkit.getPlayer(playerUUID);
             assert player != null;
-            Group group;
-            if(player.hasPermission("group.vassal")) {
-                group = api.getGroupManager().getGroup("vassal");
-                Group finalGroup = group;
-                api.getUserManager().modifyUser(playerUUID, (User user) -> {
-                    assert finalGroup != null;
-                    Node node = InheritanceNode.builder(finalGroup).build();
-                    user.data().remove(node);
-                });
-            } if(player.hasPermission("group.duke")) {
-                group = api.getGroupManager().getGroup("duke");
-                Group finalGroup = group;
-                api.getUserManager().modifyUser(playerUUID, (User user) -> {
-                    assert finalGroup != null;
-                    Node node = InheritanceNode.builder(finalGroup).build();
-                    user.data().remove(node);
-                });
-            } if(player.hasPermission("group.lord")) {
-                group = api.getGroupManager().getGroup("lord");
-                Group finalGroup = group;
-                api.getUserManager().modifyUser(playerUUID, (User user) -> {
-                    assert finalGroup != null;
-                    Node node = InheritanceNode.builder(finalGroup).build();
-                    user.data().remove(node);
-                });
+            Map<String, String> permissionToGroupMap = Map.of(
+                    "group.vassal", "vassal",
+                    "group.duke", "duke",
+                    "group.lord", "lord"
+            );
+
+            for (Map.Entry<String, String> entry : permissionToGroupMap.entrySet()) {
+                if (player.hasPermission(entry.getKey())) {
+                    Group group = api.getGroupManager().getGroup(entry.getValue());
+                    if (group != null) {
+                        api.getUserManager().modifyUser(playerUUID, user -> {
+                            Node node = InheritanceNode.builder(group).build();
+                            user.data().remove(node);
+                        });
+                    }
+                }
             }
 //            assert group != null;
 //            System.out.println(group.getName());
