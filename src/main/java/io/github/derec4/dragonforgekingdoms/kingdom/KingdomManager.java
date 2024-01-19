@@ -226,24 +226,26 @@ public class KingdomManager {
             Group group;
             if(player.hasPermission("group.vassal")) {
                 group = api.getGroupManager().getGroup("vassal");
+                Group finalGroup = group;
                 api.getUserManager().modifyUser(playerUUID, (User user) -> {
-                    assert group != null;
-                    Node node = InheritanceNode.builder(group).build();
+                    assert finalGroup != null;
+                    Node node = InheritanceNode.builder(finalGroup).build();
                     user.data().remove(node);
                 });
-            } else if(player.hasPermission("group.duke")) {
+            } if(player.hasPermission("group.duke")) {
                 group = api.getGroupManager().getGroup("duke");
+                Group finalGroup = group;
                 api.getUserManager().modifyUser(playerUUID, (User user) -> {
-                    assert group != null;
-                    Node node = InheritanceNode.builder(group).build();
+                    assert finalGroup != null;
+                    Node node = InheritanceNode.builder(finalGroup).build();
                     user.data().remove(node);
                 });
-            } else if(player.hasPermission("group.lord")) {
+            } if(player.hasPermission("group.lord")) {
                 group = api.getGroupManager().getGroup("lord");
+                Group finalGroup = group;
                 api.getUserManager().modifyUser(playerUUID, (User user) -> {
-                    // Create a node to add to the player.
-                    assert group != null;
-                    Node node = InheritanceNode.builder(group).build();
+                    assert finalGroup != null;
+                    Node node = InheritanceNode.builder(finalGroup).build();
                     user.data().remove(node);
                 });
             }
