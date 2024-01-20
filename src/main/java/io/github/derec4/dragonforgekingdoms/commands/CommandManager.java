@@ -19,14 +19,15 @@ import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
+import java.util.*;
 import java.awt.*;
 import java.sql.Connection;
-import java.util.Arrays;
-import java.util.UUID;
+import java.util.List;
 
-public class CommandManager implements CommandExecutor {
+public class CommandManager implements CommandExecutor, TabCompleter {
     final String permsError = ChatColor.RED + "You do not have permission to use this command! Check" +
             " with the server staff?";
 
@@ -406,5 +407,41 @@ public class CommandManager implements CommandExecutor {
         int z = playerLocation.getBlockZ() >> 4;
         UUID worldID = playerLocation.getWorld().getUID();
         return new ChunkCoordinate(x, z, worldID);
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (args.length == 1) {
+            // List of subcommands for the first argument
+            List<String> subcommands = Arrays.asList("create", "remove", "claim", "rename", "leave", "description",
+                    "sethome", "territory", "join", "home", "promote", "stats", "map");
+            List<String> completions = new ArrayList<>();
+
+//            // If the sender is a player or has specific permissions, add the relevant subcommands
+//            if (sender instanceof Player) {
+//                Player player = (Player) sender;
+//                KingdomManager km = KingdomManager.getInstance();
+//
+//                if (km.isPlayerMapped(player.getUniqueId())) {
+//                    completions.addAll(Arrays.asList("leave", "description", "sethome", "territory", "join", "home", "promote", "stats", "map"));
+//                } else {
+//                    completions.addAll(subcommands);
+//                }
+//            }
+            completions.addAll(subcommands);
+
+            // Filter completions based on the entered text
+            String partialCommand = args[0].toLowerCase();
+            for (String subcommand : subcommands) {
+                if (subcommand.startsWith(partialCommand)) {
+                    completions.add(subcommand);
+                }
+            }
+
+            Collections.sort(completions);
+            return completions;
+        }
+
+        return null;
     }
 }
