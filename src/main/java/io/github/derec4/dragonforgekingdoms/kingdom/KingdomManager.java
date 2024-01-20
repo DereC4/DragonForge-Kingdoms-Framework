@@ -229,17 +229,25 @@ public class KingdomManager {
                     "group.lord", "lord"
             );
 
+            Set<Group> groupsToRemove = new HashSet<>();
+
             for (Map.Entry<String, String> entry : permissionToGroupMap.entrySet()) {
                 if (player.hasPermission(entry.getKey())) {
                     Group group = api.getGroupManager().getGroup(entry.getValue());
                     if (group != null) {
-                        api.getUserManager().modifyUser(playerUUID, user -> {
-                            Node node = InheritanceNode.builder(group).build();
-                            user.data().remove(node);
-                        });
+                        groupsToRemove.add(group);
+                        System.out.println(group.getName());
                     }
                 }
             }
+
+            api.getUserManager().modifyUser(playerUUID, user -> {
+                for (Group groupToRemove : groupsToRemove) {
+                    Node node = InheritanceNode.builder(groupToRemove).build();
+                    user.data().remove(node);
+                    System.out.println(groupToRemove.getName());
+                }
+            });
 //            assert group != null;
 //            System.out.println(group.getName());
 //            if(group != null) {
