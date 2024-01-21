@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -25,6 +26,10 @@ public final class DragonForgeKingdoms extends JavaPlugin {
         Bukkit.getLogger().info(ChatColor.GREEN + "Enabled " + this.getName());
         this.getCommand("kingdom").setExecutor(new CommandManager());
         getServer().getPluginManager().registerEvents(new KingdomProtectionListener(), this);
+        if (!getDataFolder().exists()) {
+            getLogger().info("Directory Creation Status : " + getDataFolder().mkdirs());
+        }
+//        saveDefaultConfig();
         databaseManager = new CreateDB();
         if (databaseManager.connect()) {
             getLogger().info("Connected to database!");

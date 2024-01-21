@@ -13,8 +13,8 @@ public class CreateDB {
     public boolean connect() {
         try {
             Class.forName("org.sqlite.JDBC");
-            connection = DriverManager.getConnection("jdbc:sqlite:kingdoms.db");
-//            connection = DriverManager.getConnection("jdbc:sqlite://plugins/DragonForgeKingdoms/kingdoms.db");
+//            connection = DriverManager.getConnection("jdbc:sqlite:kingdoms.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:plugins/DragonForge_Kingdoms/kingdoms.db");
             return true;
         } catch (SQLException | ClassNotFoundException e) {
             Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
@@ -103,7 +103,7 @@ public class CreateDB {
     public Connection getConnection() throws SQLException {
         if (connection == null || connection.isClosed()) {
             // Reconnect or create a new connection if it's closed or doesn't exist
-            connection = DriverManager.getConnection("jdbc:sqlite:kingdoms.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:plugins/DragonForge_Kingdoms/kingdoms.db");
         }
         return connection;
     }
