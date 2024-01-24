@@ -173,19 +173,19 @@ public class Kingdom {
     public void checkLevelUp() {
         int memberCount = this.members.size();
         int chunksClaimed = this.claimedChunks;
-        if(memberCount >= 200 && chunksClaimed >= 500) {
+        if(memberCount >= 200) {
             this.level = 7;
-        } else if(memberCount >= 100 && chunksClaimed >= 250) {
+        } else if(memberCount >= 100) {
             this.level = 6;
-        } else if(memberCount >= 50 && chunksClaimed >= 200) {
+        } else if(memberCount >= 50) {
             this.level = 5;
-        } else if(memberCount >= 25 && chunksClaimed >= 125) {
+        } else if(memberCount >= 25) {
             this.level = 4;
-        } else if(memberCount >= 10 && chunksClaimed >= 100) {
+        } else if(memberCount >= 10 ) {
             this.level = 3;
-        } else if(memberCount >= 3 && chunksClaimed >= 50) {
+        } else if(memberCount >= 3) {
             this.level = 2;
-        } else if(memberCount >= 1 && chunksClaimed >= 1) {
+        } else if(memberCount >= 1) {
             this.level = 1;
         }
     }

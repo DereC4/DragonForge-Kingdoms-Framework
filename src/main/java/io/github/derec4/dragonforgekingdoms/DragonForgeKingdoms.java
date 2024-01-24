@@ -29,7 +29,6 @@ public final class DragonForgeKingdoms extends JavaPlugin {
         if (!getDataFolder().exists()) {
             getLogger().info("Directory Creation Status : " + getDataFolder().mkdirs());
         }
-//        saveDefaultConfig();
         databaseManager = new CreateDB();
         if (databaseManager.connect()) {
             getLogger().info("Connected to database!");
