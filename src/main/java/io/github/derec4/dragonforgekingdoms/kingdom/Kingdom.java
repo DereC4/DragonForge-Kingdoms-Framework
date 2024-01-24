@@ -103,7 +103,44 @@ public class Kingdom {
      * TODO Get actual territory limits per level and then limit it as such
      */
     public boolean canClaimMoreChunks() {
-        return true;
+        switch(level) {
+            case 1: {
+                if(claimedChunks < 6) {
+                    return true;
+                }
+            }
+            case 2: {
+                if(claimedChunks < 8) {
+                    return true;
+                }
+            }
+            case 3: {
+                if(claimedChunks < 10) {
+                    return true;
+                }
+            }
+            case 4: {
+                if(claimedChunks < 15) {
+                    return true;
+                }
+            }
+            case 5: {
+                if(claimedChunks < 30) {
+                    return true;
+                }
+            }
+            case 6: {
+                if(claimedChunks < 60) {
+                    return true;
+                }
+            }
+            case 7: {
+                if(claimedChunks < 100) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     // Print the territory (claimed chunks) of the kingdom to the player source
