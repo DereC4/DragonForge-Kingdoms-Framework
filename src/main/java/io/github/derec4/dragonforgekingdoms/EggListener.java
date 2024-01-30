@@ -10,33 +10,44 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import java.util.UUID;
-
 public class EggListener implements Listener {
-
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-            Block clickedBlock = event.getClickedBlock();
-            Player player = event.getPlayer();
-            if (clickedBlock != null && isKingdomEgg(clickedBlock)) {
-                KingdomManager kingdomManager = KingdomManager.getInstance();
-                Chunk chunk = clickedBlock.getChunk();
+        if (event.getAction() != Action.LEFT_CLICK_BLOCK) {
+            return;
+        }
+
+        Block clickedBlock = event.getClickedBlock();
+        Player player = event.getPlayer();
+
+        if (clickedBlock == null) {
+            return;
+        }
+
+        EggData eggData = getKingdomEgg(clickedBlock);
+
+        KingdomManager kingdomManager = KingdomManager.getInstance();
 //                byte[] encodedData = loadEncodedData(chunk); // HOW????
 
                 // Decode and check ownership
-                UUID uuid = null;
-                if (!kingdomManager.getPlayerKingdom(player.getUniqueId()).equals(uuid)) {
-                    // Implement logic on damaging the egg
-                }
-            }
-        }
     }
 
-    private boolean isKingdomEgg(Block block) {
-        // Implement your logic to check if the block is the kingdom egg
-        // This could involve checking block type, metadata, etc.
-        // For simplicity, let's assume it's a specific material, e.g., DIAMOND_BLOCK
-        return block.getType() == Material.DIAMOND_BLOCK;
+    
+
+    private EggData getKingdomEgg(Block block) {
+
+        if(block.getType() != Material.DRAGON_EGG) {
+            return null;
+        }
+
+        Chunk chunk = block.getChunk();
+        EggData data = EggData.getChunkEggData(chunk);
+
+        if(data == null) {
+            return null;
+        }
+
+        return (data.getX() == block.getX() && data.getY() == block.getY() && data.getZ() == block.getZ())
+                ? data : null;
     }
 }

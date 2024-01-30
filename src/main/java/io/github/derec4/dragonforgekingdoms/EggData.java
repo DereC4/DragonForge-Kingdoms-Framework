@@ -2,7 +2,9 @@ package io.github.derec4.dragonforgekingdoms;
 
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.util.EncoderUtils;
+import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -21,6 +23,7 @@ import java.util.UUID;
 
     COPYRIGHT, DO NOT MODIFY OR FACE DEATH
  */
+@Getter
 public class EggData {
 
     private final static float MAX_HEALTH = 200;
@@ -154,7 +157,18 @@ public class EggData {
         EggData eggData = decode(data);
 
         eggData.updateHealth(eggData.health - 20, true);
+    }
 
+    public static EggData getChunkEggData(Chunk chunk) {
+
+        if(!chunk.getPersistentDataContainer().has(EGG_SPACE,PersistentDataType.BYTE_ARRAY)) {
+            return null;
+        }
+
+        byte[] data = chunk.getPersistentDataContainer().get(EGG_SPACE,
+                PersistentDataType.BYTE_ARRAY);
+
+        return decode(data);
     }
 
     public void updateHealth(float health, boolean hardUpdate) {
