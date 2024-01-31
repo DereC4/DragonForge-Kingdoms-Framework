@@ -1,6 +1,7 @@
 package io.github.derec4.dragonforgekingdoms.kingdom;
 
 import io.github.derec4.dragonforgekingdoms.ChunkCoordinate;
+import io.github.derec4.dragonforgekingdoms.EggData;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
@@ -126,6 +127,10 @@ public class KingdomManager {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void createHeartstone(Kingdom kingdom, Player player) {
+        EggData.assignEggData(kingdom, player.getLocation());
     }
 
     /**

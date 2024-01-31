@@ -35,19 +35,17 @@ public class EggData {
     private String kingdomUuid;
     private int x, y, z;
 
-    public static EggData assignEggData(Kingdom kingdom, Block block) {
+    public static EggData assignEggData(Kingdom kingdom, Location location) {
         // checks if a kingdom already contains
         if(kingdom.getEggData() != null) {
             return null;
         }
 
-        EggData eggData = new EggData(block.getLocation());
-
+        EggData eggData = new EggData(location);
         eggData.kingdomUuid = kingdom.getID().toString();
-
-        block.getChunk().getPersistentDataContainer().set(EGG_SPACE, PersistentDataType.BYTE_ARRAY, eggData.encode());
+        location.getChunk().getPersistentDataContainer().set(EGG_SPACE, PersistentDataType.BYTE_ARRAY,
+                eggData.encode());
         kingdom.setEggData(eggData);
-
         return eggData;
     }
 
@@ -110,7 +108,8 @@ public class EggData {
         y = location.getBlockY();
         z = location.getBlockZ();
 
-        name = "Heath's " + (Math.random() > 0.5 ? "Left " : "Right ") + "Balls";
+//        name = "Heath's " + (Math.random() > 0.5 ? "Left " : "Right ") + "Balls";
+        // Bersam wtf??
     }
 
     private EggData() {

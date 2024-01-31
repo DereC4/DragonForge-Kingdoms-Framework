@@ -152,7 +152,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
      */
     @Override
     public boolean onCommand(CommandSender source, Command command, String label, String[] args) {
-        KingdomManager km = KingdomManager.getInstance();
+        KingdomManager kManager = KingdomManager.getInstance();
         if (!(source instanceof Player player)) {
             source.sendMessage(ChatColor.RED + "This command can only be run by a player.");
             return false;
@@ -176,7 +176,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
                 // Most annoying check first: If land is claimed
                 ChunkCoordinate playerChunk = getPlayerCurrentChunk(player);
-                if (km.getKingdomByChunk(playerChunk) != null) {
+                if (kManager.getKingdomByChunk(playerChunk) != null) {
                     player.sendMessage(ChatColor.RED + "This chunk is claimed!");
                     return false;
                 }
@@ -187,19 +187,22 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                     return false;
                 }
                 String name = args[1];
-                if (km.containsName(name)) {
+                if (kManager.containsName(name)) {
                     player.sendMessage(ChatColor.RED + "That name is already used by another kingdom!");
                     return false;
                 }
-                Kingdom k = new Kingdom(name, playerID, player.getLocation());
+                Kingdom kingdom = new Kingdom(name, playerID, player.getLocation());
 
                 // Save the new kingdom to the database
-                km.createKingdom(k, playerID);
-                km.addKingdom(k, playerID);
-                k = km.getPlayerKingdom(playerID);
+                kManager.createKingdom(kingdom, playerID);
+                kManager.addKingdom(kingdom, playerID);
+                kingdom = kManager.getPlayerKingdom(playerID);
                 claimLand(player);
-                player.sendMessage(ChatColor.GREEN + "The Kingdom of " + k.getName() +
+                player.sendMessage(ChatColor.GREEN + "The Kingdom of " + kingdom.getName() +
                         " has been created by " + player.getName());
+
+                // Create Heartstone
+                kManager.createHeartstone(kingdom, player);
             }
             case "remove" -> {
                 if (!player.hasPermission("kingdom.remove")) {
@@ -217,7 +220,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
                 // Send in connection and try to remove the kingdom row from table
                 try (Connection connection = databaseManager.getConnection()) {
-                    km.removeKingdom(playerID, connection);
+                    kManager.removeKingdom(playerID, connection);
                 } catch (Exception e) {
                     Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
                 }
@@ -243,7 +246,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                     return false;
                 }
                 String name = args[1];
-                Kingdom k = km.getPlayerKingdom(playerID);
+                Kingdom k = kManager.getPlayerKingdom(playerID);
                 player.sendMessage(ChatColor.GREEN + k.getName() + " has been renamed to " + name);
                 k.setName(name);
             }
@@ -253,9 +256,9 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                         player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
                         return false;
                     }
-                    Kingdom k = km.getPlayerKingdom(playerID);
+                    Kingdom k = kManager.getPlayerKingdom(playerID);
                     String name = k.getName();
-                    if(km.removePlayer(playerID)) {
+                    if(kManager.removePlayer(playerID)) {
                         player.sendMessage(ChatColor.RED + "You are no longer a member of " + name);
                     } else {
                         player.sendMessage(ChatColor.RED + "Failed to leave kingdom!");
@@ -275,7 +278,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                     }
 
                     String description = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-                    Kingdom k = km.getPlayerKingdom(playerID);
+                    Kingdom k = kManager.getPlayerKingdom(playerID);
                     k.setDescription(description);
                     player.sendMessage(ChatColor.GREEN + "Kingdom description set to: " + description);
                 } else {
@@ -288,7 +291,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                         player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
                         return false;
                     }
-                    Kingdom k = km.getPlayerKingdom(playerID);
+                    Kingdom k = kManager.getPlayerKingdom(playerID);
                     Location homeLocation = player.getLocation();
                     k.setHome(homeLocation);
                     player.sendMessage(ChatColor.GREEN + "Home location set to " + homeLocation);
@@ -315,7 +318,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                         return false;
                     }
                     String name = args[1];
-                    UUID id = km.getKingdomFromName(name);
+                    UUID id = kManager.getKingdomFromName(name);
                     if(id == null) {
                         player.sendMessage(ChatColor.RED + "Couldn't find a kingdom with that name!");
                         return false;
@@ -326,8 +329,8 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                     Also add the player to that kingdom's members
                     TODO Finally, update the player database
                      */
-                    km.addPlayerToKingdom(player.getUniqueId(), id);
-                    km.getKingdoms().get(id).addPlayer(player.getUniqueId());
+                    kManager.addPlayerToKingdom(player.getUniqueId(), id);
+                    kManager.getKingdoms().get(id).addPlayer(player.getUniqueId());
                 } else {
                     player.sendMessage(permsError);
                 }
@@ -338,7 +341,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                         player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
                         return false;
                     }
-                    Kingdom k = km.getPlayerKingdom(playerID);
+                    Kingdom k = kManager.getPlayerKingdom(playerID);
                     Location home = k.getHome();
                     player.sendMessage(ChatColor.GREEN + "Teleporting you to your kingdom's home!");
                     player.teleport(home);
@@ -367,8 +370,8 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
                 // Check if the player is online and in the same kingdom
                 if (targetPlayer != null) {
-                    Kingdom sourceKingdom = km.getPlayerKingdom(playerID);
-                    Kingdom targetKingdom = km.getPlayerKingdom(targetPlayer.getUniqueId());
+                    Kingdom sourceKingdom = kManager.getPlayerKingdom(playerID);
+                    Kingdom targetKingdom = kManager.getPlayerKingdom(targetPlayer.getUniqueId());
                     if(sourceKingdom.equals(targetKingdom)) {
                         promotePlayer(player, targetPlayer);
                     } else {
@@ -384,7 +387,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                         player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
                         return false;
                     }
-                    Kingdom k = km.getPlayerKingdom(playerID);
+                    Kingdom k = kManager.getPlayerKingdom(playerID);
                     player.spigot().sendMessage(k.getStats());
                 } else {
                     player.sendMessage(permsError);
