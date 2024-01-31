@@ -200,6 +200,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 claimLand(player);
                 player.sendMessage(ChatColor.GREEN + "The Kingdom of " + kingdom.getName() +
                         " has been created by " + player.getName());
+                player.playSound(player.getLocation(), Sound.UI_TOAST_IN, 1.0f, 1.0f);
 
                 // Create Heartstone
                 kManager.createHeartstone(kingdom, player);
@@ -251,19 +252,22 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 k.setName(name);
             }
             case "leave" -> {
-                if (player.hasPermission("kingdom.leave")) {
-                    if(!inAKingdom(player.getUniqueId())) {
-                        player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
-                        return false;
-                    }
-                    Kingdom k = kManager.getPlayerKingdom(playerID);
-                    String name = k.getName();
-                    if(kManager.removePlayer(playerID)) {
-                        player.sendMessage(ChatColor.RED + "You are no longer a member of " + name);
-                    } else {
-                        player.sendMessage(ChatColor.RED + "Failed to leave kingdom!");
-                    }
-
+                if (!player.hasPermission("kingdom.leave")) {
+                    player.sendMessage(permsError);
+                    return false;
+                }
+                if (!inAKingdom(player.getUniqueId())) {
+                    player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
+                    return false;
+                }
+                Kingdom k = kManager.getPlayerKingdom(playerID);
+                String name = k.getName();
+                if (kManager.playerLeave(player)) {
+                    player.sendMessage(ChatColor.GREEN + "Your freedom has been bought!\n" + ChatColor.RED +
+                            "You are no longer a member of " + name);
+                    player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_HURT_ON_FIRE, 1.0f, 1.0f);
+                } else {
+                    player.sendMessage(ChatColor.RED + "Failed to leave kingdom!");
                 }
             }
             case "description" -> {

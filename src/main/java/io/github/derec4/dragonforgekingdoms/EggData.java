@@ -3,10 +3,7 @@ package io.github.derec4.dragonforgekingdoms;
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.util.EncoderUtils;
 import lombok.Getter;
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -45,7 +42,17 @@ public class EggData {
         eggData.kingdomUuid = kingdom.getID().toString();
         location.getChunk().getPersistentDataContainer().set(EGG_SPACE, PersistentDataType.BYTE_ARRAY,
                 eggData.encode());
+        Block block = location.getBlock();
+
+        // Check if the block is air (optional)
+        if (block.getType() == Material.AIR) {
+            block.setType(Material.DRAGON_EGG);
+//            DragonEgg dragonEgg = (DragonEgg) block.getBlockData();
+//            dragonEgg.setTeleportable(true);
+//            block.setBlockData(dragonEgg);
+        }
         kingdom.setEggData(eggData);
+
         return eggData;
     }
 
@@ -56,14 +63,14 @@ public class EggData {
     public static boolean destroyEgg(Block block, boolean chunkSearch) {
         PersistentDataContainer container = block.getChunk().getPersistentDataContainer();
 
-        if(!container.has(EGG_SPACE, PersistentDataType.BYTE_ARRAY)) {
+        if (!container.has(EGG_SPACE, PersistentDataType.BYTE_ARRAY)) {
             return false; // chunk doesn't have an egg
         }
 
         byte[] data = container.get(EGG_SPACE, PersistentDataType.BYTE_ARRAY);
         EggData eggData = decode(data);
 
-        if(!eggData.world.equals(block.getWorld().getUID().toString())) {
+        if (!eggData.world.equals(block.getWorld().getUID().toString())) {
             return false; // not in the same world
         }
 

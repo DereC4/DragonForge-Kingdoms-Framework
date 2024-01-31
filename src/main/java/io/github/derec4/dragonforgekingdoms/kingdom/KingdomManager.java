@@ -12,7 +12,9 @@ import net.luckperms.api.node.types.InheritanceNode;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -216,6 +218,91 @@ public class KingdomManager {
             }
         }
         return false;
+    }
+
+    public boolean playerLeave(Player player) {
+        // Check if the player has at least 8 Pufferfish
+        if (!hasRequiredItems(player, Material.PUFFERFISH, 8)) {
+            // Player doesn't have enough Pufferfish, deny leaving
+            player.sendMessage(ChatColor.RED + "You need at least 8 Pufferfish to leave.");
+            return false;
+        }
+        removePufferfish(player);
+        boolean res = kingdoms.get(playerMappings.get(player.getUniqueId())).removePlayer(player.getUniqueId());
+        playerMappings.remove(player.getUniqueId());
+        CreateDB temp = new CreateDB();
+        try {
+            Connection connection = temp.getConnection();
+            removePlayerFromDatabase(connection, player.getUniqueId());
+            LuckPerms api = LuckPermsProvider.get();
+            Map<String, String> permissionToGroupMap = Map.of(
+                    "group.vassal", "vassal",
+                    "group.duke", "duke",
+                    "group.lord", "lord"
+            );
+
+            Set<Group> groupsToRemove = new HashSet<>();
+
+            for (Map.Entry<String, String> entry : permissionToGroupMap.entrySet()) {
+                if (player.hasPermission(entry.getKey())) {
+                    Group group = api.getGroupManager().getGroup(entry.getValue());
+                    if (group != null) {
+                        groupsToRemove.add(group);
+                        System.out.println(group.getName());
+                    }
+                }
+            }
+
+            api.getUserManager().modifyUser(player.getUniqueId(), user -> {
+                for (Group groupToRemove : groupsToRemove) {
+                    Node node = InheritanceNode.builder(groupToRemove).build();
+                    user.data().remove(node);
+                    System.out.println(groupToRemove.getName());
+                }
+            });
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return res;
+    }
+
+    private boolean hasRequiredItems(Player player, Material material, int requiredAmount) {
+        int count = 0;
+
+        // Count the number of the specified item in the player's inventory
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (item != null && item.getType() == material) {
+                count += item.getAmount();
+            }
+        }
+
+        return count >= requiredAmount;
+    }
+
+    /**
+     * Because Why Not?
+     */
+    public void removePufferfish(Player player) {
+        removeItem(player, Material.PUFFERFISH, 8);
+    }
+
+    private void removeItem(Player player, Material material, int amount) {
+        int remainingAmount = amount;
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (item != null && item.getType() == material) {
+                int itemAmount = item.getAmount();
+                if (itemAmount <= remainingAmount) {
+                    player.getInventory().remove(item);
+                    remainingAmount -= itemAmount;
+                } else {
+                    item.setAmount(itemAmount - remainingAmount);
+                    break;
+                }
+                if (remainingAmount <= 0) {
+                    break;
+                }
+            }
+        }
     }
 
     public boolean removePlayer(UUID playerUUID) {
