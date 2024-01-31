@@ -174,6 +174,13 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                     return false;
                 }
 
+                // Most annoying check first: If land is claimed
+                ChunkCoordinate playerChunk = getPlayerCurrentChunk(player);
+                if (km.getKingdomByChunk(playerChunk) != null) {
+                    player.sendMessage(ChatColor.RED + "This chunk is claimed!");
+                    return false;
+                }
+
                 // Checks: Player already in a kingdom, and if said kingdom name exists already
                 if (inAKingdom(playerID)) {
                     player.sendMessage(ChatColor.RED + "You are already in a kingdom!");
@@ -195,50 +202,50 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                         " has been created by " + player.getName());
             }
             case "remove" -> {
-                if (player.hasPermission("kingdom.remove")) {
-                    if(!inAKingdom(player.getUniqueId())) {
-                        player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
-                        return false;
-                    }
-                    // Implement the logic
-                    player.sendMessage("Removing your kingdom...");
-                    CreateDB databaseManager = new CreateDB();
-
-                    // Send in connection and try to remove the kingdom row from table
-                    try (Connection connection = databaseManager.getConnection()) {
-                        km.removeKingdom(playerID, connection);
-                    } catch (Exception e) {
-                        Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
-                    }
-                } else {
+                if (!player.hasPermission("kingdom.remove")) {
                     player.sendMessage(permsError);
+                    return false;
+                }
+                if(!inAKingdom(player.getUniqueId())) {
+                    player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
+                    return false;
+                }
+
+                // Implement the logic
+                player.sendMessage("Removing your kingdom...");
+                CreateDB databaseManager = new CreateDB();
+
+                // Send in connection and try to remove the kingdom row from table
+                try (Connection connection = databaseManager.getConnection()) {
+                    km.removeKingdom(playerID, connection);
+                } catch (Exception e) {
+                    Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
                 }
             }
             case "claim" -> {
-                if (player.hasPermission("kingdom.claim")) {
-                    if(!inAKingdom(player.getUniqueId())) {
-                        player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
-                        return false;
-                    }
-//                        player.sendMessage("Claiming land for your kingdom...");
-                    claimLand(player);
-                } else {
+                if (!player.hasPermission("kingdom.claim")) {
                     player.sendMessage(permsError);
+                    return false;
                 }
+                if(!inAKingdom(player.getUniqueId())) {
+                    player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
+                    return false;
+                }
+                claimLand(player);
             }
             case "rename" -> {
                 if (player.hasPermission("kingdom.rename")) {
-                    if(!inAKingdom(player.getUniqueId())) {
-                        player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
-                        return false;
-                    }
-                    String name = args[1];
-                    Kingdom k = km.getPlayerKingdom(playerID);
-                    player.sendMessage(ChatColor.GREEN + k.getName() + " has been renamed to " + name);
-                    k.setName(name);
-                } else {
                     player.sendMessage(permsError);
+                    return false;
                 }
+                if(!inAKingdom(player.getUniqueId())) {
+                    player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
+                    return false;
+                }
+                String name = args[1];
+                Kingdom k = km.getPlayerKingdom(playerID);
+                player.sendMessage(ChatColor.GREEN + k.getName() + " has been renamed to " + name);
+                k.setName(name);
             }
             case "leave" -> {
                 if (player.hasPermission("kingdom.leave")) {
@@ -341,37 +348,34 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 }
             }
             case "promote" -> {
-                if(player.hasPermission("kingdom.promote")) {
-                    if (!inAKingdom(player.getUniqueId())) {
-                        player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
-                        return false;
-                    }
+                if(!player.hasPermission("kingdom.promote")) {
+                    player.sendMessage(permsError);
+                    return false;
+                }
+                if (!inAKingdom(player.getUniqueId())) {
+                    player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
+                    return false;
+                }
 
-                    // Check if there's a specified player to promote
-                    if (args.length < 2) {
-                        player.sendMessage(ChatColor.RED + "Usage: /kingdom promote <player>");
-                        return false;
-                    }
-                    String name = args[1];
-                    Player targetPlayer = Bukkit.getPlayer(name);
-                    LuckPerms api = LuckPermsProvider.get();
+                // Check if there's a specified player to promote
+                if (args.length < 2) {
+                    player.sendMessage(ChatColor.RED + "Usage: /kingdom promote <player>");
+                    return false;
+                }
+                String name = args[1];
+                Player targetPlayer = Bukkit.getPlayer(name);
 
-                    // Check if the player is online and in the same kingdom
-                    if (targetPlayer != null) {
-                        Kingdom sourceKingdom = km.getPlayerKingdom(playerID);
-                        Kingdom targetKingdom = km.getPlayerKingdom(targetPlayer.getUniqueId());
-                        if(sourceKingdom.equals(targetKingdom)) {
-                            promotePlayer(player, targetPlayer);
-                        } else {
-                            player.sendMessage(ChatColor.YELLOW + name + " is not in your kingdom.");
-                        }
+                // Check if the player is online and in the same kingdom
+                if (targetPlayer != null) {
+                    Kingdom sourceKingdom = km.getPlayerKingdom(playerID);
+                    Kingdom targetKingdom = km.getPlayerKingdom(targetPlayer.getUniqueId());
+                    if(sourceKingdom.equals(targetKingdom)) {
+                        promotePlayer(player, targetPlayer);
                     } else {
-                        // The player is not online or the name is not valid
-                        // Handle accordingly, for example, send a message to the sender
-                        player.sendMessage(ChatColor.RED + "Player " + name + " is not online or the name is invalid.");
+                        player.sendMessage(ChatColor.YELLOW + name + " is not in your kingdom.");
                     }
                 } else {
-                    player.sendMessage(permsError);
+                    player.sendMessage(ChatColor.RED + "Player " + name + " is not online or the name is invalid.");
                 }
             }
             case "stats" -> {
