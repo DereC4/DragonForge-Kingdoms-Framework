@@ -45,12 +45,10 @@ public class EggData {
         Block block = location.getBlock();
 
         // Check if the block is air (optional)
-        if (block.getType() == Material.AIR) {
-            block.setType(Material.DRAGON_EGG);
+        block.setType(Material.DRAGON_EGG);
 //            DragonEgg dragonEgg = (DragonEgg) block.getBlockData();
 //            dragonEgg.setTeleportable(true);
 //            block.setBlockData(dragonEgg);
-        }
         kingdom.setEggData(eggData);
 
         return eggData;
@@ -192,7 +190,5 @@ public class EggData {
             new Location(Bukkit.getWorld(UUID.fromString(world)), x, y, z).getChunk().getPersistentDataContainer()
                     .set(EGG_SPACE, PersistentDataType.BYTE_ARRAY, encode());
         }
-
-
     }
 }
