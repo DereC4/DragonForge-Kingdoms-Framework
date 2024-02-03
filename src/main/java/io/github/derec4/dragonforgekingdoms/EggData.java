@@ -28,7 +28,6 @@ public class EggData {
 
     private float health;
     private String world;
-    private String name;
     private String kingdomUuid;
     private int x, y, z;
 
@@ -91,8 +90,8 @@ public class EggData {
         pos += 4;
         eggData.world = EncoderUtils.byteArrayToString(data, pos);
         pos += 4 + eggData.world.length();
-        eggData.name = EncoderUtils.byteArrayToString(data, pos);
-        pos += 4 + eggData.name.length();
+//        eggData.name = EncoderUtils.byteArrayToString(data, pos);
+//        pos += 4 + eggData.name.length();
         eggData.kingdomUuid = EncoderUtils.byteArrayToString(data, pos);
         pos += 4 + eggData.kingdomUuid.length();
         eggData.x = EncoderUtils.byteArrayToInt(data, pos);
@@ -100,7 +99,6 @@ public class EggData {
         eggData.y = EncoderUtils.byteArrayToInt(data, pos);
         pos += 4;
         eggData.z = EncoderUtils.byteArrayToInt(data, pos);
-        pos += 4;
 
         return eggData;
     }
@@ -124,13 +122,13 @@ public class EggData {
     public byte[] encode() {
         byte[] hpEncode = EncoderUtils.encodeFloat(health);
         byte[] worldEncode = EncoderUtils.encodeString(world);
-        byte[] nameEncode = EncoderUtils.encodeString(name);
+//        byte[] nameEncode = EncoderUtils.encodeString(name);
         byte[] kingdomUuidEncode = EncoderUtils.encodeString(kingdomUuid);
         byte[] xEncode = EncoderUtils.encodeInt(x);
         byte[] yEncode = EncoderUtils.encodeInt(y);
         byte[] zEncode = EncoderUtils.encodeInt(z);
 
-        return packEncoding(hpEncode, worldEncode, nameEncode, kingdomUuidEncode, xEncode, yEncode, zEncode);
+        return packEncoding(hpEncode, worldEncode, kingdomUuidEncode, xEncode, yEncode, zEncode);
     }
 
     private byte[] packEncoding(byte[]... data) {
@@ -150,18 +148,18 @@ public class EggData {
         return packedData;
     }
 
-    // example code
-    static {
-        PlayerInteractEvent event = new PlayerInteractEvent(null, null, null, null, null, null, null);
-
-        // check if it has first, probably want a helper method to go from block -> egg, check destroyEgg
-        byte[] data = event.getClickedBlock().getChunk().getPersistentDataContainer().get(EGG_SPACE,
-                PersistentDataType.BYTE_ARRAY);
-
-        EggData eggData = decode(data);
-
-        eggData.updateHealth(eggData.health - 20, true);
-    }
+//    // example code
+//    static {
+//        PlayerInteractEvent event = new PlayerInteractEvent(null, null, null, null, null, null, null);
+//
+//        // check if it has first, probably want a helper method to go from block -> egg, check destroyEgg
+//        byte[] data = event.getClickedBlock().getChunk().getPersistentDataContainer().get(EGG_SPACE,
+//                PersistentDataType.BYTE_ARRAY);
+//
+//        EggData eggData = decode(data);
+//
+//        eggData.updateHealth(eggData.health - 20, true);
+//    }
 
     public static EggData getChunkEggData(Chunk chunk) {
 

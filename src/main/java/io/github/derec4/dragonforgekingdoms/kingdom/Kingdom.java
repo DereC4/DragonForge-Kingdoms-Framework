@@ -283,10 +283,6 @@ public class Kingdom {
     }
 
     public void setEggData(EggData eggData) {
-        if(eggData != null) {
-            throw new IllegalStateException("eggData must be null, overwritten detect");
-        }
-
         this.eggData = eggData;
     }
 

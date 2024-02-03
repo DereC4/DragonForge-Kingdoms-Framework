@@ -32,6 +32,10 @@ public class EggListener implements Listener {
             return;
         }
 
+        if(clickedBlock.getType() != Material.DRAGON_EGG) {
+            return;
+        }
+        System.out.println("Break 1");
         EggData eggData = getKingdomEgg(clickedBlock);
         if (eggData == null) {
             return;
@@ -66,18 +70,16 @@ public class EggListener implements Listener {
     }
 
     private EggData getKingdomEgg(Block block) {
-
-        if(block.getType() != Material.DRAGON_EGG) {
-            return null;
-        }
-
         Chunk chunk = block.getChunk();
         EggData data = EggData.getChunkEggData(chunk);
 
         if(data == null) {
             return null;
         }
-
+        System.out.println("Break 2");
+        System.out.println(data.getX());
+        System.out.println(data.getY());
+        System.out.println(data.getZ());
         return (data.getX() == block.getX() && data.getY() == block.getY() && data.getZ() == block.getZ())
                 ? data : null;
     }

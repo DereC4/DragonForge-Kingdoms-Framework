@@ -222,12 +222,15 @@ public class KingdomManager {
 
     public boolean playerLeave(Player player) {
         // Check if the player has at least 8 Pufferfish
-        if (!hasRequiredItems(player, Material.PUFFERFISH, 8)) {
-            // Player doesn't have enough Pufferfish, deny leaving
-            player.sendMessage(ChatColor.RED + "You need at least 8 Pufferfish to leave.");
-            return false;
+
+        if(!player.isOp()) {
+            if (!hasRequiredItems(player, Material.PUFFERFISH, 8)) {
+                // Player doesn't have enough Pufferfish, deny leaving
+                player.sendMessage(ChatColor.RED + "You need at least 8 Pufferfish to leave.");
+                return false;
+            }
+            removePufferfish(player);
         }
-        removePufferfish(player);
         boolean res = kingdoms.get(playerMappings.get(player.getUniqueId())).removePlayer(player.getUniqueId());
         playerMappings.remove(player.getUniqueId());
         CreateDB temp = new CreateDB();

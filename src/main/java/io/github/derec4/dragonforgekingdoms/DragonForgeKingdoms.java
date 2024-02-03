@@ -5,6 +5,7 @@ import io.github.derec4.dragonforgekingdoms.database.CreateDB;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import io.github.derec4.dragonforgekingdoms.territory.KingdomProtectionListener;
 import io.github.derec4.dragonforgekingdoms.territory.PlayerEffects;
+import io.github.derec4.dragonforgekingdoms.territory.TerritoryEnterExit;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -25,7 +26,6 @@ public final class DragonForgeKingdoms extends JavaPlugin {
         // Plugin startup logic
         Bukkit.getLogger().info(ChatColor.GREEN + "Enabled " + this.getName());
         this.getCommand("kingdom").setExecutor(new CommandManager());
-        getServer().getPluginManager().registerEvents(new KingdomProtectionListener(), this);
         if (!getDataFolder().exists()) {
             getLogger().info("Directory Creation Status : " + getDataFolder().mkdirs());
         }
@@ -49,6 +49,9 @@ public final class DragonForgeKingdoms extends JavaPlugin {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        getServer().getPluginManager().registerEvents(new KingdomProtectionListener(), this);
+        getServer().getPluginManager().registerEvents(new EggListener(), this);
+        getServer().getPluginManager().registerEvents(new TerritoryEnterExit(kingdomManager), this);
         int taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 PlayerEffects.applyEffects(player);
