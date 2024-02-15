@@ -9,10 +9,7 @@ import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.Node;
 import net.luckperms.api.node.types.InheritanceNode;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -397,6 +394,59 @@ public class KingdomManager {
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
+            }
+        }
+    }
+
+    /**
+     //     * Checks if a kingdom has met the criteria for leveling up, and then level up
+     //     */
+    public void checkLevelUp(Kingdom kingdom) {
+        int memberCount = kingdom.getMembers().size();
+//        int chunksClaimed = k.getClaimedChunks();
+        if(memberCount >= 200) {
+            kingdom.setLevel(7);
+        } else if(memberCount >= 100) {
+            kingdom.setLevel(6);
+        } else if(memberCount >= 50) {
+            kingdom.setLevel(5);
+        } else if(memberCount >= 25) {
+            kingdom.setLevel(4);
+        } else if(memberCount >= 10 ) {
+            kingdom.setLevel(3);
+        } else if(memberCount >= 3) {
+            kingdom.setLevel(2);
+        } else if(memberCount >= 1) {
+            kingdom.setLevel(1);
+        }
+
+        // Claim chunks in a ring pattern around the home location for each level up
+        if (kingdom.getHome() != null) {
+            claimChunksInRingPattern(kingdom);
+        }
+    }
+
+    /**
+     * Claims additional chunks in a ring pattern around the existing claimed chunks
+     */
+    private void claimChunksInRingPattern(Kingdom kingdom) {
+        // Determine the size of the ring for the current level
+        int ringSize = (kingdom.getLevel() - 1) * 2 + 1;
+
+        // Convert the home location to a ChunkCoordinate
+        Location home = kingdom.getHome();
+        int chunkX = home.getChunk().getX();
+        int chunkZ = home.getChunk().getZ();
+        ChunkCoordinate centerChunkCoord = new ChunkCoordinate(chunkX, chunkZ, home.getWorld().getUID());
+
+        // Claim chunks in a ring pattern around the home location
+        for (int dx = -ringSize / 2; dx <= ringSize / 2; dx++) {
+            for (int dz = -ringSize / 2; dz <= ringSize / 2; dz++) {
+                int newX = centerChunkCoord.getX() + dx;
+                int newZ = centerChunkCoord.getZ() + dz;
+                ChunkCoordinate newChunkCoord = new ChunkCoordinate(newX, newZ, centerChunkCoord.getWorldID());
+                claimChunk(kingdom.getID(), newChunkCoord);
+                kingdom.claimChunk();
             }
         }
     }

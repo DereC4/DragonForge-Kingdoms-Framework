@@ -96,7 +96,7 @@ public class Kingdom {
 //        ChunkCoordinate chunkCoord = new ChunkCoordinate(chunkX, chunkZ, worldID);
 //        boolean res = territory.add(chunkCoord);
         claimedChunks++;
-        checkLevelUp();
+//        checkLevelUp();
     }
 
 //    /**
@@ -227,6 +227,10 @@ public class Kingdom {
 //        }
 //    }
 
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
     public void setDescription(String description) {
         this.description = description;
     }
@@ -245,7 +249,7 @@ public class Kingdom {
 
     public boolean addPlayer(UUID uuid) {
         boolean res = this.members.add(uuid);
-        checkLevelUp();
+//        checkLevelUp();
         return res;
     }
 
