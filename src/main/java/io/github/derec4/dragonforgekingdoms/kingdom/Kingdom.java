@@ -99,49 +99,49 @@ public class Kingdom {
         checkLevelUp();
     }
 
-    /**
-     * TODO Get actual territory limits per level and then limit it as such
-     */
-    public boolean canClaimMoreChunks() {
-        switch(level) {
-            case 1: {
-                if(claimedChunks < 6) {
-                    return true;
-                }
-            }
-            case 2: {
-                if(claimedChunks < 8) {
-                    return true;
-                }
-            }
-            case 3: {
-                if(claimedChunks < 10) {
-                    return true;
-                }
-            }
-            case 4: {
-                if(claimedChunks < 15) {
-                    return true;
-                }
-            }
-            case 5: {
-                if(claimedChunks < 30) {
-                    return true;
-                }
-            }
-            case 6: {
-                if(claimedChunks < 60) {
-                    return true;
-                }
-            }
-            case 7: {
-                if(claimedChunks < 100) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+//    /**
+//     * TODO Get actual territory limits per level and then limit it as such
+//     */
+//    public boolean canClaimMoreChunks() {
+//        switch(level) {
+//            case 1: {
+//                if(claimedChunks < 6) {
+//                    return true;
+//                }
+//            }
+//            case 2: {
+//                if(claimedChunks < 8) {
+//                    return true;
+//                }
+//            }
+//            case 3: {
+//                if(claimedChunks < 10) {
+//                    return true;
+//                }
+//            }
+//            case 4: {
+//                if(claimedChunks < 15) {
+//                    return true;
+//                }
+//            }
+//            case 5: {
+//                if(claimedChunks < 30) {
+//                    return true;
+//                }
+//            }
+//            case 6: {
+//                if(claimedChunks < 60) {
+//                    return true;
+//                }
+//            }
+//            case 7: {
+//                if(claimedChunks < 100) {
+//                    return true;
+//                }
+//            }
+//        }
+//        return false;
+//    }
 
     // Print the territory (claimed chunks) of the kingdom to the player source
     public void printTerritory(Player player) {
@@ -204,28 +204,28 @@ public class Kingdom {
                 .append("\nLed by Lord " + Bukkit.getOfflinePlayer(this.leader).getName()).create();
     }
 
-    /**
-     * Checks if a kingdom has met the criteria for leveling up
-     */
-    public void checkLevelUp() {
-        int memberCount = this.members.size();
-        int chunksClaimed = this.claimedChunks;
-        if(memberCount >= 200) {
-            this.level = 7;
-        } else if(memberCount >= 100) {
-            this.level = 6;
-        } else if(memberCount >= 50) {
-            this.level = 5;
-        } else if(memberCount >= 25) {
-            this.level = 4;
-        } else if(memberCount >= 10 ) {
-            this.level = 3;
-        } else if(memberCount >= 3) {
-            this.level = 2;
-        } else if(memberCount >= 1) {
-            this.level = 1;
-        }
-    }
+//    /**
+//     * Checks if a kingdom has met the criteria for leveling up
+//     */
+//    public void checkLevelUp() {
+//        int memberCount = this.members.size();
+//        int chunksClaimed = this.claimedChunks;
+//        if(memberCount >= 200) {
+//            this.level = 7;
+//        } else if(memberCount >= 100) {
+//            this.level = 6;
+//        } else if(memberCount >= 50) {
+//            this.level = 5;
+//        } else if(memberCount >= 25) {
+//            this.level = 4;
+//        } else if(memberCount >= 10 ) {
+//            this.level = 3;
+//        } else if(memberCount >= 3) {
+//            this.level = 2;
+//        } else if(memberCount >= 1) {
+//            this.level = 1;
+//        }
+//    }
 
     public void setDescription(String description) {
         this.description = description;
