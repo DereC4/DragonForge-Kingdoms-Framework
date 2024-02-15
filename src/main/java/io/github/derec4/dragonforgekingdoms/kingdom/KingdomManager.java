@@ -481,9 +481,9 @@ public class KingdomManager {
     public boolean claimChunk(UUID kingdomUUID, ChunkCoordinate chunkCoord) {
         // First, check if the kingdom can even claim the chunk
         Kingdom k = kingdoms.get(kingdomUUID);
-        if(!k.canClaimMoreChunks()) {
-            return false;
-        }
+//        if(!k.canClaimMoreChunks()) {
+//            return false;
+//        }
         CreateDB temp = new CreateDB();
         try {
             Connection connection = temp.getConnection();
