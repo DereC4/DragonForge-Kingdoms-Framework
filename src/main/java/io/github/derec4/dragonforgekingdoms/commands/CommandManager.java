@@ -55,6 +55,28 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         }
     }
 
+    private void initialClaimLand(Player player) {
+        int playerChunkX = player.getLocation().getChunk().getX();
+        int playerChunkZ = player.getLocation().getChunk().getZ();
+        UUID worldID = player.getWorld().getUID();
+        KingdomManager km = KingdomManager.getInstance();
+        UUID playerKingdom = km.getPlayerKingdom(player.getUniqueId()).getID();
+
+        // Claim chunks in a 3x3 grid centered around the player's chunk
+        for (int xOffset = -1; xOffset <= 1; xOffset++) {
+            for (int zOffset = -1; zOffset <= 1; zOffset++) {
+                int chunkX = playerChunkX + xOffset;
+                int chunkZ = playerChunkZ + zOffset;
+                ChunkCoordinate chunk = new ChunkCoordinate(chunkX, chunkZ, worldID);
+                if (km.claimChunk(playerKingdom, chunk)) {
+                    player.sendMessage(ChatColor.GREEN + "You have successfully claimed a chunk for your kingdom at (" + chunkX + ", " + chunkZ + ").");
+                } else {
+                    player.sendMessage(ChatColor.RED + "Chunk claim failed for chunk at (" + chunkX + ", " + chunkZ + "). This chunk may already be claimed or there was an error.");
+                }
+            }
+        }
+    }
+
     private void promotePlayer(Player player, Player targetPlayer) {
         LuckPerms api = LuckPermsProvider.get();
 //        User user = api.getPlayerAdapter(Player.class).getUser(targetPlayer);
@@ -197,7 +219,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 kManager.createKingdom(kingdom, playerID);
                 kManager.addKingdom(kingdom, playerID);
                 kingdom = kManager.getPlayerKingdom(playerID);
-                claimLand(player);
+                initialClaimLand(player);
                 player.sendMessage(ChatColor.GREEN + "The Kingdom of " + kingdom.getName() +
                         " has been created by " + player.getName());
                 player.playSound(player.getLocation(), Sound.UI_TOAST_IN, 1.0f, 1.0f);
