@@ -163,6 +163,7 @@ public class KingdomManager {
             Connection connection = temp.getConnection();
             updatePlayerKingdom(connection, playerUUID, kingdomUUID);
             playerMappings.put(playerUUID, kingdomUUID);
+            checkLevelUp(kingdoms.get(kingdomUUID));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -414,7 +415,7 @@ public class KingdomManager {
             kingdom.setLevel(4);
         } else if(memberCount >= 10 ) {
             kingdom.setLevel(3);
-        } else if(memberCount >= 3) {
+        } else if(memberCount >= 2) {
             kingdom.setLevel(2);
         } else if(memberCount >= 1) {
             kingdom.setLevel(1);
@@ -480,7 +481,7 @@ public class KingdomManager {
      */
     public boolean claimChunk(UUID kingdomUUID, ChunkCoordinate chunkCoord) {
         // First, check if the kingdom can even claim the chunk
-        Kingdom k = kingdoms.get(kingdomUUID);
+        Kingdom kingdom = kingdoms.get(kingdomUUID);
 //        if(!k.canClaimMoreChunks()) {
 //            return false;
 //        }
@@ -490,7 +491,8 @@ public class KingdomManager {
             saveTerritoryToDatabase(connection, chunkCoord, kingdomUUID);
             if(territoryMappings.get(chunkCoord) == null) {
                 territoryMappings.put(chunkCoord, kingdomUUID);
-                k.claimChunk();
+                kingdom.claimChunk();
+                checkLevelUp(kingdom);
             } else {
                 return false;
             }

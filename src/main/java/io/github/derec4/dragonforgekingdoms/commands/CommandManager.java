@@ -16,6 +16,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -193,6 +194,14 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 player.sendMessage("Creating a new kingdom...");
                 if (!player.hasPermission("kingdom.create")) {
                     player.sendMessage(permsError);
+                    return false;
+                }
+
+                // Check if the player is standing on solid ground
+                Location playerLocation = player.getLocation();
+                Block blockBelow = playerLocation.subtract(0, 1, 0).getBlock();
+                if (!blockBelow.getType().isSolid()) {
+                    player.sendMessage(ChatColor.RED + "You must be standing on solid ground to create a kingdom.");
                     return false;
                 }
 
