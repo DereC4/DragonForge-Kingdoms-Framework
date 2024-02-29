@@ -14,17 +14,17 @@ public class HelpCommand implements CommandExecutor {
         commandHelpMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         commandHelpMap.put("claim", "Claim land for your kingdom");
         commandHelpMap.put("create", "Create a new kingdom");
-        commandHelpMap.put("rename", "Renames your kingdom");
-        commandHelpMap.put("remove", "Removes a kingdom");
-        commandHelpMap.put("leave", "Leave your kingdom! Requires 8 Pufferfish");
         commandHelpMap.put("description", "Sets your kingdom's description");
-        commandHelpMap.put("sethome", "Changes the kingdom's home to your position");
-        commandHelpMap.put("territory", "TODO");
-        commandHelpMap.put("join", "Join a kingdom!");
         commandHelpMap.put("home", "Teleports you to your kingdom's home");
-        commandHelpMap.put("promote", "Promotes a kingdom member");
-        commandHelpMap.put("stats", "Shows your kingdom's stats");
+        commandHelpMap.put("join", "Join a kingdom!");
+        commandHelpMap.put("leave", "Leave your kingdom! Requires 8 Pufferfish");
         commandHelpMap.put("map", "Displays a map of nearby allies and enemies");
+        commandHelpMap.put("promote", "Promotes a kingdom member");
+        commandHelpMap.put("remove", "Removes a kingdom");
+        commandHelpMap.put("rename", "Renames your kingdom");
+        commandHelpMap.put("sethome", "Changes the kingdom's home to your position");
+        commandHelpMap.put("stats", "Shows your kingdom's stats");
+        commandHelpMap.put("territory", "TODO");
 
     }
 
