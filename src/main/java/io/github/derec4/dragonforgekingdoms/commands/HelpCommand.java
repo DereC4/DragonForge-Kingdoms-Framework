@@ -25,7 +25,6 @@ public class HelpCommand implements CommandExecutor {
         commandHelpMap.put("sethome", "Changes the kingdom's home to your position");
         commandHelpMap.put("stats", "Shows your kingdom's stats");
         commandHelpMap.put("territory", "TODO");
-
     }
 
     @Override
