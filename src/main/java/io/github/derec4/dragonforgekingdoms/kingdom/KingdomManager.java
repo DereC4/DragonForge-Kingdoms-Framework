@@ -229,12 +229,19 @@ public class KingdomManager {
             }
             removePufferfish(player);
         }
-        boolean res = kingdoms.get(playerMappings.get(player.getUniqueId())).removePlayer(player.getUniqueId());
+        Kingdom kingdom = kingdoms.get(playerMappings.get(player.getUniqueId()));
+        boolean res = kingdom.removePlayer(player.getUniqueId());
         playerMappings.remove(player.getUniqueId());
         CreateDB temp = new CreateDB();
         try {
             Connection connection = temp.getConnection();
             removePlayerFromDatabase(connection, player.getUniqueId());
+            // If the kingdom has no members left, delete it
+            if (kingdom.getMembers().isEmpty()) {
+                // Delete Kingdom
+                kingdoms.remove(kingdom.getID());
+                removeKingdom(player.getUniqueId(), connection);
+            }
             LuckPerms api = LuckPermsProvider.get();
             Map<String, String> permissionToGroupMap = Map.of(
                     "group.vassal", "vassal",

@@ -232,6 +232,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 kManager.createKingdom(kingdom, playerID);
                 kManager.addKingdom(kingdom, playerID);
                 kingdom = kManager.getPlayerKingdom(playerID);
+                kingdom.setHome(playerLocation);
                 initialClaimLand(player);
                 player.sendMessage(ChatColor.GREEN + "The Kingdom of " + kingdom.getName() +
                         " has been created by " + player.getName());
@@ -416,6 +417,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                     } else {
                         player.sendMessage(ChatColor.YELLOW + name + " is not in your kingdom.");
                     }
+                    
                 } else {
                     player.sendMessage(ChatColor.RED + "Player " + name + " is not online or the name is invalid.");
                 }

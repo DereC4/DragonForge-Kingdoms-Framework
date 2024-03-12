@@ -124,6 +124,9 @@ public class EggData {
         byte[] worldEncode = EncoderUtils.encodeString(world);
 //        byte[] nameEncode = EncoderUtils.encodeString(name);
         byte[] kingdomUuidEncode = EncoderUtils.encodeString(kingdomUuid);
+        System.out.println("x = " + x);
+        System.out.println("y = " + y);
+        System.out.println("z = " + z);
         byte[] xEncode = EncoderUtils.encodeInt(x);
         byte[] yEncode = EncoderUtils.encodeInt(y);
         byte[] zEncode = EncoderUtils.encodeInt(z);
