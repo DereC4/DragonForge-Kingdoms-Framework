@@ -99,6 +99,9 @@ public class EggData {
         eggData.y = EncoderUtils.byteArrayToInt(data, pos);
         pos += 4;
         eggData.z = EncoderUtils.byteArrayToInt(data, pos);
+        System.out.println("x = " + eggData.x);
+        System.out.println("y = " + eggData.y);
+        System.out.println("z = " + eggData.z);
 
         return eggData;
     }

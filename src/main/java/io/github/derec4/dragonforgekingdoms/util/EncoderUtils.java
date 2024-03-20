@@ -27,7 +27,7 @@ public class EncoderUtils {
     }
 
     public static int byteArrayToInt(byte[] bytes, int seek) {
-        return bytes[seek] << 24 + bytes[seek + 1] << 16 + bytes[seek + 2] << 8 + bytes[seek + 3];
+        return (bytes[seek] << 24) + (bytes[seek + 1] << 16) + (bytes[seek + 2] << 8) + bytes[seek + 3];
     }
 
     /*
