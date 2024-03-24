@@ -31,6 +31,7 @@ public class Kingdom {
     private Location home;
     @Getter
     private EggData eggData;
+    private int maxHealth;
     private Set<ChunkCoordinate> territory;
 
     public Kingdom(String name, UUID leader, Location home) {

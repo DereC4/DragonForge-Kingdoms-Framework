@@ -3,6 +3,7 @@ package io.github.derec4.dragonforgekingdoms;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
@@ -44,18 +45,20 @@ public class EggListener implements Listener {
         event.setCancelled(true);
         System.out.println("DEBUG LOL BERSAM BASAG");
         Set<AttributeModifier> damageModifiers = getDamageModifiers(event.getPlayer().getInventory().getItemInMainHand());
-
-        if (damageModifiers != null) {
-//          KingdomManager kingdomManager = KingdomManager.getInstance();
-//          byte[] encodedData = loadEncodedData(chunk); // HOW????
-            for (AttributeModifier modifier : damageModifiers) {
-                double amount = modifier.getAmount();
-                // You can use the amount and other properties of the modifier
-                player.sendMessage("Damage to egg: " + amount);
-            }
-        } else {
-            player.sendMessage("No damage to egg found.");
-        }
+        int dmg = (int) player.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue();
+        player.sendMessage("Damage to egg: " + dmg);
+//        if (damageModifiers != null) {
+////          KingdomManager kingdomManager = KingdomManager.getInstance();
+////          byte[] encodedData = loadEncodedData(chunk); // HOW????
+//            for (AttributeModifier modifier : damageModifiers) {
+//                double amount = modifier.getAmount();
+//                // You can use the amount and other properties of the modifier
+//                player.sendMessage("Damage to egg: " + amount);
+//            }
+//        } else {
+//            player.sendMessage("No damage to egg found.");
+//        }
+        player.playSound(player.getLocation(), Sound.ENCHANT_THORNS_HIT, 1.0f, 1.0f);
     }
 
     private Set<AttributeModifier> getDamageModifiers(ItemStack itemStack) {
