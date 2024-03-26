@@ -3,6 +3,7 @@ package io.github.derec4.dragonforgekingdoms;
 import io.github.derec4.dragonforgekingdoms.commands.CommandManager;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
+import io.github.derec4.dragonforgekingdoms.territory.EggBossBar;
 import io.github.derec4.dragonforgekingdoms.territory.KingdomProtectionListener;
 import io.github.derec4.dragonforgekingdoms.territory.PlayerEffects;
 import io.github.derec4.dragonforgekingdoms.territory.TerritoryEnterExit;
@@ -51,6 +52,7 @@ public final class DragonForgeKingdoms extends JavaPlugin {
         }
         getServer().getPluginManager().registerEvents(new KingdomProtectionListener(), this);
         getServer().getPluginManager().registerEvents(new EggListener(), this);
+        getServer().getPluginManager().registerEvents(new EggBossBar(), this);
         getServer().getPluginManager().registerEvents(new TerritoryEnterExit(kingdomManager), this);
         int taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
             for (Player player : Bukkit.getOnlinePlayers()) {

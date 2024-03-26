@@ -22,7 +22,7 @@ import java.util.Set;
 public class EggListener implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (event.getAction() != Action.LEFT_CLICK_BLOCK) {
+        if (event.getAction() != Action.LEFT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
 
@@ -36,9 +36,13 @@ public class EggListener implements Listener {
         if(clickedBlock.getType() != Material.DRAGON_EGG) {
             return;
         }
-        System.out.println("Break 1");
         EggData eggData = getKingdomEgg(clickedBlock);
         if (eggData == null) {
+            return;
+        }
+
+        if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+            event.setCancelled(true);
             return;
         }
 
@@ -47,6 +51,7 @@ public class EggListener implements Listener {
         Set<AttributeModifier> damageModifiers = getDamageModifiers(event.getPlayer().getInventory().getItemInMainHand());
         int dmg = (int) player.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue();
         player.sendMessage("Damage to egg: " + dmg);
+        eggData.updateHealth(eggData.getHealth() - dmg, true);
 //        if (damageModifiers != null) {
 ////          KingdomManager kingdomManager = KingdomManager.getInstance();
 ////          byte[] encodedData = loadEncodedData(chunk); // HOW????
@@ -58,8 +63,10 @@ public class EggListener implements Listener {
 //        } else {
 //            player.sendMessage("No damage to egg found.");
 //        }
-        player.playSound(player.getLocation(), Sound.ENCHANT_THORNS_HIT, 1.0f, 1.0f);
+        player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_HURT, 1.0f, 1.0f);
     }
+
+
 
     private Set<AttributeModifier> getDamageModifiers(ItemStack itemStack) {
         ItemMeta itemMeta = itemStack.getItemMeta();
@@ -79,7 +86,6 @@ public class EggListener implements Listener {
         if(data == null) {
             return null;
         }
-        System.out.println("Break 2");
         System.out.println(data.getX());
         System.out.println(data.getY());
         System.out.println(data.getZ());
