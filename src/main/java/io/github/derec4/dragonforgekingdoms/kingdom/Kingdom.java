@@ -49,6 +49,7 @@ public class Kingdom {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date date = new Date();
         this.creationTime = formatter.format(date);
+        this.maxHealth = 250;
     }
 
     /**

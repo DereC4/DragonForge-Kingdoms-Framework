@@ -14,14 +14,22 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.UUID;
 
 public class EggBossBar implements Listener {
 
+    private final Map<UUID, BossBar> playerBossBars;
+    private final KingdomManager kingdomManager;
+
+    public EggBossBar() {
+        this.playerBossBars = new HashMap<>();
+        this.kingdomManager = KingdomManager.getInstance();
+    }
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
-        KingdomManager kingdomManager = KingdomManager.getInstance();
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
         int chunkX = player.getLocation().getChunk().getX();
@@ -40,23 +48,35 @@ public class EggBossBar implements Listener {
 
     private void displayEggHealthBossBar(Player player, Kingdom kingdom) {
         int eggHealth = (int) kingdom.getEggData().getHealth();
+        BarColor barColor;
+        UUID playerKingdomUUID = KingdomManager.getInstance().getPlayerKingdom(player.getUniqueId()).getID();
+        if (playerKingdomUUID.equals(kingdom.getID())) {
+            barColor = BarColor.GREEN;
+        } else {
+            boolean isAllied = kingdomManager.getPlayerKingdom(player.getUniqueId()).getID().equals(kingdom.getID());
+            if (isAllied) {
+                // Allied kingdom
+                barColor = BarColor.BLUE;
+            } else {
+                // Enemy kingdom
+                barColor = BarColor.RED;
+            }
+        }
         BossBar bossBar = Bukkit.createBossBar(
                 ChatColor.GREEN + "Egg Health: " + eggHealth,
-                BarColor.GREEN,
+                barColor,
                 BarStyle.SOLID
         );
         bossBar.setProgress((double) eggHealth / kingdom.getMaxHealth());
         bossBar.addPlayer(player);
+        playerBossBars.put(player.getUniqueId(), bossBar);
     }
 
     private void removeBossBar(Player player) {
-        // Retrieve any existing boss bar from the player and remove it
-        for (Iterator<KeyedBossBar> it = Bukkit.getBossBars(); it.hasNext(); ) {
-            BossBar bossBar = it.next();
-            if (bossBar.getPlayers().contains(player)) {
-                bossBar.removePlayer(player);
-                break;
-            }
+        BossBar bossBar = playerBossBars.remove(player.getUniqueId());
+        if (bossBar != null) {
+            bossBar.removePlayer(player);
+            bossBar.setVisible(false);
         }
     }
 }

@@ -53,7 +53,7 @@ public final class DragonForgeKingdoms extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new KingdomProtectionListener(), this);
         getServer().getPluginManager().registerEvents(new EggListener(), this);
         getServer().getPluginManager().registerEvents(new EggBossBar(), this);
-        getServer().getPluginManager().registerEvents(new TerritoryEnterExit(kingdomManager), this);
+//        getServer().getPluginManager().registerEvents(new TerritoryEnterExit(kingdomManager), this);
         int taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 PlayerEffects.applyEffects(player);
