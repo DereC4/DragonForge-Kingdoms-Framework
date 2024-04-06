@@ -142,13 +142,19 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                     // Enemy Kingdom
                     mapChar = '#';
                 }
+                if (chunkCoord.equals(new ChunkCoordinate(player.getLocation().getChunk().getX(),
+                        player.getLocation().getChunk().getZ(),
+                        player.getLocation().getWorld().getUID()))){
+                    mapChar = '#'; // Use blue color for player's current chunk
+                }
                 message.append(String.valueOf(mapChar)).color(getColor(mapChar).asBungee());
             }
             message.append("\n");
         }
         message.append("-").color(ChatColor.GRAY.asBungee()).append(": Wilderness ")
                 .append("#").color(ChatColor.RED.asBungee()).append(": Ally ")
-                .append("$").color(ChatColor.GREEN.asBungee()).append(": Enemy");
+                .append("$").color(ChatColor.GREEN.asBungee()).append(": Enemy")
+                .append("  #").color(ChatColor.BLUE.asBungee()).append(": Current Chunk");
         return message.create();
     }
 
@@ -157,6 +163,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             case '-' -> ChatColor.GRAY;
             case '#' -> ChatColor.RED;
             case '$' -> ChatColor.GREEN;
+            case '#' -> ChatColor.BLUE; // Blue color for the player's current chunk
             default -> ChatColor.WHITE;
         };
     }
