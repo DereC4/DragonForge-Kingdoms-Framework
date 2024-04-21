@@ -135,7 +135,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 if (kingdomUUID == null) {
                     // Wilderness
                     mapChar = '-';
-                } else if (kingdomUUID.equals(km.getPlayerKingdom(player.getUniqueId()))) {
+                } else if (kingdomUUID.equals(km.getPlayerKingdom(player.getUniqueId()).getID())) {
                     // Ally Kingdom
                     mapChar = '$';
                 } else {
@@ -145,7 +145,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 if (chunkCoord.equals(new ChunkCoordinate(player.getLocation().getChunk().getX(),
                         player.getLocation().getChunk().getZ(),
                         player.getLocation().getWorld().getUID()))){
-                    mapChar = '#'; // Use blue color for player's current chunk
+                    mapChar = '9'; // Use blue color for player's current chunk
                 }
                 message.append(String.valueOf(mapChar)).color(getColor(mapChar).asBungee());
             }
@@ -154,7 +154,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         message.append("-").color(ChatColor.GRAY.asBungee()).append(": Wilderness ")
                 .append("#").color(ChatColor.RED.asBungee()).append(": Ally ")
                 .append("$").color(ChatColor.GREEN.asBungee()).append(": Enemy")
-                .append("  #").color(ChatColor.BLUE.asBungee()).append(": Current Chunk");
+                .append("9").color(ChatColor.BLUE.asBungee()).append(": Current Chunk");
         return message.create();
     }
 
@@ -163,7 +163,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             case '-' -> ChatColor.GRAY;
             case '#' -> ChatColor.RED;
             case '$' -> ChatColor.GREEN;
-            case '#' -> ChatColor.BLUE; // Blue color for the player's current chunk
+            case '9' -> ChatColor.BLUE; // Blue color for the player's current chunk
             default -> ChatColor.WHITE;
         };
     }

@@ -21,62 +21,85 @@ import java.util.UUID;
 
 public class EggBossBar implements Listener {
 
-    private final Map<UUID, BossBar> playerBossBars;
+    private final Map<ChunkCoordinate, BossBar> chunkBossBars;
     private final KingdomManager kingdomManager;
 
     public EggBossBar() {
-        this.playerBossBars = new HashMap<>();
+        this.chunkBossBars = new HashMap<>();
         this.kingdomManager = KingdomManager.getInstance();
     }
+
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
-        int chunkX = player.getLocation().getChunk().getX();
-        int chunkZ = player.getLocation().getChunk().getZ();
-        UUID worldUUID = player.getWorld().getUID();
-        ChunkCoordinate playerChunkCoord = new ChunkCoordinate(chunkX, chunkZ, worldUUID);
-        UUID kingdomUUID = kingdomManager.getKingdomByChunk(playerChunkCoord);
-
-        if (kingdomUUID != null) {
-            Kingdom kingdom = kingdomManager.getKingdomFromID(kingdomUUID);
-            displayEggHealthBossBar(player, kingdom);
-        } else {
-            removeBossBar(player);
-        }
-    }
-
-    private void displayEggHealthBossBar(Player player, Kingdom kingdom) {
-        int eggHealth = (int) kingdom.getEggData().getHealth();
-        BarColor barColor;
-        UUID playerKingdomUUID = KingdomManager.getInstance().getPlayerKingdom(player.getUniqueId()).getID();
-        if (playerKingdomUUID.equals(kingdom.getID())) {
-            barColor = BarColor.GREEN;
-        } else {
-            boolean isAllied = kingdomManager.getPlayerKingdom(player.getUniqueId()).getID().equals(kingdom.getID());
-            if (isAllied) {
-                // Allied kingdom
-                barColor = BarColor.BLUE;
-            } else {
-                // Enemy kingdom
-                barColor = BarColor.RED;
-            }
-        }
-        BossBar bossBar = Bukkit.createBossBar(
-                ChatColor.GREEN + "Egg Health: " + eggHealth,
-                barColor,
-                BarStyle.SOLID
+        ChunkCoordinate playerChunkCoord = new ChunkCoordinate(
+                player.getLocation().getChunk().getX(),
+                player.getLocation().getChunk().getZ(),
+                player.getWorld().getUID()
         );
-        bossBar.setProgress((double) eggHealth / kingdom.getMaxHealth());
-        bossBar.addPlayer(player);
-        playerBossBars.put(player.getUniqueId(), bossBar);
+
+        UUID kingdomUUID = kingdomManager.getKingdomByChunk(playerChunkCoord);
+        Kingdom kingdom = kingdomUUID != null ? kingdomManager.getKingdomFromID(kingdomUUID) : null;
+
+        if (kingdom != null && kingdom.getEggData() != null) {
+            ChunkCoordinate eggChunkCoord = new ChunkCoordinate(kingdom.getEggData().getX(),
+                    kingdom.getEggData().getZ(), UUID.fromString(kingdom.getEggData().getWorld()));
+            if (eggChunkCoord.equals(playerChunkCoord)) {
+                displayOrRefreshBossBar(player, kingdom, eggChunkCoord);
+            } else {
+                removeBossBar(player, eggChunkCoord);
+            }
+        } else {
+            removeBossBar(player, null);
+        }
     }
 
-    private void removeBossBar(Player player) {
-        BossBar bossBar = playerBossBars.remove(player.getUniqueId());
-        if (bossBar != null) {
-            bossBar.removePlayer(player);
-            bossBar.setVisible(false);
+    private void displayOrRefreshBossBar(Player player, Kingdom kingdom, ChunkCoordinate eggChunkCoord) {
+        BossBar bossBar = chunkBossBars.get(eggChunkCoord);
+
+        if (bossBar == null) {
+            bossBar = Bukkit.createBossBar(
+                    ChatColor.GREEN + "Egg Health: " + kingdom.getEggData().getHealth(),
+                    determineBarColor(player, kingdom),
+                    BarStyle.SOLID
+            );
+            bossBar.setProgress((double) kingdom.getEggData().getHealth() / kingdom.getMaxHealth());
+            bossBar.addPlayer(player);
+            chunkBossBars.put(eggChunkCoord, bossBar);
+        } else {
+            bossBar.setColor(determineBarColor(player, kingdom));
+            bossBar.setProgress((double) kingdom.getEggData().getHealth() / kingdom.getMaxHealth());
+        }
+    }
+
+    private BarColor determineBarColor(Player player, Kingdom kingdom) {
+        UUID playerKingdomUUID = kingdomManager.getPlayerKingdom(player.getUniqueId()).getID();
+        UUID kingdomUUID = kingdom.getID();
+        if (playerKingdomUUID.equals(kingdomUUID)) {
+            return BarColor.GREEN; // Player's kingdom
+        } else {
+            return BarColor.RED; // Enemy kingdom
+        }
+    }
+
+    private void removeBossBar(Player player, ChunkCoordinate eggChunkCoord) {
+        if (eggChunkCoord != null) {
+            BossBar bossBar = chunkBossBars.get(eggChunkCoord);
+            if (bossBar != null) {
+                bossBar.removePlayer(player);
+                if (bossBar.getPlayers().isEmpty()) {
+                    bossBar.setVisible(false);
+                    chunkBossBars.remove(eggChunkCoord);
+                }
+            }
+        } else {
+            // Remove all boss bars associated with the player
+            BossBar bossBar = chunkBossBars.remove(player.getUniqueId());
+            if (bossBar != null) {
+                bossBar.removePlayer(player);
+                bossBar.setVisible(false);
+            }
         }
     }
 }
