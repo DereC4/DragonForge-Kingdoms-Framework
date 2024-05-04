@@ -31,7 +31,6 @@ public class Kingdom {
     private Location home;
     @Getter
     private EggData eggData;
-    private int maxHealth;
     private Set<ChunkCoordinate> territory;
 
     public Kingdom(String name, UUID leader, Location home) {
@@ -49,7 +48,6 @@ public class Kingdom {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date date = new Date();
         this.creationTime = formatter.format(date);
-        this.maxHealth = 250;
     }
 
     /**
@@ -172,6 +170,36 @@ public class Kingdom {
         }
     }
 
+    public float getMaxHealth() {
+        switch (getLevel()) {
+            case 2 -> {
+                return 40;
+            }
+            case 3 -> {
+                return 60;
+            }
+            case 4 -> {
+                return 80;
+            }
+            case 5 -> {
+                return 100;
+            }
+            case 6 -> {
+                return 200;
+            }
+            case 7 -> {
+                return 300;
+            }
+            default -> {
+                return 30;
+            }
+        }
+    }
+
+    public void updateHealth() {
+
+    }
+
     public void setName(String name) {
         this.name = name;
         updateNameInDatabase();
@@ -199,6 +227,7 @@ public class Kingdom {
     public BaseComponent[] getStats() {
         return new ComponentBuilder(this.name + " (level" + this.level  + ") ").color(net.md_5.bungee.api.ChatColor.BLUE)
                 .append("\nHome to " + this.members.size() + " people")
+                .append("\nEgg Health " + this.eggData.getHealth())
                 .append("\nDescription: " + this.description)
                 .append("\nMoney: $0")
                 .append("\nDestroyed Kingdoms: 0")

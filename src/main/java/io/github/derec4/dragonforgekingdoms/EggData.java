@@ -5,7 +5,6 @@ import io.github.derec4.dragonforgekingdoms.util.EncoderUtils;
 import lombok.Getter;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -31,10 +30,11 @@ public class EggData {
     private String kingdomUuid;
     private int x, y, z;
 
-    public static EggData assignEggData(Kingdom kingdom, Location location) {
+    public static void assignEggData(Kingdom kingdom, Location location) {
         // checks if a kingdom already contains
         if(kingdom.getEggData() != null) {
-            return null;
+            Bukkit.getLogger().info("Eggdata already exists for kingdom " + kingdom.getName());
+            return;
         }
 
         EggData eggData = new EggData(location);
@@ -50,7 +50,6 @@ public class EggData {
 //            block.setBlockData(dragonEgg);
         kingdom.setEggData(eggData);
 
-        return eggData;
     }
 
     public static boolean destroyEgg(Block block) {
@@ -86,8 +85,6 @@ public class EggData {
         EggData eggData = new EggData();
 
         int pos = 0;
-        eggData.health = EncoderUtils.byteArrayToFloat(data, pos);
-        pos += 4;
         eggData.world = EncoderUtils.byteArrayToString(data, pos);
         pos += 4 + eggData.world.length();
 //        eggData.name = EncoderUtils.byteArrayToString(data, pos);
@@ -107,8 +104,6 @@ public class EggData {
     }
 
     private EggData(Location location) {
-        health = MAX_HEALTH;
-
         world = location.getWorld().getUID().toString();
         x = location.getBlockX();
         y = location.getBlockY();
@@ -123,7 +118,6 @@ public class EggData {
     }
 
     public byte[] encode() {
-        byte[] hpEncode = EncoderUtils.encodeFloat(health);
         byte[] worldEncode = EncoderUtils.encodeString(world);
 //        byte[] nameEncode = EncoderUtils.encodeString(name);
         byte[] kingdomUuidEncode = EncoderUtils.encodeString(kingdomUuid);
@@ -134,7 +128,7 @@ public class EggData {
         byte[] yEncode = EncoderUtils.encodeInt(y);
         byte[] zEncode = EncoderUtils.encodeInt(z);
 
-        return packEncoding(hpEncode, worldEncode, kingdomUuidEncode, xEncode, yEncode, zEncode);
+        return packEncoding(worldEncode, kingdomUuidEncode, xEncode, yEncode, zEncode);
     }
 
     private byte[] packEncoding(byte[]... data) {
@@ -180,19 +174,19 @@ public class EggData {
     }
 
     public void updateHealth(float health, boolean hardUpdate) {
-        boolean majorHealthChange = false;
-
-        this.health = health;
-
-        if(health <= 0) {
-            majorHealthChange = true;
-            destroyEgg(new Location(Bukkit.getWorld(UUID.fromString(world)), x, y, z).getBlock());
-            return;
-        }
-        // like a db, we dont ALWAYS have to push
-        if(majorHealthChange || hardUpdate) {
-            new Location(Bukkit.getWorld(UUID.fromString(world)), x, y, z).getChunk().getPersistentDataContainer()
-                    .set(EGG_SPACE, PersistentDataType.BYTE_ARRAY, encode());
-        }
+//        boolean majorHealthChange = false;
+//
+//        this.health = health;
+//
+//        if(health <= 0) {
+//            majorHealthChange = true;
+//            destroyEgg(new Location(Bukkit.getWorld(UUID.fromString(world)), x, y, z).getBlock());
+//            return;
+//        }
+//        // like a db, we dont ALWAYS have to push
+//        if(majorHealthChange || hardUpdate) {
+//            new Location(Bukkit.getWorld(UUID.fromString(world)), x, y, z).getChunk().getPersistentDataContainer()
+//                    .set(EGG_SPACE, PersistentDataType.BYTE_ARRAY, encode());
+//        }
     }
 }

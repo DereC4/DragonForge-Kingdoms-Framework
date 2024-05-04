@@ -80,9 +80,9 @@ public class EggListener implements Listener {
         if(data == null) {
             return null;
         }
-        System.out.println(data.getX());
-        System.out.println(data.getY());
-        System.out.println(data.getZ());
+//        System.out.println(data.getX());
+//        System.out.println(data.getY());
+//        System.out.println(data.getZ());
         return (data.getX() == block.getX() && data.getY() == block.getY() && data.getZ() == block.getZ())
                 ? data : null;
     }
