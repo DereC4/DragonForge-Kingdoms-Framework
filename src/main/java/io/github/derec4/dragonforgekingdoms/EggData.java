@@ -41,15 +41,16 @@ public class EggData {
         eggData.kingdomUuid = kingdom.getID().toString();
         location.getChunk().getPersistentDataContainer().set(EGG_SPACE, PersistentDataType.BYTE_ARRAY,
                 eggData.encode());
+
+        // Dragon egg preparation: Set block below to Bedrock
+        Location bedrockLocation = location.clone().subtract(0, 1, 0);
+        bedrockLocation.getBlock().setType(Material.BEDROCK);
+
         Block block = location.getBlock();
 
         // Check if the block is air (optional)
         block.setType(Material.DRAGON_EGG);
-//            DragonEgg dragonEgg = (DragonEgg) block.getBlockData();
-//            dragonEgg.setTeleportable(true);
-//            block.setBlockData(dragonEgg);
         kingdom.setEggData(eggData);
-
     }
 
     public static boolean destroyEgg(Block block) {
