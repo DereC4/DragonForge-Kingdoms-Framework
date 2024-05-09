@@ -60,17 +60,6 @@ public class EggListener implements Listener {
         Kingdom kingdom = kingdomManager.getKingdomFromID(uuid);
         kingdom.updateHealth(dmg * -1);
         eggData.updateHealth(eggData.getHealth() - dmg, true);
-//        if (damageModifiers != null) {
-////          KingdomManager kingdomManager = KingdomManager.getInstance();
-////          byte[] encodedData = loadEncodedData(chunk); // HOW????
-//            for (AttributeModifier modifier : damageModifiers) {
-//                double amount = modifier.getAmount();
-//                // You can use the amount and other properties of the modifier
-//                player.sendMessage("Damage to egg: " + amount);
-//            }
-//        } else {
-//            player.sendMessage("No damage to egg found.");
-//        }
         player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_HURT, 1.0f, 1.0f);
     }
 
