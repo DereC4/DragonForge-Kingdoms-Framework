@@ -28,13 +28,10 @@ public class EggListener implements Listener {
         Block clickedBlock = event.getClickedBlock();
         Player player = event.getPlayer();
 
-        if (clickedBlock == null) {
+        if (clickedBlock == null || clickedBlock.getType() != Material.DRAGON_EGG) {
             return;
         }
 
-        if(clickedBlock.getType() != Material.DRAGON_EGG) {
-            return;
-        }
         EggData eggData = getKingdomEgg(clickedBlock);
         if (eggData == null) {
             return;
