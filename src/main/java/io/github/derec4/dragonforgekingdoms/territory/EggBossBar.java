@@ -70,7 +70,7 @@ public class EggBossBar implements Listener {
                     barColor,
                     BarStyle.SOLID
             );
-            bossBar.setProgress((double) eggHealth / kingdom.getMaxHealth());
+            bossBar.setProgress((double) (Math.max(eggHealth, 0))/ kingdom.getMaxHealth());
             bossBar.addPlayer(player);
             playerBossBars.put(player.getUniqueId(), bossBar);
         } else {
