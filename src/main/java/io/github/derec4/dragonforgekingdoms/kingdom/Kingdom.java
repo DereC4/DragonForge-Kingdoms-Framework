@@ -32,6 +32,7 @@ public class Kingdom {
     @Getter
     private EggData eggData;
     private Set<ChunkCoordinate> territory;
+    private int health;
 
     public Kingdom(String name, UUID leader, Location home) {
         this.name = name;
@@ -48,6 +49,7 @@ public class Kingdom {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date date = new Date();
         this.creationTime = formatter.format(date);
+        this.health = (int) getMaxHealth(); // Bad code i know but it is 2 AM
     }
 
     /**
@@ -196,8 +198,12 @@ public class Kingdom {
         }
     }
 
-    public void updateHealth() {
-
+    /**
+     * Updates the Kingdom's health by the amount specified
+     * @param amount Amount to add or deduct to the health
+     */
+    public void updateHealth(int amount) {
+        health += amount;
     }
 
     public void setName(String name) {
@@ -291,8 +297,8 @@ public class Kingdom {
     public void saveToDatabase(Connection connection) {
         try (PreparedStatement statement = connection.prepareStatement(
                 "INSERT INTO kingdoms (ID, name, description, open, creationTime, leader, level, " +
-                        "claimedChunks, home_world_id, home_x, home_y, home_z) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                        "claimedChunks, home_world_id, home_x, home_y, home_z, health) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
             statement.setString(1, this.ID.toString());
             statement.setString(2, this.name);
             statement.setString(3, this.description);
@@ -305,6 +311,7 @@ public class Kingdom {
             statement.setInt(10, this.home.getBlockX());
             statement.setInt(11, this.home.getBlockY());
             statement.setInt(12, this.home.getBlockZ());
+            statement.setInt(13,this.health);
             statement.executeUpdate();
         } catch (SQLException e) {
             Bukkit.getServer().getConsoleSender().sendMessage(e.toString());

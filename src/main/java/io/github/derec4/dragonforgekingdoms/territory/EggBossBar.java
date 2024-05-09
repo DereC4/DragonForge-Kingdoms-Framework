@@ -47,7 +47,7 @@ public class EggBossBar implements Listener {
     }
 
     private void displayEggHealthBossBar(Player player, Kingdom kingdom) {
-        int eggHealth = (int) kingdom.getEggData().getHealth();
+        int eggHealth = kingdom.getHealth();
         BarColor barColor;
         UUID playerKingdomUUID = KingdomManager.getInstance().getPlayerKingdom(player.getUniqueId()).getID();
         BossBar bossBar = playerBossBars.get(player.getUniqueId());

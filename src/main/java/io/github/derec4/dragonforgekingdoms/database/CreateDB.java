@@ -92,6 +92,7 @@ public class CreateDB {
                             "home_x INT," +
                             "home_y INT," +
                             "home_z INT" +
+                            "health INT" +
                             ")"
             );
             Bukkit.getServer().getConsoleSender().sendMessage("Kingdoms Database Code Reached!");

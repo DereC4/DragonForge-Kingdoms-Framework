@@ -1,5 +1,7 @@
 package io.github.derec4.dragonforgekingdoms;
 
+import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
+import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -13,6 +15,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+
+import java.util.UUID;
 
 public class EggListener implements Listener {
     @EventHandler
@@ -36,6 +40,13 @@ public class EggListener implements Listener {
             return;
         }
 
+        KingdomManager kingdomManager = KingdomManager.getInstance();
+        UUID uuid = UUID.fromString(eggData.getKingdomUuid());
+
+        if(!kingdomManager.getKingdoms().containsKey(uuid)) {
+            return;
+        }
+
         if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             event.setCancelled(true);
             return;
@@ -46,6 +57,8 @@ public class EggListener implements Listener {
         getDamageModifiers(event.getPlayer().getInventory().getItemInMainHand());
         int dmg = (int) player.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue();
         player.sendMessage("Damage to egg: " + dmg);
+        Kingdom kingdom = kingdomManager.getKingdomFromID(uuid);
+        kingdom.updateHealth(dmg * -1);
         eggData.updateHealth(eggData.getHealth() - dmg, true);
 //        if (damageModifiers != null) {
 ////          KingdomManager kingdomManager = KingdomManager.getInstance();
