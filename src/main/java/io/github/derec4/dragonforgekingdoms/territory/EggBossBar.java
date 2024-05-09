@@ -70,13 +70,13 @@ public class EggBossBar implements Listener {
                     barColor,
                     BarStyle.SOLID
             );
-            bossBar.setProgress((double) (Math.max(eggHealth, 0))/ kingdom.getMaxHealth());
+            bossBar.setProgress((double) (Math.max(eggHealth, 0)) / kingdom.getMaxHealth());
             bossBar.addPlayer(player);
             playerBossBars.put(player.getUniqueId(), bossBar);
         } else {
-            Bukkit.getLogger().info("Updating bossbar for " + player.getName());
+//            Bukkit.getLogger().info("Updating bossbar for " + player.getName());
             bossBar.setTitle(ChatColor.GREEN + "Egg Health: " + eggHealth);
-            bossBar.setProgress((double) eggHealth / kingdom.getMaxHealth());
+            bossBar.setProgress((double) (Math.max(eggHealth, 0)) / kingdom.getMaxHealth());
         }
     }
 
