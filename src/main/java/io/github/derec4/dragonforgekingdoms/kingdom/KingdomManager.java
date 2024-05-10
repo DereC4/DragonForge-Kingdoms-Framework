@@ -363,22 +363,12 @@ public class KingdomManager {
         return res;
     }
 
-    public void removePlayerFromDatabase(Connection connection, UUID playerUUID) {
-        try (PreparedStatement statement = connection.prepareStatement(
-                "DELETE FROM players WHERE id = ?")) {
-            statement.setString(1, playerUUID.toString());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     /**
      * Gets a kingdom's UUID from a given name
      */
     public UUID getKingdomFromName(String name) {
-        for(UUID u : kingdoms.keySet()) {
-            if(kingdoms.get(u).getName().equals(name)) {
+        for (UUID u : kingdoms.keySet()) {
+            if (kingdoms.get(u).getName().equals(name)) {
                 return u;
             }
         }
@@ -390,7 +380,7 @@ public class KingdomManager {
      * @param kingdomUUID The provided ID of the kingdom to delete
      */
     public void removeKingdom(UUID kingdomUUID) {
-        if(!kingdoms.containsKey(kingdomUUID)) {
+        if (!kingdoms.containsKey(kingdomUUID)) {
             return;
         }
         CreateDB databaseManager = new CreateDB();
@@ -438,25 +428,36 @@ public class KingdomManager {
         }
     }
 
+    public void removePlayerFromDatabase(Connection connection, UUID playerUUID) {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "DELETE FROM players WHERE id = ?")) {
+            statement.setString(1, playerUUID.toString());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
-     //     * Checks if a kingdom has met the criteria for leveling up, and then level up
-     //     */
+     * Checks if a kingdom has met the criteria for leveling up, and then level up
+     * @param kingdom The ID of the kingdom to check
+     */
     public void checkLevelUp(Kingdom kingdom) {
         int memberCount = kingdom.getMembers().size();
 //        int chunksClaimed = k.getClaimedChunks();
-        if(memberCount >= 200) {
+        if (memberCount >= 200) {
             kingdom.setLevel(7);
-        } else if(memberCount >= 100) {
+        } else if (memberCount >= 100) {
             kingdom.setLevel(6);
-        } else if(memberCount >= 50) {
+        } else if (memberCount >= 50) {
             kingdom.setLevel(5);
-        } else if(memberCount >= 25) {
+        } else if (memberCount >= 25) {
             kingdom.setLevel(4);
-        } else if(memberCount >= 10 ) {
+        } else if (memberCount >= 10 ) {
             kingdom.setLevel(3);
-        } else if(memberCount >= 2) {
+        } else if (memberCount >= 2) {
             kingdom.setLevel(2);
-        } else if(memberCount >= 1) {
+        } else if (memberCount >= 1) {
             kingdom.setLevel(1);
         }
 
@@ -467,7 +468,8 @@ public class KingdomManager {
     }
 
     /**
-     * Claims additional chunks in a ring pattern around the existing claimed chunks
+     * Claim chunks in a ring pattern centered around a kingdom's home Chunk
+     * @param kingdom The ID of the kingdom gaining territory
      */
     private void claimChunksInRingPattern(Kingdom kingdom) {
         // Determine the size of the ring for the current level
@@ -492,10 +494,11 @@ public class KingdomManager {
     }
 
     /**
-     * Gets a kingdom corresponding to the given UUID, or null if none
+     * @param kingdomUUID The ID of the kingdom to check the Hash Table for
+     * @return If the provided ID exists in the Hash Table
      */
-    public Kingdom getKingdomFromID(UUID id) {
-        return kingdoms.get(id);
+    public Kingdom getKingdomFromID(UUID kingdomUUID) {
+        return kingdoms.get(kingdomUUID);
     }
 
     /**
