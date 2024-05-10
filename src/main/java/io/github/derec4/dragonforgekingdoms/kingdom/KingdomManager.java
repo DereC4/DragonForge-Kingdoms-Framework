@@ -385,24 +385,56 @@ public class KingdomManager {
         return null;
     }
 
+    /**
+     * Deletes a kingdom completely, updating the database as well
+     * @param kingdomUUID The provided ID of the kingdom to delete
+     */
+    public void removeKingdom(UUID kingdomUUID) {
+        if(!kingdoms.containsKey(kingdomUUID)) {
+            return;
+        }
+        CreateDB databaseManager = new CreateDB();
+        try (Connection connection = databaseManager.getConnection()) {
+            removeKingdomFromDatabase(connection,kingdomUUID);
+        } catch (SQLException e) {
+            Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
+        }
+    }
+
+    /**
+     * Deletes a kingdom completely, updating the database as well
+     * @param playerUUID The provided ID of the player in a kingdom
+     */
     public void removeKingdom(UUID playerUUID, Connection connection) {
         UUID kingdomUUID = playerMappings.get(playerUUID);
+        if (kingdomUUID == null) {
+            return;
+        }
 
-        if (kingdomUUID != null) {
-            // Remove the kingdom from the in-memory map
-            kingdoms.remove(kingdomUUID);
+        // Remove the kingdom from the in-memory map
+        kingdoms.remove(kingdomUUID);
 
-            // Connect to the database and delete the corresponding row
-            if (connection != null) {
-                try (PreparedStatement statement = connection.prepareStatement(
-                        "DELETE FROM kingdoms WHERE ID = ?")) {
-                    statement.setString(1, kingdomUUID.toString());
-                    statement.executeUpdate();
-                    Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Kingdom has been removed");
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
+        // Connect to the database and delete the corresponding row
+        if (connection != null) {
+            try (PreparedStatement statement = connection.prepareStatement(
+                    "DELETE FROM kingdoms WHERE ID = ?")) {
+                statement.setString(1, kingdomUUID.toString());
+                statement.executeUpdate();
+                Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Kingdom has been removed");
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
+        }
+    }
+
+    public void removeKingdomFromDatabase(Connection connection, UUID kingdomUUID) {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "DELETE FROM kingdoms WHERE ID = ?")) {
+            statement.setString(1, kingdomUUID.toString());
+            statement.executeUpdate();
+            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Kingdom has been removed");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 

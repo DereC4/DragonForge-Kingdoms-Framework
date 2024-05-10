@@ -201,9 +201,15 @@ public class Kingdom {
     /**
      * Updates the Kingdom's health by the amount specified
      * @param amount Amount to add or deduct to the health
+     * @return If the health was updated
      */
-    public void updateHealth(int amount) {
+    public boolean updateHealth(int amount) {
+        // This is bad code but it is 4:12 AM and I am tired
+        if(health + amount <= 0) {
+            return false;
+        }
         health += amount;
+        return true;
     }
 
     public void setName(String name) {

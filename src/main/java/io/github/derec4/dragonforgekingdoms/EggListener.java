@@ -55,7 +55,9 @@ public class EggListener implements Listener {
         int dmg = (int) player.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue();
         player.sendMessage("Damage to egg: " + dmg);
         Kingdom kingdom = kingdomManager.getKingdomFromID(uuid);
-        kingdom.updateHealth(dmg * -1);
+        if(!kingdom.updateHealth(dmg * -1)) {
+            kingdomManager.removeKingdom(uuid);
+        }
         eggData.updateHealth(eggData.getHealth() - dmg, true);
         player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_HURT, 1.0f, 1.0f);
     }
