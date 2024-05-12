@@ -31,7 +31,6 @@ public class Kingdom {
     private Location home;
     @Getter
     private EggData eggData;
-    private Set<ChunkCoordinate> territory;
     private int health;
 
     public Kingdom(String name, UUID leader, Location home) {
@@ -41,7 +40,6 @@ public class Kingdom {
         this.leader = leader;
         this.ID = UUID.randomUUID(); // Change this later when we save kingdoms
         this.members = new HashSet<>();
-        this.territory = new HashSet<>();
         this.home = home;
         this.level = 1;
         this.claimedChunks = 1;
@@ -63,7 +61,6 @@ public class Kingdom {
         this.leader = leader;
         this.ID = ID;
         this.members = new HashSet<>();
-        this.territory = new HashSet<>();
         this.home = home;
         this.level = level;
         members.add(leader);
@@ -144,21 +141,6 @@ public class Kingdom {
 //        }
 //        return false;
 //    }
-
-    // Print the territory (claimed chunks) of the kingdom to the player source
-    public void printTerritory(Player player) {
-        player.sendMessage(ChatColor.GREEN + "Territory of Kingdom " + name + ": [");
-        boolean first = true;
-        for (ChunkCoordinate chunkCoord : territory) {
-            if (!first) {
-                player.sendMessage(", ");
-            } else {
-                first = false;
-            }
-            player.sendMessage("Chunk X: " + chunkCoord.getX() + ", Z: " + chunkCoord.getZ() + " in the world of " + chunkCoord.getWorldID());
-        }
-        player.sendMessage(ChatColor.GREEN + "]");
-    }
 
     public Optional<Player> getPlayer(UUID uuid) {
         Player player = Bukkit.getPlayer(uuid);
