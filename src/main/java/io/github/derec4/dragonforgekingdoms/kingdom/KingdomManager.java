@@ -313,9 +313,11 @@ public class KingdomManager {
         }
     }
 
-    public boolean removePlayer(UUID playerUUID) {
-        boolean res = kingdoms.get(playerMappings.get(playerUUID)).removePlayer(playerUUID);
-        playerMappings.remove(playerUUID);
+    /**
+     * Directly removes a player; administrator type command
+     * @param playerUUID UUID of the player to be removed
+     */
+    public void removePlayer(UUID playerUUID) {
         CreateDB temp = new CreateDB();
         try {
             Connection connection = temp.getConnection();
@@ -328,9 +330,7 @@ public class KingdomManager {
                     "group.duke", "duke",
                     "group.lord", "lord"
             );
-
             Set<Group> groupsToRemove = new HashSet<>();
-
             for (Map.Entry<String, String> entry : permissionToGroupMap.entrySet()) {
                 if (player.hasPermission(entry.getKey())) {
                     Group group = api.getGroupManager().getGroup(entry.getValue());
@@ -340,7 +340,6 @@ public class KingdomManager {
                     }
                 }
             }
-
             api.getUserManager().modifyUser(playerUUID, user -> {
                 for (Group groupToRemove : groupsToRemove) {
                     Node node = InheritanceNode.builder(groupToRemove).build();
@@ -348,19 +347,13 @@ public class KingdomManager {
                     System.out.println(groupToRemove.getName());
                 }
             });
-//            assert group != null;
-//            System.out.println(group.getName());
-//            if(group != null) {
-//                api.getUserManager().modifyUser(playerUUID, (User user) -> {
-//                    // Create a node to add to the player.
-//                    Node node = InheritanceNode.builder(group).build();
-//                    user.data().remove(node);
-//                });
-//            }
+            kingdoms.get(playerMappings.get(playerUUID)).removePlayer(playerUUID);
+            playerMappings.remove(playerUUID);
+            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Removed player " + playerUUID + " " +
+                    "from kingdom");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return res;
     }
 
     /**
@@ -385,6 +378,12 @@ public class KingdomManager {
         }
         CreateDB databaseManager = new CreateDB();
         try (Connection connection = databaseManager.getConnection()) {
+            // Remove the kingdom from the in-memory map
+            for(UUID uuid: kingdoms.get(kingdomUUID).getMembers()) {
+                removePlayer(uuid);
+            }
+            kingdoms.remove(kingdomUUID);
+
             removeKingdomFromDatabase(connection,kingdomUUID);
         } catch (SQLException e) {
             Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
@@ -402,6 +401,9 @@ public class KingdomManager {
         }
 
         // Remove the kingdom from the in-memory map
+        for(UUID uuid: kingdoms.get(kingdomUUID).getMembers()) {
+            removePlayer(uuid);
+        }
         kingdoms.remove(kingdomUUID);
 
         // Connect to the database and delete the corresponding row
@@ -422,7 +424,8 @@ public class KingdomManager {
                 "DELETE FROM kingdoms WHERE ID = ?")) {
             statement.setString(1, kingdomUUID.toString());
             statement.executeUpdate();
-            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Kingdom has been removed");
+            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Kingdom " + kingdomUUID + " has been" +
+                    " removed");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
