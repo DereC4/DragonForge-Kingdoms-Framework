@@ -383,8 +383,13 @@ public class KingdomManager {
                 removePlayer(uuid);
             }
             kingdoms.remove(kingdomUUID);
-
-            removeKingdomFromDatabase(connection,kingdomUUID);
+            for (Map.Entry<ChunkCoordinate, UUID> entry : territoryMappings.entrySet()) {
+                if (entry.getValue().equals(kingdomUUID)) {
+                    removeTerritoryFromDatabase(connection, entry.getKey());
+                    territoryMappings.remove(entry.getKey());
+                }
+            }
+            removeKingdomFromDatabase(connection, kingdomUUID);
         } catch (SQLException e) {
             Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
         }
@@ -405,18 +410,13 @@ public class KingdomManager {
             removePlayer(uuid);
         }
         kingdoms.remove(kingdomUUID);
-
-        // Connect to the database and delete the corresponding row
-        if (connection != null) {
-            try (PreparedStatement statement = connection.prepareStatement(
-                    "DELETE FROM kingdoms WHERE ID = ?")) {
-                statement.setString(1, kingdomUUID.toString());
-                statement.executeUpdate();
-                Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Kingdom has been removed");
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+        for (Map.Entry<ChunkCoordinate, UUID> entry : territoryMappings.entrySet()) {
+            if (entry.getValue().equals(kingdomUUID)) {
+                removeTerritoryFromDatabase(connection, entry.getKey());
+                territoryMappings.remove(entry.getKey());
             }
         }
+        removeKingdomFromDatabase(connection, kingdomUUID);
     }
 
     public void removeKingdomFromDatabase(Connection connection, UUID kingdomUUID) {
