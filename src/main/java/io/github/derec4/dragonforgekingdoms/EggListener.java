@@ -56,6 +56,7 @@ public class EggListener implements Listener {
         player.sendMessage("Damage to egg: " + dmg);
         Kingdom kingdom = kingdomManager.getKingdomFromID(uuid);
         if(!kingdom.updateHealth(dmg * -1)) {
+            System.out.println("Attempting to remove kingdom egg health is < 0");
             kingdomManager.removeKingdom(uuid);
         }
         eggData.updateHealth(eggData.getHealth() - dmg, true);

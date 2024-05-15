@@ -114,10 +114,10 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         int mapHeight = 8;
         KingdomManager km = KingdomManager.getInstance();
         ComponentBuilder message = new ComponentBuilder();
+        Kingdom playerKingdom = km.getPlayerKingdom(player.getUniqueId());
 
         // Title
-        String kingdomName = km.getPlayerKingdom(player.getUniqueId()) == null ? "Wilderness" :
-                km.getPlayerKingdom(player.getUniqueId()).getName();
+        String kingdomName = playerKingdom == null ? "Wilderness" : km.getPlayerKingdom(player.getUniqueId()).getName();
         message.append(String.format("o0o0o [ X: %d, Y: %d, %s ] o0o0o", centerChunk.getX(), centerChunk.getZ(),
                 kingdomName)).color(ChatColor.AQUA.asBungee());
         message.append("\n");
@@ -135,7 +135,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 if (kingdomUUID == null) {
                     // Wilderness
                     mapChar = '-';
-                } else if (kingdomUUID.equals(km.getPlayerKingdom(player.getUniqueId()).getID())) {
+                } else if (playerKingdom != null && kingdomUUID.equals(playerKingdom.getID())) {
                     // Ally Kingdom
                     mapChar = '$';
                 } else {

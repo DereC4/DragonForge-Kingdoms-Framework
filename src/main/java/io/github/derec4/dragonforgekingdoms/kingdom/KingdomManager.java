@@ -382,13 +382,14 @@ public class KingdomManager {
             for(UUID uuid: kingdoms.get(kingdomUUID).getMembers()) {
                 removePlayer(uuid);
             }
-            kingdoms.remove(kingdomUUID);
             for (Map.Entry<ChunkCoordinate, UUID> entry : territoryMappings.entrySet()) {
                 if (entry.getValue().equals(kingdomUUID)) {
                     removeTerritoryFromDatabase(connection, entry.getKey());
                     territoryMappings.remove(entry.getKey());
+                    System.out.println("Removed chunk");
                 }
             }
+            kingdoms.remove(kingdomUUID);
             removeKingdomFromDatabase(connection, kingdomUUID);
         } catch (SQLException e) {
             Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
@@ -589,7 +590,7 @@ public class KingdomManager {
     }
     public void removeTerritoryFromDatabase(Connection connection, ChunkCoordinate chunkCoord) {
         try (PreparedStatement statement = connection.prepareStatement(
-                "DELETE FROM territory WHERE chunk_x = ? AND chunk_z = ? AND world_id = ?")) {
+                "DELETE FROM chunks WHERE chunk_x = ? AND chunk_z = ? AND world_id = ?")) {
             statement.setInt(1, chunkCoord.getX());
             statement.setInt(2, chunkCoord.getZ());
             statement.setString(3, chunkCoord.getWorldID().toString());
