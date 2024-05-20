@@ -3,6 +3,7 @@ package io.github.derec4.dragonforgekingdoms.territory;
 import io.github.derec4.dragonforgekingdoms.ChunkCoordinate;
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -51,6 +52,7 @@ public class TerritoryEnterExit implements Listener {
                 message = ChatColor.BLUE + toKingdom.getName();
             }
             player.sendTitle(message, "", 10, 70, 20);
+            Bukkit.getServer().getConsoleSender().sendMessage("Message to " + player.getName() + ": " + message);
         }
     }
 }
