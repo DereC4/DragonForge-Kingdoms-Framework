@@ -77,8 +77,8 @@ public class KingdomManager {
                 "SELECT * FROM chunks")) {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                int x = resultSet.getInt("chunk_x");
-                int z = resultSet.getInt("chunk_z");
+                int x = (int) resultSet.getDouble("chunk_x");
+                int z = (int) resultSet.getDouble("chunk_z");
                 UUID worldID = UUID.fromString(resultSet.getString("world_id"));
                 ChunkCoordinate chunkCoord = new ChunkCoordinate(x, z, worldID);
                 UUID kingdomUUID = UUID.fromString(resultSet.getString("chunk_owner"));
@@ -607,8 +607,8 @@ public class KingdomManager {
     public void removeTerritoryFromDatabase(Connection connection, ChunkCoordinate chunkCoord) {
         try (PreparedStatement statement = connection.prepareStatement(
                 "DELETE FROM chunks WHERE chunk_x = ? AND chunk_z = ? AND world_id = ?")) {
-            statement.setInt(1, chunkCoord.getX());
-            statement.setInt(2, chunkCoord.getZ());
+            statement.setDouble(1, chunkCoord.getX());
+            statement.setDouble(2, chunkCoord.getZ());
             statement.setString(3, chunkCoord.getWorldID().toString());
             statement.executeUpdate();
         } catch (SQLException e) {
