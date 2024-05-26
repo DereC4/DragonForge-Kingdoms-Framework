@@ -172,14 +172,6 @@ public class KingdomManager {
     }
 
     public void updatePlayerKingdom(Connection connection, UUID playerUUID, UUID kingdomUUID) {
-//        try (PreparedStatement statement = connection.prepareStatement(
-//                "UPDATE players SET kingdom = ? WHERE id = ?")) {
-//            statement.setString(1, kingdomUUID.toString());
-//            statement.setString(2, playerUUID.toString());
-//            statement.executeUpdate();
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
         try (PreparedStatement statement = connection.prepareStatement(
                 "INSERT INTO players (id, kingdom) VALUES (?,?)"
         )) {

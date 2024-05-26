@@ -59,8 +59,7 @@ public class EggListener implements Listener {
 
         if(!kingdom.updateHealth(dmg * -1)) {
             System.out.println("Attempting to remove kingdom egg health is < 0");
-            clickedBlock.getWorld().spawnParticle(Particle.DRAGON_BREATH, clickedBlock.getLocation().add(0.5, 0.5, 0.5), 30,
-                    clickedBlock.getBlockData());
+            clickedBlock.getWorld().spawnParticle(Particle.DRAGON_BREATH, clickedBlock.getLocation().add(0.5, 0.5, 0.5), 30);
             clickedBlock.setType(Material.AIR);
             player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_DEATH, 1.0f, 1.0f);
             kingdomManager.removeKingdom(uuid);
