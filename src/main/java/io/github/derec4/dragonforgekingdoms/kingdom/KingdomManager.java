@@ -218,6 +218,22 @@ public class KingdomManager {
         return false;
     }
 
+    public String getKingdomTerritory(UUID uuid) {
+        StringBuilder message = new StringBuilder("Chunks owned by Kingdom " + uuid + ":\n");
+        for (Map.Entry<ChunkCoordinate, UUID> entry : territoryMappings.entrySet()) {
+            if (entry.getValue().equals(uuid)) {
+                ChunkCoordinate chunk = entry.getKey();
+                message.append(ChatColor.YELLOW)
+                        .append("Chunk (")
+                        .append(chunk.getX())
+                        .append(", ")
+                        .append(chunk.getZ())
+                        .append(")\n");
+            }
+        }
+        return message.toString();
+    }
+
     public boolean playerLeave(Player player) {
         // Check if the player has at least 8 Pufferfish
 

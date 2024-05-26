@@ -347,15 +347,16 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 }
             }
             case "territory" -> {
-                if (player.hasPermission("kingdom.territory")) {
-                    if (!inAKingdom(player.getUniqueId())) {
-                        player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
-                        return false;
-                    }
-
-                } else {
+                if (!player.hasPermission("kingdom.territory")) {
                     player.sendMessage(permsError);
+                    return false;
                 }
+                if (!inAKingdom(player.getUniqueId())) {
+                    player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
+                    return false;
+                }
+                UUID uuid = kManager.getKingdomFromID(playerID).getID();
+                player.sendMessage(ChatColor.GREEN + kManager.getKingdomTerritory(uuid));
             }
             //TODO pledging and adjusting level
             case "join" -> {
