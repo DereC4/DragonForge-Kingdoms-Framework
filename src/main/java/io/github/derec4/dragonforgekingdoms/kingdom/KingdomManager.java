@@ -390,10 +390,13 @@ public class KingdomManager {
             for(UUID uuid: kingdoms.get(kingdomUUID).getMembers()) {
                 removePlayer(uuid);
             }
-            for (Map.Entry<ChunkCoordinate, UUID> entry : territoryMappings.entrySet()) {
-                if (entry.getValue().equals(kingdomUUID)) {
-                    removeTerritoryFromDatabase(connection, entry.getKey());
-                    territoryMappings.remove(entry.getKey());
+            // Use an iterator to avoid ConcurrentModificationException
+            Iterator<ChunkCoordinate> iterator = territoryMappings.keySet().iterator();
+            while (iterator.hasNext()) {
+                ChunkCoordinate chunkCoordinate = iterator.next();
+                if (territoryMappings.get(chunkCoordinate).equals(kingdomUUID)) {
+                    removeTerritoryFromDatabase(connection, chunkCoordinate);
+                    iterator.remove();
                     System.out.println("Removed chunk");
                 }
             }
