@@ -414,7 +414,7 @@ public class KingdomManager {
 
     /**
      * Deletes a kingdom completely, updating the database as well
-     * @param playerUUID The provided ID of the player in a kingdom
+     * @param playerUUID The provided ID of the player who's kingdom will be removed
      */
     public void removeKingdom(UUID playerUUID, Connection connection) {
         UUID kingdomUUID = playerMappings.get(playerUUID);

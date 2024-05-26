@@ -4,6 +4,7 @@ import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
@@ -55,8 +56,13 @@ public class EggListener implements Listener {
         int dmg = (int) player.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue();
         player.sendMessage("Damage to egg: " + dmg);
         Kingdom kingdom = kingdomManager.getKingdomFromID(uuid);
+
         if(!kingdom.updateHealth(dmg * -1)) {
             System.out.println("Attempting to remove kingdom egg health is < 0");
+            clickedBlock.getWorld().spawnParticle(Particle.DRAGON_BREATH, clickedBlock.getLocation().add(0.5, 0.5, 0.5), 30,
+                    clickedBlock.getBlockData());
+            clickedBlock.setType(Material.AIR);
+            player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_DEATH, 1.0f, 1.0f);
             kingdomManager.removeKingdom(uuid);
         }
         eggData.updateHealth(eggData.getHealth() - dmg, true);
