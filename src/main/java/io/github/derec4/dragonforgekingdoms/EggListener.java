@@ -2,10 +2,7 @@ package io.github.derec4.dragonforgekingdoms;
 
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
-import org.bukkit.Chunk;
-import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -64,7 +61,18 @@ public class EggListener implements Listener {
             clickedBlock.setType(Material.AIR);
             Block bedrockBase = clickedBlock.getRelative(BlockFace.DOWN);
             bedrockBase.setType(Material.GRASS_BLOCK);
-            player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_DEATH, 1.0f, 1.0f);
+
+            // Iterate through all players and send a destruction notification to those that are online
+            for(UUID uuid1: kingdom.getMembers()) {
+                Player player1 = Bukkit.getPlayer(uuid1);
+                if (player1 != null && player1.isOnline()) {
+                    player1.sendTitle(ChatColor.RED + "EGG DESTROYED", "Your kingdom has fallen!", 10, 70, 20); //
+                    // (title,
+                    // subtitle,
+                    // fadeIn, stay, fadeOut)
+                    player1.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_DEATH, 1.0f, 1.0f);
+                }
+            }
             kingdomManager.removeKingdom(uuid);
         }
         eggData.updateHealth(eggData.getHealth() - dmg, true);
