@@ -351,37 +351,49 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                     player.sendMessage(permsError);
                     return false;
                 }
+
                 if (!inAKingdom(player.getUniqueId())) {
                     player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
                     return false;
                 }
+
                 UUID uuid = kManager.getKingdomFromID(playerID).getID();
                 player.sendMessage(ChatColor.GREEN + kManager.getKingdomTerritory(uuid));
             }
             //TODO pledging and adjusting level
             case "join" -> {
-                if(player.hasPermission("kingdom.join")) {
-                    if(inAKingdom(player.getUniqueId())) {
-                        player.sendMessage(ChatColor.RED + "You are already in a kingdom!");
-                        return false;
-                    }
-                    String name = args[1];
-                    UUID id = kManager.getKingdomFromName(name);
-                    if(id == null) {
-                        player.sendMessage(ChatColor.RED + "Couldn't find a kingdom with that name!");
-                        return false;
-                    }
+                if (!player.hasPermission("kingdom.join")) {
+                    player.sendMessage(permsError);
+                    return false;
+                }
 
-                    /*
+                if (args.length < 2) {
+                    player.sendMessage(ChatColor.RED + "Usage: /kingdom join <kingdom name>");
+                    return false;
+                }
+
+                if (inAKingdom(player.getUniqueId())) {
+                    player.sendMessage(ChatColor.RED + "You are already in a kingdom!");
+                    return false;
+                }
+
+                String name = args[1];
+                UUID id = kManager.getKingdomFromName(name);
+
+                if (id == null) {
+                    player.sendMessage(ChatColor.RED + "Couldn't find a kingdom with that name!");
+                    return false;
+                }
+
+                /*
                     To join a kingdom, update the player mappings
                     Also add the player to that kingdom's members
                     TODO Finally, update the player database
-                     */
-                    kManager.addPlayerToKingdom(player.getUniqueId(), id);
-                    kManager.getKingdoms().get(id).addPlayer(player.getUniqueId());
-                } else {
-                    player.sendMessage(permsError);
-                }
+                */
+                kManager.addPlayerToKingdom(player.getUniqueId(), id);
+                kManager.getKingdoms().get(id).addPlayer(player.getUniqueId());
+                player.sendMessage(ChatColor.GREEN + "You have joined the kingdom " + name + "!");
+                return true;
             }
             case "home" -> {
                 if(player.hasPermission("kingdom.home")) {
