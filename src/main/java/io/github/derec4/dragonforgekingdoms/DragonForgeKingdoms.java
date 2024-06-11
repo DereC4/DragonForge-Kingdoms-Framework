@@ -15,6 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.UUID;
 
 public final class DragonForgeKingdoms extends JavaPlugin {
     private CreateDB databaseManager;
@@ -60,6 +61,11 @@ public final class DragonForgeKingdoms extends JavaPlugin {
                 PlayerEffects.applyEffects(player);
             }
         }, 0L, 2L);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
+            for (UUID uuid : kingdomManager.getKingdoms().keySet()) {
+                kingdomManager.getKingdoms().get(uuid).updateHealth(2);
+            }
+        }, 0L, 20L);
     }
 
     @Override
