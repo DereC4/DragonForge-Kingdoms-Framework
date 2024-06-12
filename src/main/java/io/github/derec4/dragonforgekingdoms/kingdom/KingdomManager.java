@@ -169,6 +169,24 @@ public class KingdomManager {
         }
         Kingdom k = kingdoms.get(kingdomUUID);
         k.addPlayer(playerUUID);
+        LuckPerms luckPerms = LuckPermsProvider.get();
+        User user = luckPerms.getUserManager().getUser(playerUUID);
+
+        if (user == null) {
+            luckPerms.getUserManager().loadUser(playerUUID).thenAcceptAsync(loadedUser -> {
+                if (loadedUser != null) {
+                    addVassalGroup(luckPerms, loadedUser);
+                }
+            });
+        } else {
+            addVassalGroup(luckPerms, user);
+        }
+    }
+
+    private void addVassalGroup(LuckPerms luckPerms, User user) {
+        Node node = Node.builder("group.vassal").build();
+        user.data().add(node);
+        luckPerms.getUserManager().saveUser(user);
     }
 
     public void updatePlayerKingdom(Connection connection, UUID playerUUID, UUID kingdomUUID) {
