@@ -190,7 +190,7 @@ public class Kingdom {
         if(health + amount <= 0) {
             return false;
         }
-        health += amount;
+        health = (int) Math.min(health + amount,getMaxHealth());
         return true;
     }
 

@@ -65,7 +65,7 @@ public final class DragonForgeKingdoms extends JavaPlugin {
             for (UUID uuid : kingdomManager.getKingdoms().keySet()) {
                 kingdomManager.getKingdoms().get(uuid).updateHealth(2);
             }
-        }, 0L, 20L);
+        }, 0L, 100L);
     }
 
     @Override
