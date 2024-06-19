@@ -584,6 +584,33 @@ public class KingdomManager {
         return territoryMappings.get(chunkCoord);
     }
 
+    public boolean invitePlayerToKingdom(Player inviter, String recipient) {
+        UUID inviterID = inviter.getUniqueId();
+        Kingdom inviterKingdom = getPlayerKingdom(inviterID);
+        if (inviterKingdom == null) {
+            inviter.sendMessage(ChatColor.RED + "You are not in a kingdom.");
+            return false;
+        }
+
+        OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(recipient);
+        UUID targetPlayerID = targetPlayer.getUniqueId();
+
+        if (pendingInvites.containsKey(targetPlayerID)) {
+            inviter.sendMessage(ChatColor.RED + "That player already has a pending invite.");
+            return false;
+        }
+
+        pendingInvites.put(targetPlayerID, inviterKingdom.getID());
+
+        if (targetPlayer.isOnline()) {
+            Player onlineTargetPlayer = targetPlayer.getPlayer();
+            onlineTargetPlayer.sendMessage(ChatColor.GREEN + "You have been invited to join the kingdom " + inviterKingdom.getName() + ".");
+        }
+
+        inviter.sendMessage(ChatColor.GREEN + "Invitation sent to " + recipient + ".")
+        return true;
+    }
+
     public void saveTerritoryToDatabase(Connection connection, ChunkCoordinate chunkCoord, UUID ID) {
         try (PreparedStatement statement = connection.prepareStatement(
                 "INSERT INTO chunks (chunk_owner, chunk_x, chunk_z, world_id)" +
