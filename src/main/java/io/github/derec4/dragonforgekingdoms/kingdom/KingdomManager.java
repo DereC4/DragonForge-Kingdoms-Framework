@@ -155,7 +155,12 @@ public class KingdomManager {
         }
     }
 
-    // Method to add player to a kingdom
+    /**
+     * Method to add player to a kingdom, as well as update the player table in the database. If the player has
+     * pending invites, the invite is removed. Player is then given the Vassal Luckperms permission group.
+     * @param playerUUID
+     * @param kingdomUUID
+     */
     public void addPlayerToKingdom(UUID playerUUID, UUID kingdomUUID) {
         if(playerMappings.containsKey(playerUUID)) {
             return;
@@ -167,6 +172,7 @@ public class KingdomManager {
             Connection connection = temp.getConnection();
             updatePlayerKingdom(connection, playerUUID, kingdomUUID);
             playerMappings.put(playerUUID, kingdomUUID);
+            pendingInvites.remove(playerUUID);
             checkLevelUp(kingdoms.get(kingdomUUID));
         } catch (SQLException e) {
             throw new RuntimeException(e);

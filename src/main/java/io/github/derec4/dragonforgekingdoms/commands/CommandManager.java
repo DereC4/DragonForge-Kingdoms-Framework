@@ -385,6 +385,19 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                     return false;
                 }
 
+                Kingdom kingdom = kManager.getKingdoms().get(id);
+
+                if (!kingdom.isOpen() && !kManager.getPendingInvites().containsKey(player.getUniqueId())) {
+                    player.sendMessage(ChatColor.RED + "That kingdom is private and you do not have an invite.");
+                    return false;
+                }
+
+                if (kManager.getPendingInvites().containsKey(player.getUniqueId()) &&
+                        !kManager.getPendingInvites().get(player.getUniqueId()).equals(id)) {
+                    player.sendMessage(ChatColor.RED + "You have an invite to a different kingdom.");
+                    return false;
+                }
+
                 /*
                     To join a kingdom, update the player mappings
                     Also add the player to that kingdom's members
