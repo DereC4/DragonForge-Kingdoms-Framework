@@ -3,6 +3,7 @@ package io.github.derec4.dragonforgekingdoms.kingdom;
 import io.github.derec4.dragonforgekingdoms.ChunkCoordinate;
 import io.github.derec4.dragonforgekingdoms.EggData;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
+import lombok.Getter;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.group.Group;
@@ -24,11 +25,14 @@ public class KingdomManager {
     private final Map<UUID, Kingdom> kingdoms; // Maps UUID to a Kingdom Object
     private final Map<UUID, UUID> playerMappings; // Maps player UUID to their kingdom UUID
     private final Map<ChunkCoordinate, UUID> territoryMappings; // Maps chunk coordinates to a Kingdom UUID
+    @Getter
+    private final Map<UUID, UUID> pendingInvites; // Maps invites: a player to a kingdom UUID
 
     private KingdomManager() {
         kingdoms = new HashMap<>();
         playerMappings = new HashMap<>();
         territoryMappings = new HashMap<>();
+        pendingInvites = new HashMap<>();
     }
 
     public static synchronized KingdomManager getInstance() {
@@ -201,8 +205,6 @@ public class KingdomManager {
         }
     }
 
-
-
     /**
      * Returns the Kingdom a player UUID belongs to
      * @param playerUUID
@@ -246,7 +248,6 @@ public class KingdomManager {
 
     public boolean playerLeave(Player player) {
         // Check if the player has at least 8 Pufferfish
-
         if(!player.isOp()) {
             if (!hasRequiredItems(player, Material.PUFFERFISH, 8)) {
                 // Player doesn't have enough Pufferfish, deny leaving
@@ -259,12 +260,12 @@ public class KingdomManager {
         boolean res = kingdom.removePlayer(player.getUniqueId());
         playerMappings.remove(player.getUniqueId());
         CreateDB temp = new CreateDB();
+
         try {
             Connection connection = temp.getConnection();
             removePlayerFromDatabase(connection, player.getUniqueId());
-            // If the kingdom has no members left, delete it
+
             if (kingdom.getMembers().isEmpty()) {
-                // Delete Kingdom
                 kingdoms.remove(kingdom.getID());
                 removeKingdom(player.getUniqueId(), connection);
             }
@@ -315,6 +316,7 @@ public class KingdomManager {
 
     /**
      * Because Why Not?
+     * @param player
      */
     public void removePufferfish(Player player) {
         removeItem(player, Material.PUFFERFISH, 8);
@@ -447,28 +449,6 @@ public class KingdomManager {
             }
         }
         removeKingdomFromDatabase(connection, kingdomUUID);
-    }
-
-    public void removeKingdomFromDatabase(Connection connection, UUID kingdomUUID) {
-        try (PreparedStatement statement = connection.prepareStatement(
-                "DELETE FROM kingdoms WHERE ID = ?")) {
-            statement.setString(1, kingdomUUID.toString());
-            statement.executeUpdate();
-            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Kingdom " + kingdomUUID + " has been" +
-                    " removed");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void removePlayerFromDatabase(Connection connection, UUID playerUUID) {
-        try (PreparedStatement statement = connection.prepareStatement(
-                "DELETE FROM players WHERE id = ?")) {
-            statement.setString(1, playerUUID.toString());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**
@@ -629,6 +609,26 @@ public class KingdomManager {
         }
     }
 
+    public void removeKingdomFromDatabase(Connection connection, UUID kingdomUUID) {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "DELETE FROM kingdoms WHERE ID = ?")) {
+            statement.setString(1, kingdomUUID.toString());
+            statement.executeUpdate();
+            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Kingdom " + kingdomUUID + " has been" +
+                    " removed");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
+    public void removePlayerFromDatabase(Connection connection, UUID playerUUID) {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "DELETE FROM players WHERE id = ?")) {
+            statement.setString(1, playerUUID.toString());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }
