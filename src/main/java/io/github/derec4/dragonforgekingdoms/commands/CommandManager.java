@@ -477,6 +477,26 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                     player.sendMessage(permsError);
                 }
             }
+            case "invite" -> {
+                if(!player.hasPermission("kingdom.invite")) {
+                    player.sendMessage(permsError);
+                    return false;
+                }
+
+                if (args.length < 2) {
+                    player.sendMessage(ChatColor.RED + "Usage: /kingdom invite <player name>");
+                    return false;
+                }
+
+                if (!inAKingdom(player.getUniqueId())) {
+                    player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
+                    return false;
+                }
+
+                String targetPlayerName = args[1];
+                kManager.invitePlayerToKingdom(player, targetPlayerName);
+                return true;
+            }
             default -> player.sendMessage(ChatColor.RED + "Unknown sub-command. Usage: /kingdom <sub-command>");
         }
 

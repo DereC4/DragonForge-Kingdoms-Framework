@@ -613,7 +613,7 @@ public class KingdomManager {
             onlineTargetPlayer.sendMessage(ChatColor.GREEN + "You have been invited to join the kingdom " + inviterKingdom.getName() + ".");
         }
 
-        inviter.sendMessage(ChatColor.GREEN + "Invitation sent to " + recipient + ".")
+        inviter.sendMessage(ChatColor.GREEN + "Invitation sent to " + recipient + ".");
         return true;
     }
 
