@@ -101,6 +101,18 @@ public class CreateDB {
         }
     }
 
+    public void createInvitesTable() {
+        try {
+            connection.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS invites (" +
+                    "player TEXT" +
+                    "sender TEXT" +
+                    "kingdom TEXT");
+            Bukkit.getServer().getConsoleSender().sendMessage("Invites Database Code Reached!");
+        } catch (SQLException e) {
+            Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
+        }
+    }
+
     public Connection getConnection() throws SQLException {
         if (connection == null || connection.isClosed()) {
             // Reconnect or create a new connection if it's closed or doesn't exist

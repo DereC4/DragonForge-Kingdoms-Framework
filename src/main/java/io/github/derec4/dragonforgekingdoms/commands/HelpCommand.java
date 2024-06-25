@@ -16,6 +16,7 @@ public class HelpCommand implements CommandExecutor {
         commandHelpMap.put("create", "Create a new kingdom");
         commandHelpMap.put("description", "Sets your kingdom's description");
         commandHelpMap.put("home", "Teleports you to your kingdom's home");
+        commandHelpMap.put("invite","Invite a player to your kingdom");
         commandHelpMap.put("join", "Join a kingdom!");
         commandHelpMap.put("leave", "Leave your kingdom! Requires 8 Pufferfish");
         commandHelpMap.put("map", "Displays a map of nearby allies and enemies");

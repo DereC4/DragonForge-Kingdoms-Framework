@@ -1,6 +1,7 @@
 package io.github.derec4.dragonforgekingdoms.kingdom;
 
 import io.github.derec4.dragonforgekingdoms.ChunkCoordinate;
+import io.github.derec4.dragonforgekingdoms.DragonForgeKingdoms;
 import io.github.derec4.dragonforgekingdoms.EggData;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
 import lombok.Getter;
@@ -662,6 +663,22 @@ public class KingdomManager {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void addInviteToDatabase(UUID playerUUID, UUID senderUUID, UUID kingdomUUID) {
+        Bukkit.getScheduler().runTaskAsynchronously(DragonForgeKingdoms.getInstance(), () -> {
+            CreateDB databaseManager = new CreateDB();
+            try (Connection connection = databaseManager.getConnection();
+                 PreparedStatement statement = connection.prepareStatement(
+                         "INSERT INTO invites (player_id, sender_id, kingdom_id) VALUES (?, ?, ?)")) {
+                statement.setString(1, playerUUID.toString());
+                statement.setString(2, senderUUID.toString());
+                statement.setString(3, kingdomUUID.toString());
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
 }
