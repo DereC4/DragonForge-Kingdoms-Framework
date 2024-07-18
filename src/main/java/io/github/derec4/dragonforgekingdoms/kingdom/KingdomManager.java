@@ -620,7 +620,8 @@ public class KingdomManager {
 
         if (targetPlayer.isOnline()) {
             Player onlineTargetPlayer = targetPlayer.getPlayer();
-            onlineTargetPlayer.sendMessage(ChatColor.GREEN + "You have been invited to join the kingdom " + inviterKingdom.getName() + ".");
+            onlineTargetPlayer.sendMessage(ChatColor.GREEN + "You have been invited to join the kingdom " + inviterKingdom.getName() + "." +
+                    "\nJoin using /k join [Kingdom Name]");
         }
 
         inviter.sendMessage(ChatColor.GREEN + "Invitation sent to " + recipient + ".");
