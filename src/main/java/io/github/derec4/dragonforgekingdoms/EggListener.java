@@ -52,7 +52,7 @@ public class EggListener implements Listener {
         System.out.println("DEBUG LOL BERSAM BASAG");
         getDamageModifiers(event.getPlayer().getInventory().getItemInMainHand());
         int dmg = (int) player.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue();
-        player.sendMessage("Damage to egg: " + dmg);
+//        player.sendMessage("Damage to egg: " + dmg);
         Kingdom kingdom = kingdomManager.getKingdomFromID(uuid);
 
         if(!kingdom.updateHealth(dmg * -1)) {

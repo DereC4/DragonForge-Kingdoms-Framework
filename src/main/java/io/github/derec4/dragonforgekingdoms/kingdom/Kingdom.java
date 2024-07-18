@@ -223,7 +223,6 @@ public class Kingdom {
                 .append("\nHome to " + this.members.size() + " people")
                 .append("\nEgg Health " + this.eggData.getHealth())
                 .append("\nDescription: " + this.description)
-                .append("\nMoney: $0")
                 .append("\nDestroyed Kingdoms: 0")
                 .append("\nLand Power: " + this.claimedChunks + " out of (max chunks to be inputted later)")
                 .append("\nLed by Lord " + Bukkit.getOfflinePlayer(this.leader).getName()).create();

@@ -459,6 +459,15 @@ public class KingdomManager {
     }
 
     /**
+     * Helper function for kingdom deletion to remove the egg and the bedrock.
+     * @param kingdom
+     */
+    private void cleanUpKingdomEgg(Kingdom kingdom) {
+        EggData eggData = kingdom.getEggData();
+
+    }
+
+    /**
      * Checks if a kingdom has met the criteria for leveling up, and then level up
      * @param kingdom The ID of the kingdom to check
      */

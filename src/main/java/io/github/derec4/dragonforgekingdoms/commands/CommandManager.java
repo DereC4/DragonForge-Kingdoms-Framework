@@ -49,10 +49,12 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         UUID playerKingdom = km.getPlayerKingdom(player.getUniqueId()).getID();
 
         if (km.claimChunk(playerKingdom, chunk)) {
-            player.sendMessage(ChatColor.GREEN + "You have successfully claimed this chunk for your kingdom.");
+            Bukkit.getLogger().info(ChatColor.GREEN + "Kingdom " + km.getKingdomFromID(playerKingdom).getName() + " claimed chunk (" + chunk.getX() +
+                    ", " + chunk.getZ() + ")");
+            player.sendTitle(ChatColor.GREEN + "Kingdom Created!", km.getKingdomFromID(playerKingdom).getName(), 10, 70, 20); //
         } else {
-            player.sendMessage(ChatColor.RED + "Chunk claim failed. This chunk may already be claimed " +
-                    "or there was an error.");
+            Bukkit.getLogger().info(ChatColor.RED + "Chunk claim failed. This chunk may already be claimed or there was an error."
+            +  "\nChunk (" + chunk.getX() + ", " + chunk.getZ() + ")");
         }
     }
 
