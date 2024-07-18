@@ -39,7 +39,7 @@ public class EggListener implements Listener {
         KingdomManager kingdomManager = KingdomManager.getInstance();
         UUID uuid = UUID.fromString(eggData.getKingdomUuid());
 
-        if(!kingdomManager.getKingdoms().containsKey(uuid)) {
+        if (!kingdomManager.getKingdoms().containsKey(uuid)) {
             return;
         }
 
@@ -49,11 +49,18 @@ public class EggListener implements Listener {
         }
 
         event.setCancelled(true);
+        Kingdom kingdom = kingdomManager.getKingdomFromID(uuid);
+
+        if (kingdomManager.getPlayerKingdom(player.getUniqueId()).equals(kingdom)) {
+            player.sendMessage(ChatColor.RED + "Friendly fire will not be tolerated!");
+            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_HURT_ON_FIRE, 1.0f, 1.0f);
+            return;
+        }
+
         System.out.println("DEBUG LOL BERSAM BASAG");
         getDamageModifiers(event.getPlayer().getInventory().getItemInMainHand());
         int dmg = (int) player.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue();
 //        player.sendMessage("Damage to egg: " + dmg);
-        Kingdom kingdom = kingdomManager.getKingdomFromID(uuid);
 
         if(!kingdom.updateHealth(dmg * -1)) {
             System.out.println("Attempting to remove kingdom egg health is < 0");

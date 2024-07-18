@@ -72,9 +72,9 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 int chunkZ = playerChunkZ + zOffset;
                 ChunkCoordinate chunk = new ChunkCoordinate(chunkX, chunkZ, worldID);
                 if (km.claimChunk(playerKingdom, chunk)) {
-                    player.sendMessage(ChatColor.GREEN + "You have successfully claimed a chunk for your kingdom at (" + chunkX + ", " + chunkZ + ").");
+//                    player.sendMessage(ChatColor.GREEN + "You have successfully claimed a chunk for your kingdom at (" + chunkX + ", " + chunkZ + ").");
                 } else {
-                    player.sendMessage(ChatColor.RED + "Chunk claim failed for chunk at (" + chunkX + ", " + chunkZ + "). This chunk may already be claimed or there was an error.");
+//                    player.sendMessage(ChatColor.RED + "Chunk claim failed for chunk at (" + chunkX + ", " + chunkZ + "). This chunk may already be claimed or there was an error.");
                 }
             }
         }
