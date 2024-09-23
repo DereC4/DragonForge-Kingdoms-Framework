@@ -114,11 +114,11 @@ public class KingdomManager {
 
     public void createKingdom(Kingdom kingdom, UUID playerID) {
         // Update the player's kingdom in the database
+        final Kingdom kingdom1 = kingdom;
+        final UUID playerID1 = playerID;
         Bukkit.getScheduler().runTaskAsynchronously(DragonForgeKingdoms.getInstance(), () -> {
-            final CreateDB databaseManager = new CreateDB();
+            CreateDB databaseManager = new CreateDB();
             try (Connection connection = databaseManager.getConnection()) {
-                final Kingdom kingdom1 = kingdom;
-                final UUID playerID1 = playerID;
                 kingdom1.saveToDatabase(connection);
                 kingdoms.put(kingdom1.getID(), kingdom1);
                 playerMappings.put(playerID1, kingdom1.getID());
@@ -126,8 +126,8 @@ public class KingdomManager {
 
                 // Run LuckPerms API calls on the main thread
                 Bukkit.getScheduler().runTaskAsynchronously(DragonForgeKingdoms.getInstance(), () -> {
-                    final LuckPerms api = LuckPermsProvider.get();
-                    final Group group = api.getGroupManager().getGroup("lord");
+                    LuckPerms api = LuckPermsProvider.get();
+                    Group group = api.getGroupManager().getGroup("lord");
                     api.getUserManager().modifyUser(playerID1, (User user) -> {
                         // Create a node to add to the player.
                         assert group != null;
@@ -154,16 +154,18 @@ public class KingdomManager {
      * @param playerID
      */
     public void addKingdom(Kingdom kingdom, UUID playerID) {
-        // Update the player's kingdom in the database
-        CreateDB temp = new CreateDB();
-        try {
-            kingdoms.put(kingdom.getID(), kingdom);
-            playerMappings.put(playerID, kingdom.getID());
-            Connection connection = temp.getConnection();
-            updatePlayerKingdom(connection, playerID, kingdom.getID());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        final Kingdom kingdom1 = kingdom;
+        final UUID playerID1 = playerID;
+        Bukkit.getScheduler().runTaskAsynchronously(DragonForgeKingdoms.getInstance(), () -> {
+            CreateDB temp = new CreateDB();
+            try (Connection connection = temp.getConnection()) {
+                kingdoms.put(kingdom1.getID(), kingdom1);
+                playerMappings.put(playerID1, kingdom1.getID());
+                updatePlayerKingdom(connection, playerID1, kingdom1.getID());
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     /**
