@@ -112,25 +112,31 @@ public class KingdomManager {
 
     public void createKingdom(Kingdom kingdom, UUID playerID) {
         // Update the player's kingdom in the database
-        CreateDB databaseManager = new CreateDB();
-        try (Connection connection = databaseManager.getConnection()) {
-            kingdom.saveToDatabase(connection);
-            kingdoms.put(kingdom.getID(), kingdom);
-            playerMappings.put(playerID, kingdom.getID());
-            LuckPerms api = LuckPermsProvider.get();
-            Group group = api.getGroupManager().getGroup("lord");
-            api.getUserManager().modifyUser(playerID, (User user) -> {
-                // Create a node to add to the player.
-                assert group != null;
-                Node node = InheritanceNode.builder(group).build();
+        Bukkit.getScheduler().runTaskAsynchronously(DragonForgeKingdoms.getInstance(), () -> {
+            CreateDB databaseManager = new CreateDB();
+            try (Connection connection = databaseManager.getConnection()) {
+                kingdom.saveToDatabase(connection);
+                kingdoms.put(kingdom.getID(), kingdom);
+                playerMappings.put(playerID, kingdom.getID());
+                updatePlayerKingdom(connection, playerID, kingdom.getID());
 
-                // Add the node to the user.
-                user.data().add(node);
-            });
-            updatePlayerKingdom(connection, playerID, kingdom.getID());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+                // Run LuckPerms API calls on the main thread
+                Bukkit.getScheduler().runTask(DragonForgeKingdoms.getInstance(), () -> {
+                    LuckPerms api = LuckPermsProvider.get();
+                    Group group = api.getGroupManager().getGroup("lord");
+                    api.getUserManager().modifyUser(playerID, (User user) -> {
+                        // Create a node to add to the player.
+                        assert group != null;
+                        Node node = InheritanceNode.builder(group).build();
+
+                        // Add the node to the user.
+                        user.data().add(node);
+                    });
+                });
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     public void createHeartstone(Kingdom kingdom, Player player) {

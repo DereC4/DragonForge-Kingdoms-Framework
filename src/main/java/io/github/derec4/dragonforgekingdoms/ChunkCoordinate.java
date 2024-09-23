@@ -1,8 +1,11 @@
 package io.github.derec4.dragonforgekingdoms;
 
+import lombok.Getter;
+
 import java.util.UUID;
 
 // Nested class to represent chunk coordinates
+@Getter
 public class ChunkCoordinate {
     private final int x;
     private final int z;
@@ -12,18 +15,6 @@ public class ChunkCoordinate {
         this.x = x;
         this.z = z;
         this.worldID = worldID;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getZ() {
-        return z;
-    }
-
-    public UUID getWorldID() {
-        return worldID;
     }
 
     @Override
