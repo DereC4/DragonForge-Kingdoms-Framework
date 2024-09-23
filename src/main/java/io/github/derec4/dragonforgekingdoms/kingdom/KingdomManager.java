@@ -20,9 +20,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class KingdomManager {
     private static KingdomManager instance;
+    @Getter
     private final Map<UUID, Kingdom> kingdoms; // Maps UUID to a Kingdom Object
     private final Map<UUID, UUID> playerMappings; // Maps player UUID to their kingdom UUID
     private final Map<ChunkCoordinate, UUID> territoryMappings; // Maps chunk coordinates to a Kingdom UUID
@@ -30,10 +32,10 @@ public class KingdomManager {
     private final Map<UUID, UUID> pendingInvites; // Maps invites: a player to a kingdom UUID
 
     private KingdomManager() {
-        kingdoms = new HashMap<>();
-        playerMappings = new HashMap<>();
-        territoryMappings = new HashMap<>();
-        pendingInvites = new HashMap<>();
+        kingdoms = new ConcurrentHashMap<>();
+        playerMappings = new ConcurrentHashMap<>();
+        territoryMappings = new ConcurrentHashMap<>();
+        pendingInvites = new ConcurrentHashMap<>();
     }
 
     public static synchronized KingdomManager getInstance() {
@@ -113,18 +115,20 @@ public class KingdomManager {
     public void createKingdom(Kingdom kingdom, UUID playerID) {
         // Update the player's kingdom in the database
         Bukkit.getScheduler().runTaskAsynchronously(DragonForgeKingdoms.getInstance(), () -> {
-            CreateDB databaseManager = new CreateDB();
+            final CreateDB databaseManager = new CreateDB();
             try (Connection connection = databaseManager.getConnection()) {
-                kingdom.saveToDatabase(connection);
-                kingdoms.put(kingdom.getID(), kingdom);
-                playerMappings.put(playerID, kingdom.getID());
-                updatePlayerKingdom(connection, playerID, kingdom.getID());
+                final Kingdom kingdom1 = kingdom;
+                final UUID playerID1 = playerID;
+                kingdom1.saveToDatabase(connection);
+                kingdoms.put(kingdom1.getID(), kingdom1);
+                playerMappings.put(playerID1, kingdom1.getID());
+                updatePlayerKingdom(connection, playerID1, kingdom1.getID());
 
                 // Run LuckPerms API calls on the main thread
-                Bukkit.getScheduler().runTask(DragonForgeKingdoms.getInstance(), () -> {
-                    LuckPerms api = LuckPermsProvider.get();
-                    Group group = api.getGroupManager().getGroup("lord");
-                    api.getUserManager().modifyUser(playerID, (User user) -> {
+                Bukkit.getScheduler().runTaskAsynchronously(DragonForgeKingdoms.getInstance(), () -> {
+                    final LuckPerms api = LuckPermsProvider.get();
+                    final Group group = api.getGroupManager().getGroup("lord");
+                    api.getUserManager().modifyUser(playerID1, (User user) -> {
                         // Create a node to add to the player.
                         assert group != null;
                         Node node = InheritanceNode.builder(group).build();
@@ -262,7 +266,7 @@ public class KingdomManager {
     public boolean playerLeave(Player player) {
         // Check if the player has at least 8 Pufferfish
         if(!player.isOp()) {
-            if (!hasRequiredItems(player, Material.PUFFERFISH, 8)) {
+            if (!hasRequiredPufferfish(player)) {
                 // Player doesn't have enough Pufferfish, deny leaving
                 player.sendMessage(ChatColor.RED + "You need at least 8 Pufferfish to leave.");
                 return false;
@@ -314,17 +318,17 @@ public class KingdomManager {
         return res;
     }
 
-    private boolean hasRequiredItems(Player player, Material material, int requiredAmount) {
+    private boolean hasRequiredPufferfish(Player player) {
         int count = 0;
 
         // Count the number of the specified item in the player's inventory
         for (ItemStack item : player.getInventory().getContents()) {
-            if (item != null && item.getType() == material) {
+            if (item != null && item.getType() == Material.PUFFERFISH) {
                 count += item.getAmount();
             }
         }
 
-        return count >= requiredAmount;
+        return count >= 8;
     }
 
     /**
@@ -591,10 +595,6 @@ public class KingdomManager {
             throw new RuntimeException(e);
         }
         return true;
-    }
-
-    public Map<UUID, Kingdom> getKingdoms() {
-        return kingdoms;
     }
 
     /**
