@@ -54,7 +54,7 @@ public class Kingdom {
      * Constructor for loading in from a database
      */
     public Kingdom(UUID ID, String name, UUID leader, Location home, String description, boolean open,
-                   String creationTime, int level, int claimedChunks) {
+                   String creationTime, int level, int claimedChunks, int health) {
         this.name = name;
         this.description = description;
         this.open = open;
@@ -66,6 +66,7 @@ public class Kingdom {
         members.add(leader);
         this.creationTime = creationTime;
         this.claimedChunks = claimedChunks;
+        this.health = health;
     }
 
     /**

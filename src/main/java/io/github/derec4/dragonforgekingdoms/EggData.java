@@ -97,9 +97,9 @@ public class EggData {
         eggData.y = EncoderUtils.byteArrayToInt(data, pos);
         pos += 4;
         eggData.z = EncoderUtils.byteArrayToInt(data, pos);
-        System.out.println("x = " + eggData.x);
-        System.out.println("y = " + eggData.y);
-        System.out.println("z = " + eggData.z);
+//        System.out.println("x = " + eggData.x);
+//        System.out.println("y = " + eggData.y);
+//        System.out.println("z = " + eggData.z);
 
         return eggData;
     }
@@ -122,9 +122,9 @@ public class EggData {
         byte[] worldEncode = EncoderUtils.encodeString(world);
 //        byte[] nameEncode = EncoderUtils.encodeString(name);
         byte[] kingdomUuidEncode = EncoderUtils.encodeString(kingdomUuid);
-        System.out.println("x = " + x);
-        System.out.println("y = " + y);
-        System.out.println("z = " + z);
+//        System.out.println("x = " + x);
+//        System.out.println("y = " + y);
+//        System.out.println("z = " + z);
         byte[] xEncode = EncoderUtils.encodeInt(x);
         byte[] yEncode = EncoderUtils.encodeInt(y);
         byte[] zEncode = EncoderUtils.encodeInt(z);

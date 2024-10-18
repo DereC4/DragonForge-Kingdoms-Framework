@@ -18,8 +18,8 @@ public class PlayerEffects {
         KingdomManager km = KingdomManager.getInstance();
         UUID playerUUID = player.getUniqueId();
         UUID kingdomUUID = km.getKingdomByChunk(playerChunk);
-        Kingdom k = km.getPlayerKingdom(playerUUID);
-        UUID playerKingdomUUID = k != null ? k.getID() : null;
+        Kingdom kingdom = km.getPlayerKingdom(playerUUID);
+        UUID playerKingdomUUID = kingdom != null ? kingdom.getID() : null;
         if (kingdomUUID != null && playerKingdomUUID != null) {
             int level = km.getKingdomFromID(kingdomUUID).getLevel();
             if (kingdomUUID.equals(playerKingdomUUID)) {

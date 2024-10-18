@@ -65,9 +65,11 @@ public class KingdomManager {
                         resultSet.getInt("home_y"),
                         resultSet.getInt("home_z")
                 );
+                int health = resultSet.getInt("health");
 
                 // Create a Kingdom object and add it to the map
-                Kingdom k = new Kingdom(kingdomID, name, leader, home, description, open, creationTime, level, claimedChunks);
+                Kingdom k = new Kingdom(kingdomID, name, leader, home, description, open, creationTime, level,
+                        claimedChunks, health);
                 // You may want to set other properties of the Kingdom based on your design
                 kingdoms.put(kingdomID, k);
 //                System.out.println("Message is here " + k.getID());
@@ -178,18 +180,20 @@ public class KingdomManager {
         if(playerMappings.containsKey(playerUUID)) {
             return;
         }
-
+        final UUID kingdom1 = kingdomUUID;
+        final UUID playerID1 = playerUUID;
         // Update the player's kingdom in the database and then in the hashmap
-        CreateDB temp = new CreateDB();
-        try {
-            Connection connection = temp.getConnection();
-            updatePlayerKingdom(connection, playerUUID, kingdomUUID);
-            playerMappings.put(playerUUID, kingdomUUID);
-            pendingInvites.remove(playerUUID);
-            checkLevelUp(kingdoms.get(kingdomUUID));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        Bukkit.getScheduler().runTaskAsynchronously(DragonForgeKingdoms.getInstance(), () -> {
+            CreateDB temp = new CreateDB();
+            try (Connection connection = temp.getConnection()) {
+                updatePlayerKingdom(connection, playerID1, kingdom1);
+                playerMappings.put(playerID1, kingdom1);
+                pendingInvites.remove(playerID1);
+                checkLevelUp(kingdoms.get(kingdom1));
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
         Kingdom k = kingdoms.get(kingdomUUID);
         k.addPlayer(playerUUID);
         LuckPerms luckPerms = LuckPermsProvider.get();
@@ -230,7 +234,10 @@ public class KingdomManager {
      * @return
      */
     public Kingdom getPlayerKingdom(UUID playerUUID) {
-        return kingdoms.get(playerMappings.get(playerUUID));
+        if(playerMappings.getOrDefault(playerUUID, null) == null) {
+            return null;
+        }
+        return kingdoms.getOrDefault(playerMappings.get(playerUUID), null);
     }
 
     /**

@@ -57,7 +57,7 @@ public class EggListener implements Listener {
             return;
         }
 
-        System.out.println("DEBUG LOL BERSAM BASAG");
+//        System.out.println("DEBUG LOL BERSAM BASAG");
         getDamageModifiers(event.getPlayer().getInventory().getItemInMainHand());
         int dmg = (int) player.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue();
 //        player.sendMessage("Damage to egg: " + dmg);
@@ -92,7 +92,6 @@ public class EggListener implements Listener {
         ItemMeta itemMeta = itemStack.getItemMeta();
 
         if (itemMeta != null && itemMeta.getPersistentDataContainer().has(Attribute.GENERIC_ATTACK_DAMAGE.getKey(), PersistentDataType.STRING)) {
-            // Retrieve the attribute modifiers for damage
             itemMeta.getAttributeModifiers(Attribute.GENERIC_ATTACK_DAMAGE);
         }
 
