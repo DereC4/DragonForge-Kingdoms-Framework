@@ -240,15 +240,14 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 Kingdom kingdom = new Kingdom(name, playerID, player.getLocation());
 
                 // Save the new kingdom to the database
-                kManager.createKingdom(kingdom, playerID);
-                kManager.addKingdom(kingdom, playerID);
-                kingdom = kManager.getPlayerKingdom(playerID);
-                kingdom.setHome(playerLocation);
-                initialClaimLand(player);
-                player.sendMessage(ChatColor.GREEN + "The Kingdom of " + kingdom.getName() +
-                        " has been created by " + player.getName());
-                player.playSound(player.getLocation(), Sound.UI_TOAST_IN, 1.0f, 1.0f);
-
+                kManager.createKingdom(kingdom, playerID, (createdKingdom) -> {
+                    kManager.addKingdom(createdKingdom, playerID);
+                    createdKingdom.setHome(playerLocation);
+                    initialClaimLand(player);
+                    player.sendMessage(ChatColor.GREEN + "The Kingdom of " + createdKingdom.getName() +
+                            " has been created by " + player.getName());
+                    player.playSound(player.getLocation(), Sound.UI_TOAST_IN, 1.0f, 1.0f);
+                });
                 // Create Heartstone
                 kManager.createHeartstone(kingdom, player);
             }

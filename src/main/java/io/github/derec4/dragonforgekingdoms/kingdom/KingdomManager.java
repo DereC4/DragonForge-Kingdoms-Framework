@@ -14,6 +14,7 @@ import net.luckperms.api.node.types.InheritanceNode;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Consumer;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -114,7 +115,7 @@ public class KingdomManager {
         }
     }
 
-    public void createKingdom(Kingdom kingdom, UUID playerID) {
+    public void createKingdom(Kingdom kingdom, UUID playerID, Consumer<Kingdom> callback) {
         // Update the player's kingdom in the database
         final Kingdom kingdom1 = kingdom;
         final UUID playerID1 = playerID;
@@ -138,6 +139,8 @@ public class KingdomManager {
                         // Add the node to the user.
                         user.data().add(node);
                     });
+
+                    callback.accept(kingdom1);
                 });
             } catch (Exception e) {
                 throw new RuntimeException(e);

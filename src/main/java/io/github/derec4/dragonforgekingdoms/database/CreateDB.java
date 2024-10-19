@@ -91,7 +91,7 @@ public class CreateDB {
                             "home_world_id TEXT," +
                             "home_x INT," +
                             "home_y INT," +
-                            "home_z INT" +
+                            "home_z INT," +
                             "health INT" +
                             ")"
             );
@@ -104,8 +104,8 @@ public class CreateDB {
     public void createInvitesTable() {
         try {
             connection.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS invites (" +
-                    "player TEXT" +
-                    "sender TEXT" +
+                    "player TEXT," +
+                    "sender TEXT," +
                     "kingdom TEXT");
             Bukkit.getServer().getConsoleSender().sendMessage("Invites Database Code Reached!");
         } catch (SQLException e) {
