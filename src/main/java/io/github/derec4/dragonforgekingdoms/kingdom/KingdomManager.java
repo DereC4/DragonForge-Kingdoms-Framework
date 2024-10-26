@@ -23,6 +23,8 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static io.github.derec4.dragonforgekingdoms.util.PlayerUtils.clearPlayerPermissions;
+
 public class KingdomManager {
     private static KingdomManager instance;
     @Getter
@@ -113,6 +115,32 @@ public class KingdomManager {
                 playerMappings.put(playerUUID, kingdomUUID);
             }
         }
+    }
+
+    /**
+     * Kingdom creation function without a callback
+     * @param kingdom
+     * @param playerID
+     */
+    public void createKingdom(Kingdom kingdom, UUID playerID) {
+        // Update the player's kingdom in the database
+        kingdoms.put(kingdom.getID(), kingdom);
+        playerMappings.put(playerID, kingdom.getID());
+
+        // Run LuckPerms API calls on the main thread
+        Bukkit.getScheduler().runTaskAsynchronously(DragonForgeKingdoms.getInstance(), () -> {
+            LuckPerms api = LuckPermsProvider.get();
+            Group group = api.getGroupManager().getGroup("lord");
+            api.getUserManager().modifyUser(playerID, (User user) -> {
+                // Create a node to add to the player.
+                assert group != null;
+                Node node = InheritanceNode.builder(group).build();
+
+                // Add the node to the user.
+                user.data().add(node);
+            });
+
+        });
     }
 
     public void createKingdom(Kingdom kingdom, UUID playerID, Consumer<Kingdom> callback) {
@@ -327,6 +355,7 @@ public class KingdomManager {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        System.out.println(res + " ABCDEFG");
         return res;
     }
 
@@ -370,11 +399,19 @@ public class KingdomManager {
         }
     }
 
+    public void removePlayer(UUID playerUUID) {
+        clearPlayerPermissions(playerUUID);
+        kingdoms.get(playerMappings.get(playerUUID)).removePlayer(playerUUID);
+        playerMappings.remove(playerUUID);
+        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Removed player " + playerUUID + " " +
+                "from kingdom");
+    }
+
     /**
      * Directly removes a player; administrator type command
      * @param playerUUID UUID of the player to be removed
      */
-    public void removePlayer(UUID playerUUID) {
+    public void removePlayerAsync(UUID playerUUID) {
         CreateDB temp = new CreateDB();
         try {
             Connection connection = temp.getConnection();
@@ -426,34 +463,30 @@ public class KingdomManager {
     }
 
     /**
-     * Deletes a kingdom completely, updating the database as well
+     * Deletes a kingdom completely, without updating the database
      * @param kingdomUUID The provided ID of the kingdom to delete
      */
     public void removeKingdom(UUID kingdomUUID) {
         if (!kingdoms.containsKey(kingdomUUID)) {
             return;
         }
-        CreateDB databaseManager = new CreateDB();
-        try (Connection connection = databaseManager.getConnection()) {
-            // Remove the kingdom from the in-memory map
-            for(UUID uuid: kingdoms.get(kingdomUUID).getMembers()) {
-                removePlayer(uuid);
-            }
-            // Use an iterator to avoid ConcurrentModificationException
-            Iterator<ChunkCoordinate> iterator = territoryMappings.keySet().iterator();
-            while (iterator.hasNext()) {
-                ChunkCoordinate chunkCoordinate = iterator.next();
-                if (territoryMappings.get(chunkCoordinate).equals(kingdomUUID)) {
-                    removeTerritoryFromDatabase(connection, chunkCoordinate);
-                    iterator.remove();
-                    System.out.println("Removed chunk");
-                }
-            }
-            kingdoms.remove(kingdomUUID);
-            removeKingdomFromDatabase(connection, kingdomUUID);
-        } catch (SQLException e) {
-            Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
+
+        // Clear remaining players from the kingdom just in case
+        for(UUID uuid: kingdoms.get(kingdomUUID).getMembers()) {
+            removePlayerAsync(uuid);
         }
+
+        // Use an iterator to avoid ConcurrentModificationException
+        Iterator<ChunkCoordinate> iterator = territoryMappings.keySet().iterator();
+        while (iterator.hasNext()) {
+            ChunkCoordinate chunkCoordinate = iterator.next();
+            if (territoryMappings.get(chunkCoordinate).equals(kingdomUUID)) {
+                iterator.remove();
+                System.out.println("Removed chunk");
+            }
+        }
+
+        kingdoms.remove(kingdomUUID);
     }
 
     /**
@@ -468,7 +501,7 @@ public class KingdomManager {
 
         // Remove the kingdom from the in-memory map
         for(UUID uuid: kingdoms.get(kingdomUUID).getMembers()) {
-            removePlayer(uuid);
+            removePlayerAsync(uuid);
         }
         kingdoms.remove(kingdomUUID);
         for (Map.Entry<ChunkCoordinate, UUID> entry : territoryMappings.entrySet()) {
@@ -479,6 +512,8 @@ public class KingdomManager {
         }
         removeKingdomFromDatabase(connection, kingdomUUID);
     }
+
+
 
     /**
      * Helper function for kingdom deletion to remove the egg and the bedrock.

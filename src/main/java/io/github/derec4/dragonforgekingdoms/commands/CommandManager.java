@@ -237,19 +237,16 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                     player.sendMessage(ChatColor.RED + "That name is already used by another kingdom!");
                     return false;
                 }
-                Kingdom kingdom = new Kingdom(name, playerID, player.getLocation());
 
-                // Save the new kingdom to the database
-                kManager.createKingdom(kingdom, playerID, (createdKingdom) -> {
-                    kManager.addKingdom(createdKingdom, playerID);
-                    createdKingdom.setHome(playerLocation);
-                    initialClaimLand(player);
-                    player.sendMessage(ChatColor.GREEN + "The Kingdom of " + createdKingdom.getName() +
-                            " has been created by " + player.getName());
-                    player.playSound(player.getLocation(), Sound.UI_TOAST_IN, 1.0f, 1.0f);
-                });
-                // Create Heartstone
+                Kingdom kingdom = new Kingdom(name, playerID, player.getLocation());
+                kManager.createKingdom(kingdom,playerID);
+                kingdom.setHome(playerLocation);
+                initialClaimLand(player);
                 kManager.createHeartstone(kingdom, player);
+
+                player.sendMessage(ChatColor.GREEN + "The Kingdom of " + kingdom.getName() +
+                        " has been created by " + player.getName());
+                player.playSound(player.getLocation(), Sound.UI_TOAST_IN, 1.0f, 1.0f);
             }
             case "remove" -> {
                 if (!player.hasPermission("kingdom.remove")) {
@@ -264,14 +261,14 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
                 // Implement the logic
                 player.sendMessage("Removing your kingdom...");
-                CreateDB databaseManager = new CreateDB();
+                kManager.removeKingdom(kManager.getPlayerKingdom(playerID).getID());
 
                 // Send in connection and try to remove the kingdom row from table
-                try (Connection connection = databaseManager.getConnection()) {
-                    kManager.removeKingdom(playerID, connection);
-                } catch (Exception e) {
-                    Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
-                }
+//                try (Connection connection = databaseManager.getConnection()) {
+//                    kManager.removeKingdom(playerID, connection);
+//                } catch (Exception e) {
+//                    Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
+//                }
             }
             case "claim" -> {
                 if (!player.hasPermission("kingdom.claim")) {
