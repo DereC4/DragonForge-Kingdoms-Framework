@@ -211,20 +211,20 @@ public class KingdomManager {
         if(playerMappings.containsKey(playerUUID)) {
             return;
         }
-        final UUID kingdom1 = kingdomUUID;
-        final UUID playerID1 = playerUUID;
+
         // Update the player's kingdom in the database and then in the hashmap
-        Bukkit.getScheduler().runTaskAsynchronously(DragonForgeKingdoms.getInstance(), () -> {
-            CreateDB temp = new CreateDB();
-            try (Connection connection = temp.getConnection()) {
-                updatePlayerKingdom(connection, playerID1, kingdom1);
-                playerMappings.put(playerID1, kingdom1);
-                pendingInvites.remove(playerID1);
-                checkLevelUp(kingdoms.get(kingdom1));
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        });
+//        Bukkit.getScheduler().runTaskAsynchronously(DragonForgeKingdoms.getInstance(), () -> {
+//            CreateDB temp = new CreateDB();
+//            try (Connection connection = temp.getConnection()) {
+//                updatePlayerKingdom(connection, playerID1, kingdom1);
+//            } catch (SQLException e) {
+//                throw new RuntimeException(e);
+//            }
+//        });
+
+        playerMappings.put(playerUUID, kingdomUUID);
+        pendingInvites.remove(playerUUID);
+        checkLevelUp(kingdoms.get(kingdomUUID));
         Kingdom k = kingdoms.get(kingdomUUID);
         k.addPlayer(playerUUID);
         LuckPerms luckPerms = LuckPermsProvider.get();
@@ -303,7 +303,7 @@ public class KingdomManager {
         return message.toString();
     }
 
-    public boolean playerLeave(Player player) {
+    public boolean handlePlayerLeaving(Player player) {
         // Check if the player has at least 8 Pufferfish
         if(!player.isOp()) {
             if (!hasRequiredPufferfish(player)) {
@@ -316,45 +316,37 @@ public class KingdomManager {
         Kingdom kingdom = kingdoms.get(playerMappings.get(player.getUniqueId()));
         boolean res = kingdom.removePlayer(player.getUniqueId());
         playerMappings.remove(player.getUniqueId());
-        CreateDB temp = new CreateDB();
 
-        try {
-            Connection connection = temp.getConnection();
-            removePlayerFromDatabase(connection, player.getUniqueId());
-
-            if (kingdom.getMembers().isEmpty()) {
-                kingdoms.remove(kingdom.getID());
-                removeKingdom(player.getUniqueId(), connection);
-            }
-            LuckPerms api = LuckPermsProvider.get();
-            Map<String, String> permissionToGroupMap = Map.of(
-                    "group.vassal", "vassal",
-                    "group.duke", "duke",
-                    "group.lord", "lord"
-            );
-
-            Set<Group> groupsToRemove = new HashSet<>();
-
-            for (Map.Entry<String, String> entry : permissionToGroupMap.entrySet()) {
-                if (player.hasPermission(entry.getKey())) {
-                    Group group = api.getGroupManager().getGroup(entry.getValue());
-                    if (group != null) {
-                        groupsToRemove.add(group);
-                        System.out.println(group.getName());
-                    }
-                }
-            }
-
-            api.getUserManager().modifyUser(player.getUniqueId(), user -> {
-                for (Group groupToRemove : groupsToRemove) {
-                    Node node = InheritanceNode.builder(groupToRemove).build();
-                    user.data().remove(node);
-                    System.out.println(groupToRemove.getName());
-                }
-            });
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        if (kingdom.getMembers().isEmpty()) {
+            kingdoms.remove(kingdom.getID());
+            removeKingdom(kingdom.getID());
         }
+        LuckPerms api = LuckPermsProvider.get();
+        Map<String, String> permissionToGroupMap = Map.of(
+                "group.vassal", "vassal",
+                "group.duke", "duke",
+                "group.lord", "lord"
+        );
+
+        Set<Group> groupsToRemove = new HashSet<>();
+
+        for (Map.Entry<String, String> entry : permissionToGroupMap.entrySet()) {
+            if (player.hasPermission(entry.getKey())) {
+                Group group = api.getGroupManager().getGroup(entry.getValue());
+                if (group != null) {
+                    groupsToRemove.add(group);
+                    System.out.println(group.getName());
+                }
+            }
+        }
+
+        api.getUserManager().modifyUser(player.getUniqueId(), user -> {
+            for (Group groupToRemove : groupsToRemove) {
+                Node node = InheritanceNode.builder(groupToRemove).build();
+                user.data().remove(node);
+                System.out.println(groupToRemove.getName());
+            }
+        });
         System.out.println(res + " ABCDEFG");
         return res;
     }
@@ -401,7 +393,7 @@ public class KingdomManager {
 
     public void removePlayer(UUID playerUUID) {
         clearPlayerPermissions(playerUUID);
-        kingdoms.get(playerMappings.get(playerUUID)).removePlayer(playerUUID);
+//        kingdoms.get(playerMappings.get(playerUUID)).removePlayer(playerUUID);
         playerMappings.remove(playerUUID);
         Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Removed player " + playerUUID + " " +
                 "from kingdom");
@@ -473,8 +465,10 @@ public class KingdomManager {
 
         // Clear remaining players from the kingdom just in case
         for(UUID uuid: kingdoms.get(kingdomUUID).getMembers()) {
-            removePlayerAsync(uuid);
+            removePlayer(uuid);
         }
+
+        kingdoms.get(kingdomUUID).clearMembers();
 
         // Use an iterator to avoid ConcurrentModificationException
         Iterator<ChunkCoordinate> iterator = territoryMappings.keySet().iterator();
@@ -588,6 +582,23 @@ public class KingdomManager {
     }
 
     /**
+     * Claims a chunk for a kingdom and adds it to the set of Chunk - Kingdom Mappings
+     */
+    public boolean claimChunk(UUID kingdomUUID, ChunkCoordinate chunkCoord) {
+        // First, check if the kingdom can even claim the chunk
+        Kingdom kingdom = kingdoms.get(kingdomUUID);
+
+        if(territoryMappings.get(chunkCoord) == null) {
+            territoryMappings.put(chunkCoord, kingdomUUID);
+            kingdom.claimChunk();
+            checkLevelUp(kingdom);
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Admin command to directly remove a kingdom based on name. Not to be used normally.
      * Does not update the existing manager too, so may have to restart server.
      */
@@ -607,7 +618,7 @@ public class KingdomManager {
     /**
      * Claims a chunk for a kingdom and adds it to the set of Chunk - Kingdom Mappings
      */
-    public boolean claimChunk(UUID kingdomUUID, ChunkCoordinate chunkCoord) {
+    public boolean claimChunkAsync(UUID kingdomUUID, ChunkCoordinate chunkCoord) {
         // First, check if the kingdom can even claim the chunk
         Kingdom kingdom = kingdoms.get(kingdomUUID);
 //        if(!k.canClaimMoreChunks()) {
@@ -653,12 +664,12 @@ public class KingdomManager {
         return territoryMappings.get(chunkCoord);
     }
 
-    public boolean invitePlayerToKingdom(Player inviter, String recipient) {
+    public void invitePlayerToKingdom(Player inviter, String recipient) {
         UUID inviterID = inviter.getUniqueId();
         Kingdom inviterKingdom = getPlayerKingdom(inviterID);
         if (inviterKingdom == null) {
             inviter.sendMessage(ChatColor.RED + "You are not in a kingdom.");
-            return false;
+            return;
         }
 
         OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(recipient);
@@ -666,7 +677,7 @@ public class KingdomManager {
 
         if (pendingInvites.containsKey(targetPlayerID)) {
             inviter.sendMessage(ChatColor.RED + "That player already has a pending invite.");
-            return false;
+            return;
         }
 
         pendingInvites.put(targetPlayerID, inviterKingdom.getID());
@@ -678,7 +689,6 @@ public class KingdomManager {
         }
 
         inviter.sendMessage(ChatColor.GREEN + "Invitation sent to " + recipient + ".");
-        return true;
     }
 
     public void saveTerritoryToDatabase(Connection connection, ChunkCoordinate chunkCoord, UUID ID) {

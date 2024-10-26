@@ -197,7 +197,7 @@ public class Kingdom {
 
     public void setName(String name) {
         this.name = name;
-        updateNameInDatabase();
+//        updateNameInDatabase();
     }
 
     private void updateNameInDatabase() {
@@ -251,6 +251,10 @@ public class Kingdom {
 //            this.level = 1;
 //        }
 //    }
+
+    public void clearMembers() {
+        this.members.clear();
+    }
 
     public void setLevel(int level) {
         this.level = level;

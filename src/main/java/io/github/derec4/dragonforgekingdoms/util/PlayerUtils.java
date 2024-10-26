@@ -6,6 +6,9 @@ import net.luckperms.api.model.group.Group;
 import net.luckperms.api.node.Node;
 import net.luckperms.api.node.types.InheritanceNode;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
@@ -42,5 +45,11 @@ public class PlayerUtils {
                 System.out.println(groupToRemove.getName());
             }
         });
+    }
+
+    public static void teleportPlayer(Player player, Location location, String message) {
+        player.sendMessage(ChatColor.GREEN + message);
+        player.teleport(location);
+        player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
     }
 }
