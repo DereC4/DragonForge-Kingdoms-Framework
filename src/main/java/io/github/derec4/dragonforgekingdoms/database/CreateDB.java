@@ -64,7 +64,7 @@ public class CreateDB {
         try {
             connection.createStatement().executeUpdate(
                     "CREATE TABLE IF NOT EXISTS chunks (" +
-                            "chunk_owner INTEGER," +
+                            "chunk_owner TEXT," +
                             "chunk_x DOUBLE," +
                             "chunk_z DOUBLE," +
                             "world_id TEXT" +

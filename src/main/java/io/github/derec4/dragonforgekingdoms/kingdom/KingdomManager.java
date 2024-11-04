@@ -30,7 +30,9 @@ public class KingdomManager {
     private static KingdomManager instance;
     @Getter
     private final Map<UUID, Kingdom> kingdoms; // Maps UUID to a Kingdom Object
+    @Getter
     private final Map<UUID, UUID> playerMappings; // Maps player UUID to their kingdom UUID
+    @Getter
     private final Map<ChunkCoordinate, UUID> territoryMappings; // Maps chunk coordinates to a Kingdom UUID
     @Getter
     private final Map<UUID, UUID> pendingInvites; // Maps invites: a player to a kingdom UUID

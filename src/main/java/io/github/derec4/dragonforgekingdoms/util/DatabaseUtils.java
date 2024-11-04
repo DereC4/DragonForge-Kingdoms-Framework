@@ -3,12 +3,15 @@ package io.github.derec4.dragonforgekingdoms.util;
 import io.github.derec4.dragonforgekingdoms.ChunkCoordinate;
 import io.github.derec4.dragonforgekingdoms.DragonForgeKingdoms;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
+import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
+import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.UUID;
 
 public class DatabaseUtils {
@@ -73,5 +76,73 @@ public class DatabaseUtils {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static void savePlayerMapping(Connection connection, UUID playerUUID, UUID kingdomUUID) throws SQLException {
+        try (PreparedStatement statment = connection.prepareStatement(
+                "INSERT OR REPLACE INTO players (player_id, kingdom_id) VALUES (?, ?)")) {
+            statment.setString(1, playerUUID.toString());
+            statment.setString(2, kingdomUUID.toString());
+        }
+    }
+
+    public static void saveKingdom(Connection connection, UUID kingdomUUID, Kingdom kingdom) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "INSERT OR REPLACE INTO kingdoms (kingdom_id, name, description, leader, level) VALUES (?, ?, ?, ?, ?)")) {
+            statement.setString(1, kingdomUUID.toString());
+            statement.setString(2, kingdom.getName());
+            statement.setString(3, kingdom.getDescription());
+            statement.setString(4, kingdom.getLeader().toString());
+            statement.setInt(5, kingdom.getLevel());
+            statement.executeUpdate();
+        }
+    }
+
+    public static void saveTerritoryMapping(Connection connection, ChunkCoordinate chunk, UUID kingdomUUID) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "INSERT OR REPLACE INTO territory_mappings (chunk_x, chunk_z, kingdom_id) VALUES (?, ?, ?)")) {
+//            "CREATE TABLE IF NOT EXISTS chunks (" +
+//                    "chunk_owner INTEGER," +
+//                    "chunk_x DOUBLE," +
+//                    "chunk_z DOUBLE," +
+//                    "world_id TEXT" +
+//                    ")"
+            statement.setString(1, kingdomUUID.toString());
+            statement.setDouble(2, chunk.getX());
+            statement.setDouble(3, chunk.getZ());
+            statement.executeUpdate();
+        }
+    }
+
+    public static void saveAll() {
+        CreateDB db = new CreateDB();
+        try (Connection connection = db.getConnection()) {
+            KingdomManager kingdomManager = KingdomManager.getInstance();
+
+            // Save player mappings
+            for (Map.Entry<UUID, UUID> entry : kingdomManager.getPlayerMappings().entrySet()) {
+                UUID playerUUID = entry.getKey();
+                UUID kingdomUUID = entry.getValue();
+                savePlayerMapping(connection, playerUUID, kingdomUUID);
+            }
+
+            // Save kingdom data
+            for (Map.Entry<UUID, Kingdom> entry : kingdomManager.getKingdoms().entrySet()) {
+                UUID kingdomUUID = entry.getKey();
+                Kingdom kingdom = entry.getValue();
+                saveKingdom(connection,kingdomUUID,kingdom);
+            }
+
+            // Save territory mappings
+            for (Map.Entry<ChunkCoordinate, UUID> entry : kingdomManager.getTerritoryMappings().entrySet()) {
+                ChunkCoordinate chunk = entry.getKey();
+                UUID kingdomUUID = entry.getValue();
+                db.saveTerritoryMapping(connection, chunk, kingdomUUID);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }
