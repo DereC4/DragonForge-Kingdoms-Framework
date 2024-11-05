@@ -81,6 +81,10 @@ public class DatabaseUtils {
     public static void savePlayerMapping(Connection connection, UUID playerUUID, UUID kingdomUUID) throws SQLException {
         try (PreparedStatement statment = connection.prepareStatement(
                 "INSERT OR REPLACE INTO players (player_id, kingdom_id) VALUES (?, ?)")) {
+//            "CREATE TABLE IF NOT EXISTS players (" +
+//                    "id TEXT," +
+//                    "kingdom TEXT" +
+//                    ")"
             statment.setString(1, playerUUID.toString());
             statment.setString(2, kingdomUUID.toString());
         }
@@ -89,6 +93,21 @@ public class DatabaseUtils {
     public static void saveKingdom(Connection connection, UUID kingdomUUID, Kingdom kingdom) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
                 "INSERT OR REPLACE INTO kingdoms (kingdom_id, name, description, leader, level) VALUES (?, ?, ?, ?, ?)")) {
+//            "CREATE TABLE IF NOT EXISTS kingdoms (" +
+//                    "ID TEXT," +
+//                    "name TEXT," +
+//                    "description TEXT," +
+//                    "open BOOLEAN," +
+//                    "creationTime TEXT," +
+//                    "leader TEXT," +
+//                    "level INT," +
+//                    "claimedChunks INT," +
+//                    "home_world_id TEXT," +
+//                    "home_x INT," +
+//                    "home_y INT," +
+//                    "home_z INT," +
+//                    "health INT" +
+//                    ")"
             statement.setString(1, kingdomUUID.toString());
             statement.setString(2, kingdom.getName());
             statement.setString(3, kingdom.getDescription());
@@ -100,7 +119,8 @@ public class DatabaseUtils {
 
     public static void saveTerritoryMapping(Connection connection, ChunkCoordinate chunk, UUID kingdomUUID) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
-                "INSERT OR REPLACE INTO territory_mappings (chunk_x, chunk_z, kingdom_id) VALUES (?, ?, ?)")) {
+                "INSERT OR REPLACE INTO territory_mappings (chunk_owner, chunk_x, chunk_z, world_id) VALUES (?, ?, " +
+                        "?)")) {
 //            "CREATE TABLE IF NOT EXISTS chunks (" +
 //                    "chunk_owner INTEGER," +
 //                    "chunk_x DOUBLE," +
@@ -110,6 +130,7 @@ public class DatabaseUtils {
             statement.setString(1, kingdomUUID.toString());
             statement.setDouble(2, chunk.getX());
             statement.setDouble(3, chunk.getZ());
+            statement.setString(4,chunk.getWorldID().toString());
             statement.executeUpdate();
         }
     }
