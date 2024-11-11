@@ -323,6 +323,8 @@ public class KingdomManager {
         if (kingdom.getMembers().isEmpty()) {
             kingdoms.remove(kingdom.getID());
             removeKingdom(kingdom.getID());
+            territoryMappings.entrySet().removeIf(entry -> entry.getValue().equals(kingdom.getID()));
+
         }
         LuckPerms api = LuckPermsProvider.get();
         Map<String, String> permissionToGroupMap = Map.of(

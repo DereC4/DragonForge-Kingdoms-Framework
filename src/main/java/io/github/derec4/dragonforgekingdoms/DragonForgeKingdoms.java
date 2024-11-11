@@ -7,6 +7,7 @@ import io.github.derec4.dragonforgekingdoms.territory.EggBossBar;
 import io.github.derec4.dragonforgekingdoms.territory.KingdomProtectionListener;
 import io.github.derec4.dragonforgekingdoms.territory.PlayerEffects;
 import io.github.derec4.dragonforgekingdoms.territory.TerritoryEnterExit;
+import io.github.derec4.dragonforgekingdoms.util.DatabaseUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -73,6 +74,7 @@ public final class DragonForgeKingdoms extends JavaPlugin {
     public void onDisable() {
         // Plugin shutdown logic
         Bukkit.getLogger().info(ChatColor.RED + "Disabled " + this.getName());
+        DatabaseUtils.saveAll();
         if (databaseManager != null) {
             databaseManager.disconnect();
         }

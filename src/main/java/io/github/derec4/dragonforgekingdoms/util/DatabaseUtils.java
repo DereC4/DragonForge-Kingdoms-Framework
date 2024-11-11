@@ -92,7 +92,8 @@ public class DatabaseUtils {
 
     public static void saveKingdom(Connection connection, UUID kingdomUUID, Kingdom kingdom) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
-                "INSERT OR REPLACE INTO kingdoms (id, name, description, open, creationTime, leader, level, claimedChunks, home_world_id, home_x, home_y, home_z, health) VALUES (?, ?, ?, ?, ?)")) {
+                "INSERT OR REPLACE INTO kingdoms (ID, name, description, open, creationTime, leader, level, claimedChunks, home_world_id, home_x, home_y, home_z, health) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"))
+            {
 //            "CREATE TABLE IF NOT EXISTS kingdoms (" +
 //                    "ID TEXT," +
 //                    "name TEXT," +
@@ -127,8 +128,8 @@ public class DatabaseUtils {
 
     public static void saveTerritoryMapping(Connection connection, ChunkCoordinate chunk, UUID kingdomUUID) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
-                "INSERT OR REPLACE INTO territory_mappings (chunk_owner, chunk_x, chunk_z, world_id) VALUES (?, ?, " +
-                        "?)")) {
+                "INSERT OR REPLACE INTO chunks (chunk_owner, chunk_x, chunk_z, world_id) VALUES (?, ?, " +
+                        "?, ?)")) {
 //            "CREATE TABLE IF NOT EXISTS chunks (" +
 //                    "chunk_owner INTEGER," +
 //                    "chunk_x DOUBLE," +
