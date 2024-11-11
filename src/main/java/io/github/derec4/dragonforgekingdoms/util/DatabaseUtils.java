@@ -153,22 +153,39 @@ public class DatabaseUtils {
             for (Map.Entry<UUID, UUID> entry : kingdomManager.getPlayerMappings().entrySet()) {
                 UUID playerUUID = entry.getKey();
                 UUID kingdomUUID = entry.getValue();
-                savePlayerMapping(connection, playerUUID, kingdomUUID);
+                try {
+                    savePlayerMapping(connection, playerUUID, kingdomUUID);
+                    Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Saved player mapping for player " + playerUUID + " to kingdom " + kingdomUUID);
+                } catch (SQLException e) {
+                    Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Failed to save player mapping for player " + playerUUID + ": " + e.getMessage());
+                }
             }
 
             // Save kingdom data
             for (Map.Entry<UUID, Kingdom> entry : kingdomManager.getKingdoms().entrySet()) {
                 UUID kingdomUUID = entry.getKey();
                 Kingdom kingdom = entry.getValue();
-                saveKingdom(connection, kingdomUUID,kingdom);
+                try {
+                    saveKingdom(connection, kingdomUUID, kingdom);
+                    Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Saved kingdom " + kingdomUUID);
+                } catch (SQLException e) {
+                    Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Failed to save kingdom " + kingdomUUID + ": " + e.getMessage());
+                }
             }
 
             // Save territory mappings
             for (Map.Entry<ChunkCoordinate, UUID> entry : kingdomManager.getTerritoryMappings().entrySet()) {
                 ChunkCoordinate chunk = entry.getKey();
                 UUID kingdomUUID = entry.getValue();
-                saveTerritoryMapping(connection, chunk, kingdomUUID);
+                try {
+                    saveTerritoryMapping(connection, chunk, kingdomUUID);
+                    Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Saved territory mapping for chunk " + chunk + " to kingdom " + kingdomUUID);
+                } catch (SQLException e) {
+                    Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Failed to save territory mapping for chunk " + chunk + ": " + e.getMessage());
+                }
             }
+
+            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "All data has been saved to the database.");
 
         } catch (Exception e) {
             Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
