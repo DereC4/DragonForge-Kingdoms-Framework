@@ -511,6 +511,20 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 manager.invitePlayerToKingdom(player, targetPlayerName);
                 return true;
             }
+            case "save-all" -> {
+                if(!player.hasPermission("kingdom.admin.save")) {
+                    player.sendMessage(permsError);
+                    return false;
+                }
+
+                if (!player.isOp()) {
+                    player.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
+                    return true;
+                }
+
+                SaveAllCommand saveAllCommand = new SaveAllCommand();
+                return saveAllCommand.onCommand(source, command, label, args);
+            }
             default -> player.sendMessage(ChatColor.RED + "Unknown sub-command. Usage: /kingdom <sub-command>");
         }
 

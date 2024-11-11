@@ -106,7 +106,7 @@ public class CreateDB {
             connection.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS invites (" +
                     "player TEXT," +
                     "sender TEXT," +
-                    "kingdom TEXT");
+                    "kingdom TEXT)");
             Bukkit.getServer().getConsoleSender().sendMessage("Invites Database Code Reached!");
         } catch (SQLException e) {
             Bukkit.getServer().getConsoleSender().sendMessage(e.toString());

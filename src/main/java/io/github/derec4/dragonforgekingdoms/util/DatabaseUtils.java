@@ -80,7 +80,7 @@ public class DatabaseUtils {
 
     public static void savePlayerMapping(Connection connection, UUID playerUUID, UUID kingdomUUID) throws SQLException {
         try (PreparedStatement statment = connection.prepareStatement(
-                "INSERT OR REPLACE INTO players (player_id, kingdom_id) VALUES (?, ?)")) {
+                "INSERT OR REPLACE INTO players (id, kingdom) VALUES (?, ?)")) {
 //            "CREATE TABLE IF NOT EXISTS players (" +
 //                    "id TEXT," +
 //                    "kingdom TEXT" +
@@ -92,7 +92,7 @@ public class DatabaseUtils {
 
     public static void saveKingdom(Connection connection, UUID kingdomUUID, Kingdom kingdom) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
-                "INSERT OR REPLACE INTO kingdoms (kingdom_id, name, description, leader, level) VALUES (?, ?, ?, ?, ?)")) {
+                "INSERT OR REPLACE INTO kingdoms (id, name, description, open, creationTime, leader, level, claimedChunks, home_world_id, home_x, home_y, home_z, health) VALUES (?, ?, ?, ?, ?)")) {
 //            "CREATE TABLE IF NOT EXISTS kingdoms (" +
 //                    "ID TEXT," +
 //                    "name TEXT," +
@@ -111,8 +111,16 @@ public class DatabaseUtils {
             statement.setString(1, kingdomUUID.toString());
             statement.setString(2, kingdom.getName());
             statement.setString(3, kingdom.getDescription());
-            statement.setString(4, kingdom.getLeader().toString());
-            statement.setInt(5, kingdom.getLevel());
+            statement.setBoolean(4, kingdom.isOpen());
+            statement.setString(5, kingdom.getCreationTime());
+            statement.setString(6, kingdom.getLeader().toString());
+            statement.setInt(7, kingdom.getLevel());
+            statement.setInt(8, kingdom.getClaimedChunks());
+            statement.setString(9, kingdom.getHome().getWorld().getUID().toString());
+            statement.setInt(10, kingdom.getHome().getBlockX());
+            statement.setInt(11, kingdom.getHome().getBlockY());
+            statement.setInt(12, kingdom.getHome().getBlockZ());
+            statement.setInt(13, kingdom.getHealth());
             statement.executeUpdate();
         }
     }
@@ -130,7 +138,7 @@ public class DatabaseUtils {
             statement.setString(1, kingdomUUID.toString());
             statement.setDouble(2, chunk.getX());
             statement.setDouble(3, chunk.getZ());
-            statement.setString(4,chunk.getWorldID().toString());
+            statement.setString(4, chunk.getWorldID().toString());
             statement.executeUpdate();
         }
     }
@@ -151,18 +159,18 @@ public class DatabaseUtils {
             for (Map.Entry<UUID, Kingdom> entry : kingdomManager.getKingdoms().entrySet()) {
                 UUID kingdomUUID = entry.getKey();
                 Kingdom kingdom = entry.getValue();
-                saveKingdom(connection,kingdomUUID,kingdom);
+                saveKingdom(connection, kingdomUUID,kingdom);
             }
 
             // Save territory mappings
             for (Map.Entry<ChunkCoordinate, UUID> entry : kingdomManager.getTerritoryMappings().entrySet()) {
                 ChunkCoordinate chunk = entry.getKey();
                 UUID kingdomUUID = entry.getValue();
-                db.saveTerritoryMapping(connection, chunk, kingdomUUID);
+                saveTerritoryMapping(connection, chunk, kingdomUUID);
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
         }
 
     }
