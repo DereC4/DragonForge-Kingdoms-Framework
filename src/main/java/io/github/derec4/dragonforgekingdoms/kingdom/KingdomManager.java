@@ -12,6 +12,8 @@ import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.Node;
 import net.luckperms.api.node.types.InheritanceNode;
 import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Consumer;
@@ -321,6 +323,7 @@ public class KingdomManager {
         playerMappings.remove(player.getUniqueId());
 
         if (kingdom.getMembers().isEmpty()) {
+            cleanUpKingdomEgg(kingdom);
             kingdoms.remove(kingdom.getID());
             removeKingdom(kingdom.getID());
             territoryMappings.entrySet().removeIf(entry -> entry.getValue().equals(kingdom.getID()));
@@ -391,6 +394,29 @@ public class KingdomManager {
                 }
                 if (remainingAmount <= 0) {
                     break;
+                }
+            }
+        }
+    }
+
+    /**
+     * Helper function for kingdom deletion to remove the egg and the bedrock.
+     * @param kingdom
+     */
+    private void cleanUpKingdomEgg (Kingdom kingdom) {
+        EggData eggData = kingdom.getEggData();
+        if (eggData != null) {
+            Block clickedBlock = new Location(Bukkit.getWorld(UUID.fromString(eggData.getWorld())), eggData.getX(), eggData.getY(), eggData.getZ()).getBlock();
+            clickedBlock.setType(Material.AIR);
+            Block bedrockBase = clickedBlock.getRelative(BlockFace.DOWN);
+            bedrockBase.setType(Material.GRASS_BLOCK);
+
+            // Iterate through all players and send a destruction notification to those that are online
+            for (UUID uuid : kingdom.getMembers()) {
+                Player player = Bukkit.getPlayer(uuid);
+                if (player != null && player.isOnline()) {
+                    player.sendTitle(ChatColor.RED + "EGG DESTROYED", "Your kingdom has fallen!", 10, 70, 20);
+                    player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_DEATH, 1.0f, 1.0f);
                 }
             }
         }
@@ -510,17 +536,6 @@ public class KingdomManager {
             }
         }
         removeKingdomFromDatabase(connection, kingdomUUID);
-    }
-
-
-
-    /**
-     * Helper function for kingdom deletion to remove the egg and the bedrock.
-     * @param kingdom
-     */
-    private void cleanUpKingdomEgg(Kingdom kingdom) {
-        EggData eggData = kingdom.getEggData();
-
     }
 
     /**
