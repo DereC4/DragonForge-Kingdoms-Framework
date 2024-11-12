@@ -5,11 +5,9 @@ import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.node.Node;
 import net.luckperms.api.node.types.InheritanceNode;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -52,4 +50,33 @@ public class PlayerUtils {
         player.teleport(location);
         player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
     }
+
+
+    /**
+     * Because Why Not?
+     * @param player
+     */
+    public static void removePufferfish(Player player) {
+        removeItem(player, Material.PUFFERFISH, 8);
+    }
+
+    private static void removeItem(Player player, Material material, int amount) {
+        int remainingAmount = amount;
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (item != null && item.getType() == material) {
+                int itemAmount = item.getAmount();
+                if (itemAmount <= remainingAmount) {
+                    player.getInventory().remove(item);
+                    remainingAmount -= itemAmount;
+                } else {
+                    item.setAmount(itemAmount - remainingAmount);
+                    break;
+                }
+                if (remainingAmount <= 0) {
+                    break;
+                }
+            }
+        }
+    }
+
 }

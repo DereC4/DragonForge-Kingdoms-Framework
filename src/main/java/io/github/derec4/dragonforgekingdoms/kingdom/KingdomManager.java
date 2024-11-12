@@ -27,6 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static io.github.derec4.dragonforgekingdoms.util.DatabaseUtils.*;
 import static io.github.derec4.dragonforgekingdoms.util.PlayerUtils.clearPlayerPermissions;
+import static io.github.derec4.dragonforgekingdoms.util.PlayerUtils.removePufferfish;
 
 public class KingdomManager {
     private static KingdomManager instance;
@@ -266,8 +267,6 @@ public class KingdomManager {
 
     /**
      * Returns the Kingdom a player UUID belongs to
-     * @param playerUUID
-     * @return
      */
     public Kingdom getPlayerKingdom(UUID playerUUID) {
         if(playerMappings.getOrDefault(playerUUID, null) == null) {
@@ -370,33 +369,6 @@ public class KingdomManager {
         }
 
         return count >= 8;
-    }
-
-    /**
-     * Because Why Not?
-     * @param player
-     */
-    public void removePufferfish(Player player) {
-        removeItem(player, Material.PUFFERFISH, 8);
-    }
-
-    private void removeItem(Player player, Material material, int amount) {
-        int remainingAmount = amount;
-        for (ItemStack item : player.getInventory().getContents()) {
-            if (item != null && item.getType() == material) {
-                int itemAmount = item.getAmount();
-                if (itemAmount <= remainingAmount) {
-                    player.getInventory().remove(item);
-                    remainingAmount -= itemAmount;
-                } else {
-                    item.setAmount(itemAmount - remainingAmount);
-                    break;
-                }
-                if (remainingAmount <= 0) {
-                    break;
-                }
-            }
-        }
     }
 
     /**
