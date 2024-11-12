@@ -14,7 +14,7 @@ import java.util.UUID;
 
 import static io.github.derec4.dragonforgekingdoms.util.DatabaseUtils.removeKingdomFromDatabase;
 
-public class Admin implements CommandExecutor {
+public class AdminCommands implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
