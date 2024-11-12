@@ -1,5 +1,6 @@
 package io.github.derec4.dragonforgekingdoms;
 
+import io.github.derec4.dragonforgekingdoms.commands.AdminCommands;
 import io.github.derec4.dragonforgekingdoms.commands.CommandManager;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
@@ -29,6 +30,7 @@ public final class DragonForgeKingdoms extends JavaPlugin {
         // Plugin startup logic
         Bukkit.getLogger().info(ChatColor.GREEN + "Enabled " + this.getName());
         this.getCommand("kingdom").setExecutor(new CommandManager());
+        this.getCommand("admin").setExecutor(new AdminCommands());
         if (!getDataFolder().exists()) {
             getLogger().info("Directory Creation Status : " + getDataFolder().mkdirs());
         }

@@ -380,6 +380,7 @@ public class KingdomManager {
         if (eggData != null) {
             Block clickedBlock = new Location(Bukkit.getWorld(UUID.fromString(eggData.getWorld())), eggData.getX(), eggData.getY(), eggData.getZ()).getBlock();
             clickedBlock.setType(Material.AIR);
+            clickedBlock.setType(Material.FIRE);
             Block bedrockBase = clickedBlock.getRelative(BlockFace.DOWN);
             bedrockBase.setType(Material.GRASS_BLOCK);
 

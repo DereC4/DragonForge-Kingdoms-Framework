@@ -15,3 +15,7 @@ commands:
     usage: /kingdom <arguments>
     permission: dragonforge.kingdom
     aliases: [k]
+  admin:
+    description: Admin commands for managing kingdoms
+    usage: /admin <arguments>
+    permission: dragonforge.admin
