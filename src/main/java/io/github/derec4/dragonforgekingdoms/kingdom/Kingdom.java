@@ -222,7 +222,7 @@ public class Kingdom {
     public BaseComponent[] getStats() {
         return new ComponentBuilder(this.name + " (level" + this.level  + ") ").color(net.md_5.bungee.api.ChatColor.BLUE)
                 .append("\nHome to " + this.members.size() + " people")
-                .append("\nEgg Health " + this.eggData.getHealth())
+                .append("\nEgg Health " + this.getHealth())
                 .append("\nDescription: " + this.description)
                 .append("\nDestroyed Kingdoms: 0")
                 .append("\nLand Power: " + this.claimedChunks)
