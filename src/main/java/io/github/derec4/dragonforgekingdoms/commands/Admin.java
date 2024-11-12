@@ -10,6 +10,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.Connection;
+import java.util.UUID;
+
+import static io.github.derec4.dragonforgekingdoms.util.DatabaseUtils.removeKingdomFromDatabase;
 
 public class Admin implements CommandExecutor {
 
@@ -30,26 +33,26 @@ public class Admin implements CommandExecutor {
             KingdomManager km = KingdomManager.getInstance();
             switch (subCommand) {
                 case "delete" -> {
-                    // Implement the logic
-                    CreateDB databaseManager = new CreateDB();
-                    String name = args[1];
-
-                    // Send in connection and try to remove the kingdom row from table
-                    try (Connection connection = databaseManager.getConnection()) {
-                        km.removeKingdomAdmin(name, connection);
-                    } catch (Exception e) {
-                        Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
+                    if (args.length < 2) {
+                        sender.sendMessage(ChatColor.RED + "Usage: /admin delete <kingdom name>");
+                        return true;
                     }
-                }
-                case "reset" -> {
-                    // Implement the logic
+
+                    String kingdomName = args[1];
                     CreateDB databaseManager = new CreateDB();
 
-                    // Send in connection and try to remove the kingdom row from table
                     try (Connection connection = databaseManager.getConnection()) {
-
+                        UUID kingdomUUID = km.getKingdomFromName(kingdomName);
+                        if (kingdomUUID != null) {
+                            km.removeKingdom(kingdomUUID);
+                            removeKingdomFromDatabase(connection, kingdomUUID);
+                            sender.sendMessage(ChatColor.GREEN + "[ADMIN] Kingdom " + kingdomName + " has been deleted.");
+                        } else {
+                            sender.sendMessage(ChatColor.RED + "[ADMIN] Kingdom " + kingdomName + " not found.");
+                        }
                     } catch (Exception e) {
                         Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
+                        sender.sendMessage(ChatColor.RED + "[ADMIN] An error occurred while deleting the kingdom.");
                     }
                 }
             }
