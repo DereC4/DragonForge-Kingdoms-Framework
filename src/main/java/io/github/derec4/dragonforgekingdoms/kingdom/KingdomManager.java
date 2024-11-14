@@ -149,62 +149,8 @@ public class KingdomManager {
         });
     }
 
-    public void createKingdom(Kingdom kingdom, UUID playerID, Consumer<Kingdom> callback) {
-        // Update the player's kingdom in the database
-        final Kingdom kingdom1 = kingdom;
-        final UUID playerID1 = playerID;
-        Bukkit.getScheduler().runTaskAsynchronously(DragonForgeKingdoms.getInstance(), () -> {
-            CreateDB databaseManager = new CreateDB();
-            try (Connection connection = databaseManager.getConnection()) {
-                kingdom1.saveToDatabase(connection);
-                kingdoms.put(kingdom1.getID(), kingdom1);
-                playerMappings.put(playerID1, kingdom1.getID());
-                updatePlayerKingdom(connection, playerID1, kingdom1.getID());
-
-                // Run LuckPerms API calls on the main thread
-                Bukkit.getScheduler().runTaskAsynchronously(DragonForgeKingdoms.getInstance(), () -> {
-                    LuckPerms api = LuckPermsProvider.get();
-                    Group group = api.getGroupManager().getGroup("lord");
-                    api.getUserManager().modifyUser(playerID1, (User user) -> {
-                        // Create a node to add to the player.
-                        assert group != null;
-                        Node node = InheritanceNode.builder(group).build();
-
-                        // Add the node to the user.
-                        user.data().add(node);
-                    });
-
-                    callback.accept(kingdom1);
-                });
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }
-
     public void createHeartstone(Kingdom kingdom, Player player) {
         EggData.assignEggData(kingdom, player.getLocation());
-    }
-
-    /**
-     * Adds a new kingdom to the list and associates the provided player to it in the
-     * playerMappings list
-     * @param kingdom
-     * @param playerID
-     */
-    public void addKingdom(Kingdom kingdom, UUID playerID) {
-        final Kingdom kingdom1 = kingdom;
-        final UUID playerID1 = playerID;
-        Bukkit.getScheduler().runTaskAsynchronously(DragonForgeKingdoms.getInstance(), () -> {
-            CreateDB temp = new CreateDB();
-            try (Connection connection = temp.getConnection()) {
-                kingdoms.put(kingdom1.getID(), kingdom1);
-                playerMappings.put(playerID1, kingdom1.getID());
-                updatePlayerKingdom(connection, playerID1, kingdom1.getID());
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        });
     }
 
     /**
@@ -217,16 +163,6 @@ public class KingdomManager {
         if(playerMappings.containsKey(playerUUID)) {
             return;
         }
-
-        // Update the player's kingdom in the database and then in the hashmap
-//        Bukkit.getScheduler().runTaskAsynchronously(DragonForgeKingdoms.getInstance(), () -> {
-//            CreateDB temp = new CreateDB();
-//            try (Connection connection = temp.getConnection()) {
-//                updatePlayerKingdom(connection, playerID1, kingdom1);
-//            } catch (SQLException e) {
-//                throw new RuntimeException(e);
-//            }
-//        });
 
         playerMappings.put(playerUUID, kingdomUUID);
         pendingInvites.remove(playerUUID);
@@ -606,46 +542,6 @@ public class KingdomManager {
                 throw new RuntimeException(e);
             }
         }
-    }
-
-    /**
-     * Claims a chunk for a kingdom and adds it to the set of Chunk - Kingdom Mappings
-     */
-    public boolean claimChunkAsync(UUID kingdomUUID, ChunkCoordinate chunkCoord) {
-        // First, check if the kingdom can even claim the chunk
-        Kingdom kingdom = kingdoms.get(kingdomUUID);
-//        if(!k.canClaimMoreChunks()) {
-//            return false;
-//        }
-        CreateDB temp = new CreateDB();
-        try {
-            Connection connection = temp.getConnection();
-            saveTerritoryToDatabase(connection, chunkCoord, kingdomUUID);
-            if(territoryMappings.get(chunkCoord) == null) {
-                territoryMappings.put(chunkCoord, kingdomUUID);
-                kingdom.claimChunk();
-                checkLevelUp(kingdom);
-            } else {
-                return false;
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return true;
-    }
-
-    // Remove a chunk from a kingdom's territory
-    public boolean removeChunkFromKingdom(ChunkCoordinate chunkCoord) {
-        territoryMappings.remove(chunkCoord);
-        // Remove the chunk from the database
-        CreateDB temp = new CreateDB();
-        try {
-            Connection connection = temp.getConnection();
-            removeTerritoryFromDatabase(connection, chunkCoord);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return true;
     }
 
     /**
