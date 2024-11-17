@@ -424,30 +424,6 @@ public class KingdomManager {
     }
 
     /**
-     * Deletes a kingdom completely, updating the database as well
-     * @param playerUUID The provided ID of the player who's kingdom will be removed
-     */
-    public void removeKingdom(UUID playerUUID, Connection connection) {
-        UUID kingdomUUID = playerMappings.get(playerUUID);
-        if (kingdomUUID == null) {
-            return;
-        }
-
-        // Remove the kingdom from the in-memory map
-        for(UUID uuid: kingdoms.get(kingdomUUID).getMembers()) {
-            removePlayerAsync(uuid);
-        }
-        kingdoms.remove(kingdomUUID);
-        for (Map.Entry<ChunkCoordinate, UUID> entry : territoryMappings.entrySet()) {
-            if (entry.getValue().equals(kingdomUUID)) {
-                removeTerritoryFromDatabase(connection, entry.getKey());
-                territoryMappings.remove(entry.getKey());
-            }
-        }
-        removeKingdomFromDatabase(connection, kingdomUUID);
-    }
-
-    /**
      * Checks if a kingdom has met the criteria for leveling up, and then level up
      * @param kingdom The ID of the kingdom to check
      */
