@@ -419,7 +419,7 @@ public class KingdomManager {
                 System.out.println("Removed chunk");
             }
         }
-
+        cleanUpKingdomEgg(kingdoms.get(kingdomUUID));
         kingdoms.remove(kingdomUUID);
     }
 
