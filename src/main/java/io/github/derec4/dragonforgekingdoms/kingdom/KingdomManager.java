@@ -1,6 +1,6 @@
 package io.github.derec4.dragonforgekingdoms.kingdom;
 
-import io.github.derec4.dragonforgekingdoms.ChunkCoordinate;
+import io.github.derec4.dragonforgekingdoms.territory.ChunkCoordinate;
 import io.github.derec4.dragonforgekingdoms.DragonForgeKingdoms;
 import io.github.derec4.dragonforgekingdoms.EggData;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
@@ -16,7 +16,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Consumer;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

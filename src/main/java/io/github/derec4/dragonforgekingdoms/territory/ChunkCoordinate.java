@@ -1,4 +1,4 @@
-package io.github.derec4.dragonforgekingdoms;
+package io.github.derec4.dragonforgekingdoms.territory;
 
 import lombok.Getter;
 

@@ -1,6 +1,6 @@
 package io.github.derec4.dragonforgekingdoms.commands;
 
-import io.github.derec4.dragonforgekingdoms.ChunkCoordinate;
+import io.github.derec4.dragonforgekingdoms.territory.ChunkCoordinate;
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import net.luckperms.api.LuckPerms;

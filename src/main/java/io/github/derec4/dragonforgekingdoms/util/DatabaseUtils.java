@@ -1,6 +1,6 @@
 package io.github.derec4.dragonforgekingdoms.util;
 
-import io.github.derec4.dragonforgekingdoms.ChunkCoordinate;
+import io.github.derec4.dragonforgekingdoms.territory.ChunkCoordinate;
 import io.github.derec4.dragonforgekingdoms.DragonForgeKingdoms;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;

@@ -1,6 +1,5 @@
 package io.github.derec4.dragonforgekingdoms.kingdom;
 
-import io.github.derec4.dragonforgekingdoms.ChunkCoordinate;
 import io.github.derec4.dragonforgekingdoms.EggData;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
 import lombok.Getter;

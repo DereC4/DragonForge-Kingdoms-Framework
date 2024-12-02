@@ -1,6 +1,5 @@
 package io.github.derec4.dragonforgekingdoms.territory;
 
-import io.github.derec4.dragonforgekingdoms.ChunkCoordinate;
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import org.bukkit.Bukkit;
@@ -10,7 +9,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import java.util.Map;
 import java.util.UUID;
 
 public class TerritoryEnterExit implements Listener {
