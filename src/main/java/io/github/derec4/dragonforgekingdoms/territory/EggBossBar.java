@@ -49,21 +49,24 @@ public class EggBossBar implements Listener {
     private void displayEggHealthBossBar(Player player, Kingdom kingdom) {
         int eggHealth = kingdom.getHealth();
         BarColor barColor;
-        UUID playerKingdomUUID = KingdomManager.getInstance().getPlayerKingdom(player.getUniqueId()).getID();
         BossBar bossBar = playerBossBars.get(player.getUniqueId());
 
+        UUID playerKingdomUUID = null;
+        Kingdom playerKingdom = kingdomManager.getPlayerKingdom(player.getUniqueId());
+
+        if (playerKingdom != null) {
+            playerKingdomUUID = playerKingdom.getID();
+        }
+
         if (bossBar == null) {
-            if (playerKingdomUUID.equals(kingdom.getID())) {
+            if (playerKingdomUUID != null && playerKingdomUUID.equals(kingdom.getID())) {
                 barColor = BarColor.GREEN;
+            } else if (playerKingdomUUID != null && playerKingdomUUID.equals(kingdom.getID())) {
+                // allied kingdom TODO
+                barColor = BarColor.BLUE;
             } else {
-                boolean isAllied = kingdomManager.getPlayerKingdom(player.getUniqueId()).getID().equals(kingdom.getID());
-                if (isAllied) {
-                    // Allied kingdom
-                    barColor = BarColor.BLUE;
-                } else {
-                    // Enemy kingdom
-                    barColor = BarColor.RED;
-                }
+                // enemy kingdom
+                barColor = BarColor.RED;
             }
             bossBar = Bukkit.createBossBar(
                     ChatColor.GREEN + "Egg Health: " + eggHealth,
