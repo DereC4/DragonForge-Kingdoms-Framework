@@ -50,8 +50,9 @@ public class EggListener implements Listener {
 
         event.setCancelled(true);
         Kingdom kingdom = kingdomManager.getKingdomFromID(uuid);
+        Kingdom playerKingdom = kingdomManager.getPlayerKingdom(player.getUniqueId());
 
-        if (kingdomManager.getPlayerKingdom(player.getUniqueId()).equals(kingdom)) {
+        if (playerKingdom != null && playerKingdom.equals(kingdom)) {
             player.sendMessage(ChatColor.RED + "Friendly fire will not be tolerated!");
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_HURT_ON_FIRE, 1.0f, 1.0f);
             return;
