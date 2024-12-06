@@ -151,7 +151,6 @@ public class DatabaseUtils {
             KingdomManager kingdomManager = KingdomManager.getInstance();
 
             // Save player mappings
-            System.out.println(kingdomManager.getPlayerMappings());
             for (Map.Entry<UUID, UUID> entry : kingdomManager.getPlayerMappings().entrySet()) {
                 UUID playerUUID = entry.getKey();
                 UUID kingdomUUID = entry.getValue();
