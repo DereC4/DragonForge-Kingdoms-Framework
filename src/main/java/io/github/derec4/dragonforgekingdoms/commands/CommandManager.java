@@ -232,6 +232,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
                 String name = args[1];
 
+                // self explanatory check
                 if (manager.containsName(name)) {
                     player.sendMessage(ChatColor.RED + "That name is already used by another kingdom!");
                     return false;

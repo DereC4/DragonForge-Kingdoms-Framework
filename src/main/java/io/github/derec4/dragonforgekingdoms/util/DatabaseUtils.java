@@ -87,6 +87,7 @@ public class DatabaseUtils {
 //                    ")"
             statment.setString(1, playerUUID.toString());
             statment.setString(2, kingdomUUID.toString());
+            statment.executeUpdate();
         }
     }
 
@@ -150,6 +151,7 @@ public class DatabaseUtils {
             KingdomManager kingdomManager = KingdomManager.getInstance();
 
             // Save player mappings
+            System.out.println(kingdomManager.getPlayerMappings());
             for (Map.Entry<UUID, UUID> entry : kingdomManager.getPlayerMappings().entrySet()) {
                 UUID playerUUID = entry.getKey();
                 UUID kingdomUUID = entry.getValue();
@@ -179,7 +181,8 @@ public class DatabaseUtils {
                 UUID kingdomUUID = entry.getValue();
                 try {
                     saveTerritoryMapping(connection, chunk, kingdomUUID);
-                    Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Saved territory mapping for chunk " + chunk + " to kingdom " + kingdomUUID);
+                    Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Saved territory mapping for " +
+                            "chunk " + chunk.getX() +", " + chunk.getZ() + " to kingdom " + kingdomUUID);
                 } catch (SQLException e) {
                     Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Failed to save territory mapping for chunk " + chunk + ": " + e.getMessage());
                 }
