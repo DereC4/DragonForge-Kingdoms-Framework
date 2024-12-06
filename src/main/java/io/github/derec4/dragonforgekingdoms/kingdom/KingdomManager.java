@@ -112,12 +112,9 @@ public class KingdomManager {
                 UUID playerUUID = UUID.fromString(resultSet.getString("id"));
                 UUID kingdomUUID = resultSet.getString("kingdom") != null ?
                         UUID.fromString(resultSet.getString("kingdom")) : null;
-
-                // You can do something with the loaded player and kingdom UUID, such as updating your data structures.
-                // For example, you might want to associate the player UUID with the kingdom UUID in your data structures.
-
-                // Assuming you have a method like addPlayerToKingdom in your KingdomManager class:
                 playerMappings.put(playerUUID, kingdomUUID);
+                Bukkit.getLogger().info("Added player UUID: " + playerUUID + ", Kingdom UUID: " + kingdomUUID);
+                System.out.println(playerMappings);
             }
         }
     }

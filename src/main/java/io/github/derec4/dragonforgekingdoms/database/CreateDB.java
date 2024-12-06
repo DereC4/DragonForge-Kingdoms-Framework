@@ -36,7 +36,7 @@ public class CreateDB {
         try {
             connection.createStatement().executeUpdate(
                     "CREATE TABLE IF NOT EXISTS players (" +
-                            "id TEXT," +
+                            "id TEXT PRIMARY KEY," +
                             "kingdom TEXT" +
                             ")"
             );
@@ -80,7 +80,7 @@ public class CreateDB {
         try {
             connection.createStatement().executeUpdate(
                     "CREATE TABLE IF NOT EXISTS kingdoms (" +
-                            "ID TEXT," +
+                            "ID TEXT PRIMARY KEY," +
                             "name TEXT," +
                             "description TEXT," +
                             "open BOOLEAN," +
