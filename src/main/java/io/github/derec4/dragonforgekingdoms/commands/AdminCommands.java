@@ -1,10 +1,14 @@
 package io.github.derec4.dragonforgekingdoms.commands;
 
+import io.github.derec4.dragonforgekingdoms.CustomWitherSkeleton;
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -88,6 +92,19 @@ public class AdminCommands implements CommandExecutor {
                         Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
                         sender.sendMessage(ChatColor.RED + "[ADMIN] An error occurred while changing the kingdom owner.");
                     }
+                }
+                case "spawnwither" -> {
+                    if (!(sender instanceof Player player)) {
+                        sender.sendMessage(ChatColor.RED + "This command can only be used by a player.");
+                        return true;
+                    }
+
+                    Location location = player.getLocation();
+                    ServerLevel world = (ServerLevel) ((ServerPlayer) player).getCommandSenderWorld();
+                    CustomWitherSkeleton customWitherSkeleton = new CustomWitherSkeleton(world);
+                    customWitherSkeleton.setPos(location.getX(), location.getY(), location.getZ());
+                    world.addFreshEntity(customWitherSkeleton);
+                    sender.sendMessage(ChatColor.GREEN + "[ADMIN] Custom Wither Skeleton has been spawned.");
                 }
             }
         }
