@@ -40,18 +40,24 @@ public class TerritoryEnterExit implements Listener {
         UUID fromKingdomUUID = kingdomManager.getKingdomByChunk(fromChunk);
         UUID toKingdomUUID = kingdomManager.getKingdomByChunk(toChunk);
 
-        if (fromKingdomUUID != toKingdomUUID) {
-            String message;
-
-            if (toKingdomUUID == null) {
-                message = ChatColor.GREEN + "Wilderness";
-            } else {
-                // Entering a kingdom territory
-                Kingdom toKingdom = kingdomManager.getKingdomFromID(toKingdomUUID);
-                message = ChatColor.BLUE + toKingdom.getName();
-            }
-            player.sendTitle(message, "", 10, 70, 20);
-            Bukkit.getServer().getConsoleSender().sendMessage("Title message to " + player.getName() + ": " + message);
+        if (fromKingdomUUID == null && toKingdomUUID == null) {
+            return;
         }
+
+        String message;
+
+        // 12/10/2024 remember to use .equals for object comparisons lol, idk how we got away with this for so long
+        if (toKingdomUUID == null) {
+            message = ChatColor.GREEN + "Wilderness";
+        } else if (fromKingdomUUID == null || !fromKingdomUUID.equals(toKingdomUUID)) {
+            Kingdom toKingdom = kingdomManager.getKingdomFromID(toKingdomUUID);
+            message = ChatColor.BLUE + toKingdom.getName();
+        } else {
+            // Still in the same kingdom
+            return;
+        }
+
+        player.sendTitle(message, "", 10, 70, 20);
+        Bukkit.getServer().getConsoleSender().sendMessage("Title message to " + player.getName() + ": " + message);
     }
 }
