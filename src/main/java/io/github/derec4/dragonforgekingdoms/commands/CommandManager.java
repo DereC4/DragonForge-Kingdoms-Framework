@@ -3,12 +3,6 @@ package io.github.derec4.dragonforgekingdoms.commands;
 import io.github.derec4.dragonforgekingdoms.territory.ChunkCoordinate;
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
-import net.luckperms.api.LuckPerms;
-import net.luckperms.api.LuckPermsProvider;
-import net.luckperms.api.model.group.Group;
-import net.luckperms.api.model.user.User;
-import net.luckperms.api.node.Node;
-import net.luckperms.api.node.types.InheritanceNode;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
@@ -25,6 +19,7 @@ import org.bukkit.entity.Player;
 import java.util.*;
 import java.util.List;
 
+import static io.github.derec4.dragonforgekingdoms.util.PlayerUtils.promotePlayer;
 import static io.github.derec4.dragonforgekingdoms.util.PlayerUtils.teleportPlayer;
 
 public class CommandManager implements CommandExecutor, TabCompleter {
@@ -76,37 +71,6 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 //                    player.sendMessage(ChatColor.RED + "Chunk claim failed for chunk at (" + chunkX + ", " + chunkZ + "). This chunk may already be claimed or there was an error.");
                 }
             }
-        }
-    }
-
-    private void promotePlayer(Player player, Player targetPlayer) {
-        LuckPerms api = LuckPermsProvider.get();
-//        User user = api.getPlayerAdapter(Player.class).getUser(targetPlayer);
-        if (targetPlayer.hasPermission("group.vassal") && !targetPlayer.hasPermission("group.duke")) {
-            // Promote vassal to duke
-//            targetPlayer.addAttachment(DragonForgeKingdoms.getInstance(), "kingdom.role.duke", true, 1);
-            Group group = api.getGroupManager().getGroup("duke");
-
-            // Group doesn't exist?
-            if (group == null) {
-                player.sendMessage(ChatColor.RED +  " group does not exist!");
-                return;
-            }
-
-            api.getUserManager().modifyUser(player.getUniqueId(), (User user) -> {
-                // Create a node to add to the player.
-                Node node = InheritanceNode.builder(group).build();
-
-                // Add the node to the user.
-                user.data().add(node);
-                targetPlayer.sendMessage(ChatColor.GREEN + "You have been promoted to Duke. " +
-                        "You can now add, remove, and banish players, as well as access the kingdom store.");
-                player.sendMessage(ChatColor.GREEN + "Player has been successfully promoted.");
-            });
-        } else if (targetPlayer.hasPermission("group.duke")) {
-            player.sendMessage(ChatColor.YELLOW + targetPlayer.getName() + " cannot be promoted any higher than Duke.");
-        } else {
-            player.sendMessage(ChatColor.RED + targetPlayer.getName() + " could not be promoted.");
         }
     }
 

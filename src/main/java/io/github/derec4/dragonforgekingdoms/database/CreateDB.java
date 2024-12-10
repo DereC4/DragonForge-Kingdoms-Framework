@@ -67,7 +67,8 @@ public class CreateDB {
                             "chunk_owner TEXT," +
                             "chunk_x DOUBLE," +
                             "chunk_z DOUBLE," +
-                            "world_id TEXT" +
+                            "world_id TEXT," +
+                            "PRIMARY KEY (chunk_x, chunk_z, world_id)" + // Composite primary key
                             ")"
             );
             Bukkit.getServer().getConsoleSender().sendMessage("Chunk Database Code Reached!");
