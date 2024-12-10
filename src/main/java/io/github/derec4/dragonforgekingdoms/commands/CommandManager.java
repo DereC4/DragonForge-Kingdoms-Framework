@@ -154,7 +154,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         }
         message.append("-").color(ChatColor.GRAY.asBungee()).append(": Wilderness ")
                 .append("#").color(ChatColor.RED.asBungee()).append(": Enemy ")
-                .append("$").color(ChatColor.GREEN.asBungee()).append(": Ally")
+                .append("$").color(ChatColor.GREEN.asBungee()).append(": Ally ")
                 .append("9").color(ChatColor.BLUE.asBungee()).append(": Current Chunk");
         return message.create();
     }
