@@ -94,7 +94,7 @@ public class Kingdom {
      * Chunk claiming is handled in the command manager, here it simply updates the kingdom total chunks assuming
      * a chunk was claimed
      */
-    public void claimChunk() {
+    public void incrementChunks() {
 //        ChunkCoordinate chunkCoord = new ChunkCoordinate(chunkX, chunkZ, worldID);
 //        boolean res = territory.add(chunkCoord);
         claimedChunks++;

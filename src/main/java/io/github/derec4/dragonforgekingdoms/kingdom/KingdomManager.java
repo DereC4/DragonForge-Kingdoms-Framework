@@ -474,7 +474,6 @@ public class KingdomManager {
                 int newZ = centerChunkCoord.getZ() + dz;
                 ChunkCoordinate newChunkCoord = new ChunkCoordinate(newX, newZ, centerChunkCoord.getWorldID());
                 claimChunk(kingdom.getID(), newChunkCoord);
-                kingdom.claimChunk();
             }
         }
     }
@@ -496,7 +495,7 @@ public class KingdomManager {
 
         if(territoryMappings.get(chunkCoord) == null) {
             territoryMappings.put(chunkCoord, kingdomUUID);
-            kingdom.claimChunk();
+            kingdom.incrementChunks();
             checkLevelUp(kingdom);
         } else {
             return false;
