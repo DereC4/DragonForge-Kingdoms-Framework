@@ -12,10 +12,12 @@ import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
 import org.bukkit.entity.Player;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.UUID;
 
 import static io.github.derec4.dragonforgekingdoms.util.DatabaseUtils.removeKingdomFromDatabase;
@@ -100,7 +102,7 @@ public class AdminCommands implements CommandExecutor {
                     }
 
                     Location location = player.getLocation();
-                    ServerLevel world = (ServerLevel) ((ServerPlayer) player).getCommandSenderWorld();
+                    ServerLevel world = ((CraftWorld) Objects.requireNonNull(location.getWorld())).getHandle();
                     CustomWitherSkeleton customWitherSkeleton = new CustomWitherSkeleton(world);
                     customWitherSkeleton.setPos(location.getX(), location.getY(), location.getZ());
                     world.addFreshEntity(customWitherSkeleton);

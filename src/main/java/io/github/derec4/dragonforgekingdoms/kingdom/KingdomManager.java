@@ -74,13 +74,19 @@ public class KingdomManager {
                         resultSet.getInt("home_z")
                 );
                 int health = resultSet.getInt("health");
-
-                // Create a Kingdom object and add it to the map
                 Kingdom k = new Kingdom(kingdomID, name, leader, home, description, open, creationTime, level,
                         claimedChunks, health);
-                // You may want to set other properties of the Kingdom based on your design
                 kingdoms.put(kingdomID, k);
-//                System.out.println("Message is here " + k.getID());
+                Bukkit.getLogger().info("Loaded kingdom: " + name + " with attributes: " +
+                        "ID=" + kingdomID + ", " +
+                        "description=" + description + ", " +
+                        "open=" + open + ", " +
+                        "creationTime=" + creationTime + ", " +
+                        "leader=" + leader + ", " +
+                        "level=" + level + ", " +
+                        "claimedChunks=" + claimedChunks + ", " +
+                        "home=" + home + ", " +
+                        "health=" + health);
             }
         }
     }
@@ -114,7 +120,6 @@ public class KingdomManager {
                         UUID.fromString(resultSet.getString("kingdom")) : null;
                 playerMappings.put(playerUUID, kingdomUUID);
                 Bukkit.getLogger().info("Added player UUID: " + playerUUID + ", Kingdom UUID: " + kingdomUUID);
-                System.out.println(playerMappings);
             }
         }
     }

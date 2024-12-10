@@ -36,6 +36,7 @@ public class TerritoryEnterExit implements Listener {
         if (fromChunk.equals(toChunk)) {
             return;
         }
+
         UUID fromKingdomUUID = kingdomManager.getKingdomByChunk(fromChunk);
         UUID toKingdomUUID = kingdomManager.getKingdomByChunk(toChunk);
 
@@ -50,7 +51,7 @@ public class TerritoryEnterExit implements Listener {
                 message = ChatColor.BLUE + toKingdom.getName();
             }
             player.sendTitle(message, "", 10, 70, 20);
-            Bukkit.getServer().getConsoleSender().sendMessage("Message to " + player.getName() + ": " + message);
+            Bukkit.getServer().getConsoleSender().sendMessage("Title message to " + player.getName() + ": " + message);
         }
     }
 }

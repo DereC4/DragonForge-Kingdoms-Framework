@@ -28,6 +28,7 @@ public class Kingdom {
     private UUID ID;
     private Set<UUID> members;
     private Location home;
+    private UUID homeID;
     @Getter
     private EggData eggData;
     private int health;
@@ -40,6 +41,7 @@ public class Kingdom {
         this.ID = UUID.randomUUID(); // Change this later when we save kingdoms
         this.members = new HashSet<>();
         this.home = home;
+        this.homeID = Objects.requireNonNull(home.getWorld()).getUID();
         this.level = 1;
         this.claimedChunks = 1;
         this.members.add(leader);
@@ -66,6 +68,7 @@ public class Kingdom {
         this.creationTime = creationTime;
         this.claimedChunks = claimedChunks;
         this.health = health;
+        this.homeID = Objects.requireNonNull(home.getWorld()).getUID();
     }
 
     /**
@@ -219,6 +222,7 @@ public class Kingdom {
     }
 
     public BaseComponent[] getStats() {
+        System.out.println(this.home.getWorld().getUID());
         return new ComponentBuilder(this.name + " (level" + this.level  + ") ").color(net.md_5.bungee.api.ChatColor.BLUE)
                 .append("\nHome to " + this.members.size() + " people")
                 .append("\nEgg Health " + this.getHealth())
