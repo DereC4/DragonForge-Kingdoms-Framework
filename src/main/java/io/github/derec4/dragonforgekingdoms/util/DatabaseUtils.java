@@ -131,8 +131,11 @@ public class DatabaseUtils {
 
     public static void saveTerritoryMapping(Connection connection, ChunkCoordinate chunk, UUID kingdomUUID) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
-                "INSERT OR REPLACE INTO chunks (chunk_owner, chunk_x, chunk_z, world_id) VALUES (?, ?, " +
-                        "?, ?)")) {
+                "INSERT OR REPLACE INTO chunks (chunk_owner, chunk_x, chunk_z, world_id) " +
+                        "VALUES (?, ?, ?, ?) " +
+                        "ON CONFLICT(chunk_x, chunk_z, world_id) " +
+                        "DO UPDATE SET chunk_owner = EXCLUDED.chunk_owner " +
+                        "WHERE chunks.chunk_owner != EXCLUDED.chunk_owner")) {
 //            "CREATE TABLE IF NOT EXISTS chunks (" +
 //                    "chunk_owner INTEGER," +
 //                    "chunk_x DOUBLE," +

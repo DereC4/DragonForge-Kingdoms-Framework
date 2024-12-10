@@ -28,13 +28,17 @@ public final class DragonForgeKingdoms extends JavaPlugin {
     public void onEnable() {
         instance = this;
         // Plugin startup logic
-        Bukkit.getLogger().info(ChatColor.GREEN + "Enabled " + this.getName());
+        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Enabled " + this.getName());
+
         this.getCommand("kingdom").setExecutor(new CommandManager());
         this.getCommand("admin").setExecutor(new AdminCommands());
+
         if (!getDataFolder().exists()) {
             getLogger().info("Directory Creation Status : " + getDataFolder().mkdirs());
         }
-        databaseManager = new CreateDB();
+
+        this.databaseManager = new CreateDB();
+
         if (databaseManager.connect()) {
             getLogger().info("Connected to database!");
             databaseManager.createLogTable();
@@ -45,7 +49,9 @@ public final class DragonForgeKingdoms extends JavaPlugin {
         } else {
             getLogger().severe("Failed to connect to the database!");
         }
+
         this.kingdomManager = KingdomManager.getInstance();
+
         try {
             Connection connection = databaseManager.getConnection();
             kingdomManager.loadKingdomsFromDatabase(connection);
@@ -56,9 +62,12 @@ public final class DragonForgeKingdoms extends JavaPlugin {
             throw new RuntimeException(e);
         }
 
-        Bukkit.getLogger().info(ChatColor.GREEN + "  |_______|                               ");
-        Bukkit.getLogger().info(ChatColor.GREEN + "  | Derex |     DragonForgeKingdoms v1.5.0");
-        Bukkit.getLogger().info(ChatColor.GREEN + "  |_______|     Running on " + Bukkit.getName() + " - " + Bukkit.getVersion());
+        Bukkit.getLogger().info("");
+        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "  |_______|                             " +
+                "  ");
+        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "  | Derex |     DragonForgeKingdoms v1.5" +
+                ".0");
+        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "  |_______|     Running on " + Bukkit.getName() + " - " + Bukkit.getVersion());
         Bukkit.getLogger().info("");
 
         getServer().getPluginManager().registerEvents(new KingdomProtectionListener(), this);
@@ -81,7 +90,7 @@ public final class DragonForgeKingdoms extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        Bukkit.getLogger().info(ChatColor.RED + "Disabled " + this.getName());
+        Bukkit.getLogger().info("Disabled " + this.getName());
         DatabaseUtils.saveAll();
         if (databaseManager != null) {
             databaseManager.disconnect();
