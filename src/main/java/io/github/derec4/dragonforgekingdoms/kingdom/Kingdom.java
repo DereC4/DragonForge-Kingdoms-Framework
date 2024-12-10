@@ -28,7 +28,6 @@ public class Kingdom {
     private UUID ID;
     private Set<UUID> members;
     private Location home;
-    private UUID homeID;
     @Getter
     private EggData eggData;
     private int health;
@@ -41,7 +40,6 @@ public class Kingdom {
         this.ID = UUID.randomUUID(); // Change this later when we save kingdoms
         this.members = new HashSet<>();
         this.home = home;
-        this.homeID = Objects.requireNonNull(home.getWorld()).getUID();
         this.level = 1;
         this.claimedChunks = 1;
         this.members.add(leader);
@@ -68,7 +66,6 @@ public class Kingdom {
         this.creationTime = creationTime;
         this.claimedChunks = claimedChunks;
         this.health = health;
-        this.homeID = Objects.requireNonNull(home.getWorld()).getUID();
     }
 
     /**

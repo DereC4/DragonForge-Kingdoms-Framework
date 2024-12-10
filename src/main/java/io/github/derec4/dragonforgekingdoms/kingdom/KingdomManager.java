@@ -68,7 +68,7 @@ public class KingdomManager {
                 int level = resultSet.getInt("level");
                 int claimedChunks = resultSet.getInt("claimedChunks");
                 Location home = new Location(
-                        Bukkit.getWorld(resultSet.getString("home_world_id")),
+                        Bukkit.getWorld(UUID.fromString(resultSet.getString("home_world_id"))),
                         resultSet.getInt("home_x"),
                         resultSet.getInt("home_y"),
                         resultSet.getInt("home_z")

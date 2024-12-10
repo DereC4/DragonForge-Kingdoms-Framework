@@ -119,8 +119,8 @@ public class DatabaseUtils {
             statement.setString(6, kingdom.getLeader().toString());
             statement.setInt(7, kingdom.getLevel());
             statement.setInt(8, kingdom.getClaimedChunks());
-            statement.setString(9, kingdom.getHomeID().toString()); // For some reason getHome.world.id unloads
-                // before we can save it
+            statement.setString(9, Objects.requireNonNull(kingdom.getHome().getWorld()).getUID().toString());
+            // 12/10/2024 scored a big debugging victory tonight woooo the UUID was saving; it was just our constructor
             statement.setInt(10, kingdom.getHome().getBlockX());
             statement.setInt(11, kingdom.getHome().getBlockY());
             statement.setInt(12, kingdom.getHome().getBlockZ());

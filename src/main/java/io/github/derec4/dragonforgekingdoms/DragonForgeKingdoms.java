@@ -55,6 +55,12 @@ public final class DragonForgeKingdoms extends JavaPlugin {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
+        Bukkit.getLogger().info(ChatColor.GREEN + "  |_______|                               ");
+        Bukkit.getLogger().info(ChatColor.GREEN + "  | Derex |     DragonForgeKingdoms v1.5.0");
+        Bukkit.getLogger().info(ChatColor.GREEN + "  |_______|     Running on " + Bukkit.getName() + " - " + Bukkit.getVersion());
+        Bukkit.getLogger().info("");
+
         getServer().getPluginManager().registerEvents(new KingdomProtectionListener(), this);
         getServer().getPluginManager().registerEvents(new TerritoryEnterExit(), this);
         getServer().getPluginManager().registerEvents(new EggListener(), this);
