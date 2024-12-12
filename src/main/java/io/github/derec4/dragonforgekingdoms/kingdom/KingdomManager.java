@@ -1,18 +1,11 @@
 package io.github.derec4.dragonforgekingdoms.kingdom;
 
-import io.github.derec4.dragonforgekingdoms.territory.ChunkCoordinate;
-import io.github.derec4.dragonforgekingdoms.DragonForgeKingdoms;
 import io.github.derec4.dragonforgekingdoms.EggData;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
+import io.github.derec4.dragonforgekingdoms.territory.ChunkCoordinate;
 import io.github.derec4.dragonforgekingdoms.util.DatabaseUtils;
 import io.github.derec4.dragonforgekingdoms.util.PlayerUtils;
 import lombok.Getter;
-import net.luckperms.api.LuckPerms;
-import net.luckperms.api.LuckPermsProvider;
-import net.luckperms.api.model.group.Group;
-import net.luckperms.api.model.user.User;
-import net.luckperms.api.node.Node;
-import net.luckperms.api.node.types.InheritanceNode;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -21,12 +14,13 @@ import org.bukkit.inventory.ItemStack;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static io.github.derec4.dragonforgekingdoms.util.DatabaseUtils.*;
+import static io.github.derec4.dragonforgekingdoms.util.DatabaseUtils.removePlayerFromDatabase;
 import static io.github.derec4.dragonforgekingdoms.util.PlayerUtils.*;
 
 public class KingdomManager {
@@ -55,19 +49,20 @@ public class KingdomManager {
     }
 
     public void loadKingdomsFromDatabase(Connection connection) throws SQLException {
-        DatabaseUtils.loadKingdomsFromDatabase(connection,kingdoms);
+        DatabaseUtils.loadKingdomsFromDatabase(connection, kingdoms);
     }
 
     public void loadTerritoryMappingsFromDatabase(Connection connection) throws SQLException {
-        DatabaseUtils.loadTerritoryMappingsFromDatabase(connection,territoryMappings);
+        DatabaseUtils.loadTerritoryMappingsFromDatabase(connection, territoryMappings);
     }
 
     public void loadPlayersFromDatabase(Connection connection) throws SQLException {
-        DatabaseUtils.loadPlayersFromDatabase(connection,playerMappings);
+        DatabaseUtils.loadPlayersFromDatabase(connection, playerMappings);
     }
 
     /**
      * Kingdom creation function without a callback
+     *
      * @param kingdom
      * @param playerID
      */
@@ -87,11 +82,12 @@ public class KingdomManager {
     /**
      * Method to add player to a kingdom, as well as update the player table in the database. If the player has
      * pending invites, the invite is removed. Player is then given the Vassal Luckperms permission group.
+     *
      * @param playerUUID
      * @param kingdomUUID
      */
     public void addPlayerToKingdom(UUID playerUUID, UUID kingdomUUID) {
-        if(playerMappings.containsKey(playerUUID)) {
+        if (playerMappings.containsKey(playerUUID)) {
             return;
         }
 
@@ -119,7 +115,7 @@ public class KingdomManager {
      * Returns the Kingdom a player UUID belongs to
      */
     public Kingdom getPlayerKingdom(UUID playerUUID) {
-        if(playerMappings.getOrDefault(playerUUID, null) == null) {
+        if (playerMappings.getOrDefault(playerUUID, null) == null) {
             return null;
         }
         return kingdoms.getOrDefault(playerMappings.get(playerUUID), null);
@@ -133,8 +129,8 @@ public class KingdomManager {
     }
 
     public boolean containsName(String name) {
-        for(UUID uuid: kingdoms.keySet()) {
-            if(kingdoms.get(uuid).getName().equals(name)) {
+        for (UUID uuid : kingdoms.keySet()) {
+            if (kingdoms.get(uuid).getName().equals(name)) {
                 return true;
             }
         }
@@ -159,7 +155,7 @@ public class KingdomManager {
 
     public boolean handlePlayerLeaving(Player player) {
         // Check if the player has at least 8 Pufferfish
-        if(!player.isOp()) {
+        if (!player.isOp()) {
             if (!hasRequiredPufferfish(player)) {
                 // Player doesn't have enough Pufferfish, deny leaving
                 player.sendMessage(ChatColor.RED + "You need at least 8 Pufferfish to leave.");
@@ -202,9 +198,10 @@ public class KingdomManager {
 
     /**
      * Helper function for kingdom deletion to remove the egg and the bedrock.
+     *
      * @param kingdom
      */
-    private void cleanUpKingdomEgg (Kingdom kingdom) {
+    private void cleanUpKingdomEgg(Kingdom kingdom) {
         EggData eggData = kingdom.getEggData();
         if (eggData != null) {
             Block clickedBlock = new Location(Bukkit.getWorld(UUID.fromString(eggData.getWorld())), eggData.getX(), eggData.getY(), eggData.getZ()).getBlock();
@@ -234,6 +231,7 @@ public class KingdomManager {
 
     /**
      * Directly removes a player; administrator type command
+     *
      * @param playerUUID UUID of the player to be removed
      */
     public void removePlayerAsync(UUID playerUUID) {
@@ -268,6 +266,7 @@ public class KingdomManager {
 
     /**
      * Deletes a kingdom completely, without updating the database
+     *
      * @param kingdomUUID The provided ID of the kingdom to delete
      */
     public void removeKingdom(UUID kingdomUUID) {
@@ -276,7 +275,7 @@ public class KingdomManager {
         }
 
         // Clear remaining players from the kingdom just in case
-        for(UUID uuid: kingdoms.get(kingdomUUID).getMembers()) {
+        for (UUID uuid : kingdoms.get(kingdomUUID).getMembers()) {
             removePlayer(uuid);
         }
 
@@ -297,6 +296,7 @@ public class KingdomManager {
 
     /**
      * Checks if a kingdom has met the criteria for leveling up, and then level up
+     *
      * @param kingdom The ID of the kingdom to check
      */
     public void checkLevelUp(Kingdom kingdom) {
@@ -310,7 +310,7 @@ public class KingdomManager {
             kingdom.setLevel(5);
         } else if (memberCount >= 25) {
             kingdom.setLevel(4);
-        } else if (memberCount >= 10 ) {
+        } else if (memberCount >= 10) {
             kingdom.setLevel(3);
         } else if (memberCount >= 2) {
             kingdom.setLevel(2);
@@ -326,6 +326,7 @@ public class KingdomManager {
 
     /**
      * Claim chunks in a ring pattern centered around a kingdom's home Chunk
+     *
      * @param kingdom The ID of the kingdom gaining territory
      */
     private void claimChunksInRingPattern(Kingdom kingdom) {
@@ -364,7 +365,7 @@ public class KingdomManager {
         // First, check if the kingdom can even claim the chunk
         Kingdom kingdom = kingdoms.get(kingdomUUID);
 
-        if(territoryMappings.get(chunkCoord) == null) {
+        if (territoryMappings.get(chunkCoord) == null) {
             territoryMappings.put(chunkCoord, kingdomUUID);
             kingdom.incrementChunks();
             checkLevelUp(kingdom);
@@ -376,6 +377,7 @@ public class KingdomManager {
 
     /**
      * Gets the kingdom that claims the chunkcoord
+     *
      * @param chunkCoord
      * @return
      */
