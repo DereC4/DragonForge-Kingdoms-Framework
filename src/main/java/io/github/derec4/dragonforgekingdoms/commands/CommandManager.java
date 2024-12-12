@@ -1,8 +1,8 @@
 package io.github.derec4.dragonforgekingdoms.commands;
 
-import io.github.derec4.dragonforgekingdoms.territory.ChunkCoordinate;
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
+import io.github.derec4.dragonforgekingdoms.territory.ChunkCoordinate;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
@@ -17,10 +17,8 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import java.util.*;
-import java.util.List;
 
-import static io.github.derec4.dragonforgekingdoms.util.PlayerUtils.promotePlayer;
-import static io.github.derec4.dragonforgekingdoms.util.PlayerUtils.teleportPlayer;
+import static io.github.derec4.dragonforgekingdoms.util.PlayerUtils.*;
 
 public class CommandManager implements CommandExecutor, TabCompleter {
     final String permsError = ChatColor.RED + "You do not have permission to use this command! Check" +
@@ -35,11 +33,8 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     }
 
     private void claimLand(Player player) {
-        int chunkX = player.getLocation().getChunk().getX();
-        int chunkZ = player.getLocation().getChunk().getZ();
-        UUID worldID = player.getWorld().getUID();
+        ChunkCoordinate chunk = getPlayerCurrentChunk(player);
         KingdomManager km = KingdomManager.getInstance();
-        ChunkCoordinate chunk = new ChunkCoordinate(chunkX, chunkZ, worldID);
         UUID playerKingdom = km.getPlayerKingdom(player.getUniqueId()).getID();
 
         if (km.claimChunk(playerKingdom, chunk)) {
@@ -48,7 +43,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             player.sendTitle(ChatColor.GREEN + "Kingdom Created!", km.getKingdomFromID(playerKingdom).getName(), 10, 70, 20); //
         } else {
             Bukkit.getLogger().info(ChatColor.RED + "Chunk claim failed. This chunk may already be claimed or there was an error."
-            +  "\nChunk (" + chunk.getX() + ", " + chunk.getZ() + ")");
+                    + "\nChunk (" + chunk.getX() + ", " + chunk.getZ() + ")");
         }
     }
 
@@ -109,7 +104,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 }
                 if (chunkCoord.equals(new ChunkCoordinate(player.getLocation().getChunk().getX(),
                         player.getLocation().getChunk().getZ(),
-                        player.getLocation().getWorld().getUID()))){
+                        player.getLocation().getWorld().getUID()))) {
                     mapChar = '9'; // Use blue color for player's current chunk
                 }
                 message.append(String.valueOf(mapChar)).color(getColor(mapChar).asBungee());
@@ -203,7 +198,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 }
 
                 Kingdom kingdom = new Kingdom(name, playerID, player.getLocation());
-                manager.createKingdom(kingdom,playerID);
+                manager.createKingdom(kingdom, playerID);
                 kingdom.setHome(playerLocation);
                 initialClaimLand(player);
                 manager.createHeartstone(kingdom, player);
@@ -218,7 +213,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                     return false;
                 }
 
-                if(!inAKingdom(player.getUniqueId())) {
+                if (!inAKingdom(player.getUniqueId())) {
                     player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
                     return false;
                 }
@@ -239,7 +234,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                     return false;
                 }
 
-                if(!inAKingdom(player.getUniqueId())) {
+                if (!inAKingdom(player.getUniqueId())) {
                     player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
                     return false;
                 }
@@ -252,7 +247,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                     return false;
                 }
 
-                if(!inAKingdom(player.getUniqueId())) {
+                if (!inAKingdom(player.getUniqueId())) {
                     player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
                     return false;
                 }
@@ -383,7 +378,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 return true;
             }
             case "home" -> {
-                if(!player.hasPermission("kingdom.home")) {
+                if (!player.hasPermission("kingdom.home")) {
                     player.sendMessage(permsError);
                     return false;
                 }
@@ -398,7 +393,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 teleportPlayer(player, home, "Teleporting you to your kingdom's home!");
             }
             case "promote" -> {
-                if(!player.hasPermission("kingdom.promote")) {
+                if (!player.hasPermission("kingdom.promote")) {
                     player.sendMessage(permsError);
                     return false;
                 }
@@ -425,7 +420,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 Kingdom sourceKingdom = manager.getPlayerKingdom(playerID);
                 Kingdom targetKingdom = manager.getPlayerKingdom(targetPlayer.getUniqueId());
 
-                if(sourceKingdom.equals(targetKingdom)) {
+                if (sourceKingdom.equals(targetKingdom)) {
                     promotePlayer(player, targetPlayer);
                 } else {
                     player.sendMessage(ChatColor.YELLOW + name + " is not in your kingdom.");
@@ -457,7 +452,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 return true;
             }
             case "invite" -> {
-                if(!player.hasPermission("kingdom.invite")) {
+                if (!player.hasPermission("kingdom.invite")) {
                     player.sendMessage(permsError);
                     return false;
                 }
@@ -477,7 +472,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 return true;
             }
             case "save-all" -> {
-                if(!player.hasPermission("kingdom.admin.save")) {
+                if (!player.hasPermission("kingdom.admin.save")) {
                     player.sendMessage(permsError);
                     return false;
                 }
@@ -494,14 +489,6 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         }
 
         return true;
-    }
-
-    private static ChunkCoordinate getPlayerCurrentChunk(Player player) {
-        Location playerLocation = player.getLocation();
-        int x = playerLocation.getBlockX() >> 4;
-        int z = playerLocation.getBlockZ() >> 4;
-        UUID worldID = playerLocation.getWorld().getUID();
-        return new ChunkCoordinate(x, z, worldID);
     }
 
     @Override
