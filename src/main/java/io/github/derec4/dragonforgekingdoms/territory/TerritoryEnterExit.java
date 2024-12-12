@@ -2,6 +2,7 @@ package io.github.derec4.dragonforgekingdoms.territory;
 
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
+import io.github.derec4.dragonforgekingdoms.util.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -22,16 +23,8 @@ public class TerritoryEnterExit implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        ChunkCoordinate fromChunk = new ChunkCoordinate(
-                event.getFrom().getChunk().getX(),
-                event.getFrom().getChunk().getZ(),
-                Objects.requireNonNull(event.getFrom().getWorld()).getUID()
-        );
-        ChunkCoordinate toChunk = new ChunkCoordinate(
-                Objects.requireNonNull(event.getTo()).getChunk().getX(),
-                event.getTo().getChunk().getZ(),
-                Objects.requireNonNull(event.getTo().getWorld()).getUID()
-        );
+        ChunkCoordinate fromChunk = PlayerUtils.getChunk(event.getFrom());
+        ChunkCoordinate toChunk = PlayerUtils.getChunk(Objects.requireNonNull(event.getTo()));
 
         // Check if the player moved to a new chunk
         if (fromChunk.equals(toChunk)) {

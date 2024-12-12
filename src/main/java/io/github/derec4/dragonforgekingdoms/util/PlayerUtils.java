@@ -84,7 +84,19 @@ public class PlayerUtils {
 
     public static ChunkCoordinate getPlayerCurrentChunk(Player player) {
         Location location = player.getLocation();
-        return new ChunkCoordinate(location.getChunk().getX(), location.getChunk().getZ(), Objects.requireNonNull(location.getWorld()).getUID());
+        return new ChunkCoordinate(
+                location.getChunk().getX(),
+                location.getChunk().getZ(),
+                Objects.requireNonNull(location.getWorld()).getUID()
+        );
+    }
+
+    public static ChunkCoordinate getChunk(Location location) {
+        return new ChunkCoordinate(
+                location.getChunk().getX(),
+                location.getChunk().getZ(),
+                Objects.requireNonNull(location.getWorld()).getUID()
+        );
     }
 
     /**
