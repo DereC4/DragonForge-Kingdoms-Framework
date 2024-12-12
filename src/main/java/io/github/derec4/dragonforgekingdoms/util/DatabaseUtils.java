@@ -56,31 +56,6 @@ public class DatabaseUtils {
         }
     }
 
-    public static void saveTerritoryToDatabase(Connection connection, ChunkCoordinate chunkCoord, UUID ID) {
-        try (PreparedStatement statement = connection.prepareStatement(
-                "INSERT INTO chunks (chunk_owner, chunk_x, chunk_z, world_id)" +
-                        "VALUES (?, ?, ?, ?)")) {
-            statement.setString(1, ID.toString());
-            statement.setInt(2, chunkCoord.getX());
-            statement.setInt(3, chunkCoord.getZ());
-            statement.setString(4, chunkCoord.getWorldID().toString());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    public static void removeTerritoryFromDatabase(Connection connection, ChunkCoordinate chunkCoord) {
-        try (PreparedStatement statement = connection.prepareStatement(
-                "DELETE FROM chunks WHERE chunk_x = ? AND chunk_z = ? AND world_id = ?")) {
-            statement.setDouble(1, chunkCoord.getX());
-            statement.setDouble(2, chunkCoord.getZ());
-            statement.setString(3, chunkCoord.getWorldID().toString());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public static void loadKingdomsFromDatabase(Connection connection, Map<UUID, Kingdom> kingdoms) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM kingdoms")) {
             ResultSet resultSet = statement.executeQuery();
