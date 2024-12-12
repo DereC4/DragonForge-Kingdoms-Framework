@@ -1,5 +1,6 @@
 package io.github.derec4.dragonforgekingdoms.util;
 
+import io.github.derec4.dragonforgekingdoms.DragonForgeKingdoms;
 import io.github.derec4.dragonforgekingdoms.territory.ChunkCoordinate;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
@@ -30,7 +31,6 @@ public class PlayerUtils {
 //            targetPlayer.addAttachment(DragonForgeKingdoms.getInstance(), "kingdom.role.duke", true, 1);
             Group group = api.getGroupManager().getGroup("duke");
 
-            // Group doesn't exist?
             if (group == null) {
                 player.sendMessage(ChatColor.RED + " group does not exist!");
                 return;
@@ -86,6 +86,42 @@ public class PlayerUtils {
                 System.out.println(groupToRemove.getName());
             }
         });
+    }
+
+    public static void addPlayerToGroupAsync(UUID playerID, String groupName) {
+        Bukkit.getScheduler().runTaskAsynchronously(DragonForgeKingdoms.getInstance(), () -> {
+            LuckPerms api = LuckPermsProvider.get();
+            Group group = api.getGroupManager().getGroup(groupName);
+            api.getUserManager().modifyUser(playerID, (User user) -> {
+                // Create a node to add to the player.
+                assert group != null;
+                Node node = InheritanceNode.builder(group).build();
+
+                // Add the node to the user.
+                user.data().add(node);
+            });
+        });
+    }
+
+    public static void addPlayerToVassalGroup(UUID playerUUID) {
+        LuckPerms luckPerms = LuckPermsProvider.get();
+        User user = luckPerms.getUserManager().getUser(playerUUID);
+
+        if (user == null) {
+            luckPerms.getUserManager().loadUser(playerUUID).thenAcceptAsync(loadedUser -> {
+                if (loadedUser != null) {
+                    addVassalGroup(luckPerms, loadedUser);
+                }
+            });
+        } else {
+            addVassalGroup(luckPerms, user);
+        }
+    }
+
+    public static void addVassalGroup(LuckPerms luckPerms, User user) {
+        Node node = Node.builder("group.vassal").build();
+        user.data().add(node);
+        luckPerms.getUserManager().saveUser(user);
     }
 
     public static void teleportPlayer(Player player, Location location, String message) {

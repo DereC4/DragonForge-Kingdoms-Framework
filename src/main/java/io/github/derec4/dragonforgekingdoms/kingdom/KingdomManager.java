@@ -5,6 +5,7 @@ import io.github.derec4.dragonforgekingdoms.DragonForgeKingdoms;
 import io.github.derec4.dragonforgekingdoms.EggData;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
 import io.github.derec4.dragonforgekingdoms.util.DatabaseUtils;
+import io.github.derec4.dragonforgekingdoms.util.PlayerUtils;
 import lombok.Getter;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
@@ -26,8 +27,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static io.github.derec4.dragonforgekingdoms.util.DatabaseUtils.*;
-import static io.github.derec4.dragonforgekingdoms.util.PlayerUtils.clearPlayerPermissions;
-import static io.github.derec4.dragonforgekingdoms.util.PlayerUtils.removePufferfish;
+import static io.github.derec4.dragonforgekingdoms.util.PlayerUtils.*;
 
 public class KingdomManager {
     private static KingdomManager instance;
@@ -76,20 +76,8 @@ public class KingdomManager {
         kingdoms.put(kingdom.getID(), kingdom);
         playerMappings.put(playerID, kingdom.getID());
 
-        // Run LuckPerms API calls on the main thread
-        Bukkit.getScheduler().runTaskAsynchronously(DragonForgeKingdoms.getInstance(), () -> {
-            LuckPerms api = LuckPermsProvider.get();
-            Group group = api.getGroupManager().getGroup("lord");
-            api.getUserManager().modifyUser(playerID, (User user) -> {
-                // Create a node to add to the player.
-                assert group != null;
-                Node node = InheritanceNode.builder(group).build();
-
-                // Add the node to the user.
-                user.data().add(node);
-            });
-
-        });
+        // Promote kingdom creator to lord
+        addPlayerToGroupAsync(playerID, "lord");
     }
 
     public void createHeartstone(Kingdom kingdom, Player player) {
@@ -112,24 +100,7 @@ public class KingdomManager {
         checkLevelUp(kingdoms.get(kingdomUUID));
         Kingdom k = kingdoms.get(kingdomUUID);
         k.addPlayer(playerUUID);
-        LuckPerms luckPerms = LuckPermsProvider.get();
-        User user = luckPerms.getUserManager().getUser(playerUUID);
-
-        if (user == null) {
-            luckPerms.getUserManager().loadUser(playerUUID).thenAcceptAsync(loadedUser -> {
-                if (loadedUser != null) {
-                    addVassalGroup(luckPerms, loadedUser);
-                }
-            });
-        } else {
-            addVassalGroup(luckPerms, user);
-        }
-    }
-
-    private void addVassalGroup(LuckPerms luckPerms, User user) {
-        Node node = Node.builder("group.vassal").build();
-        user.data().add(node);
-        luckPerms.getUserManager().saveUser(user);
+        addPlayerToVassalGroup(playerUUID);
     }
 
     public void updatePlayerKingdom(Connection connection, UUID playerUUID, UUID kingdomUUID) {
@@ -196,9 +167,11 @@ public class KingdomManager {
             }
             removePufferfish(player);
         }
-        Kingdom kingdom = kingdoms.get(playerMappings.get(player.getUniqueId()));
-        boolean res = kingdom.removePlayer(player.getUniqueId());
-        playerMappings.remove(player.getUniqueId());
+
+        UUID playerUUID = player.getUniqueId();
+        Kingdom kingdom = kingdoms.get(playerMappings.get(playerUUID));
+        boolean res = kingdom.removePlayer(playerUUID);
+        playerMappings.remove(playerUUID);
 
         if (kingdom.getMembers().isEmpty()) {
             cleanUpKingdomEgg(kingdom);
@@ -207,32 +180,9 @@ public class KingdomManager {
             territoryMappings.entrySet().removeIf(entry -> entry.getValue().equals(kingdom.getID()));
 
         }
-        LuckPerms api = LuckPermsProvider.get();
-        Map<String, String> permissionToGroupMap = Map.of(
-                "group.vassal", "vassal",
-                "group.duke", "duke",
-                "group.lord", "lord"
-        );
 
-        Set<Group> groupsToRemove = new HashSet<>();
+        clearPlayerPermissions(playerUUID);
 
-        for (Map.Entry<String, String> entry : permissionToGroupMap.entrySet()) {
-            if (player.hasPermission(entry.getKey())) {
-                Group group = api.getGroupManager().getGroup(entry.getValue());
-                if (group != null) {
-                    groupsToRemove.add(group);
-                    System.out.println(group.getName());
-                }
-            }
-        }
-
-        api.getUserManager().modifyUser(player.getUniqueId(), user -> {
-            for (Group groupToRemove : groupsToRemove) {
-                Node node = InheritanceNode.builder(groupToRemove).build();
-                user.data().remove(node);
-                System.out.println(groupToRemove.getName());
-            }
-        });
         System.out.println(res + " ABCDEFG");
         return res;
     }
@@ -291,31 +241,10 @@ public class KingdomManager {
         try {
             Connection connection = temp.getConnection();
             removePlayerFromDatabase(connection, playerUUID);
-            LuckPerms api = LuckPermsProvider.get();
-            Player player = Bukkit.getPlayer(playerUUID);
-            assert player != null;
-            Map<String, String> permissionToGroupMap = Map.of(
-                    "group.vassal", "vassal",
-                    "group.duke", "duke",
-                    "group.lord", "lord"
-            );
-            Set<Group> groupsToRemove = new HashSet<>();
-            for (Map.Entry<String, String> entry : permissionToGroupMap.entrySet()) {
-                if (player.hasPermission(entry.getKey())) {
-                    Group group = api.getGroupManager().getGroup(entry.getValue());
-                    if (group != null) {
-                        groupsToRemove.add(group);
-                        System.out.println(group.getName());
-                    }
-                }
-            }
-            api.getUserManager().modifyUser(playerUUID, user -> {
-                for (Group groupToRemove : groupsToRemove) {
-                    Node node = InheritanceNode.builder(groupToRemove).build();
-                    user.data().remove(node);
-                    System.out.println(groupToRemove.getName());
-                }
-            });
+
+            // Use PlayerUtils to clear player permissions
+            PlayerUtils.clearPlayerPermissions(playerUUID);
+
             kingdoms.get(playerMappings.get(playerUUID)).removePlayer(playerUUID);
             playerMappings.remove(playerUUID);
             Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Removed player " + playerUUID + " " +
