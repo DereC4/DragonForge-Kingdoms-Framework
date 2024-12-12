@@ -25,12 +25,12 @@ public class TerritoryEnterExit implements Listener {
         ChunkCoordinate fromChunk = new ChunkCoordinate(
                 event.getFrom().getChunk().getX(),
                 event.getFrom().getChunk().getZ(),
-                event.getFrom().getWorld().getUID()
+                Objects.requireNonNull(event.getFrom().getWorld()).getUID()
         );
         ChunkCoordinate toChunk = new ChunkCoordinate(
                 Objects.requireNonNull(event.getTo()).getChunk().getX(),
                 event.getTo().getChunk().getZ(),
-                event.getTo().getWorld().getUID()
+                Objects.requireNonNull(event.getTo().getWorld()).getUID()
         );
 
         // Check if the player moved to a new chunk

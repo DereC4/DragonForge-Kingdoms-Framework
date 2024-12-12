@@ -1,5 +1,6 @@
 package io.github.derec4.dragonforgekingdoms.util;
 
+import io.github.derec4.dragonforgekingdoms.territory.ChunkCoordinate;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.group.Group;
@@ -10,12 +11,10 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerUtils {
+
     public static void promotePlayer(Player player, Player targetPlayer) {
         LuckPerms api = LuckPermsProvider.get();
 
@@ -26,7 +25,7 @@ public class PlayerUtils {
 
             // Group doesn't exist?
             if (group == null) {
-                player.sendMessage(ChatColor.RED +  " group does not exist!");
+                player.sendMessage(ChatColor.RED + " group does not exist!");
                 return;
             }
 
@@ -46,7 +45,6 @@ public class PlayerUtils {
             player.sendMessage(ChatColor.RED + targetPlayer.getName() + " could not be promoted.");
         }
     }
-
 
     public static void clearPlayerPermissions(UUID playerUUID) {
         LuckPerms api = LuckPermsProvider.get();
@@ -84,9 +82,14 @@ public class PlayerUtils {
         player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
     }
 
+    public static ChunkCoordinate getPlayerCurrentChunk(Player player) {
+        Location location = player.getLocation();
+        return new ChunkCoordinate(location.getChunk().getX(), location.getChunk().getZ(), Objects.requireNonNull(location.getWorld()).getUID());
+    }
 
     /**
      * Because Why Not?
+     *
      * @param player
      */
     public static void removePufferfish(Player player) {

@@ -84,6 +84,7 @@ public class DatabaseUtils {
     public static void loadKingdomsFromDatabase(Connection connection, Map<UUID, Kingdom> kingdoms) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM kingdoms")) {
             ResultSet resultSet = statement.executeQuery();
+
             while (resultSet.next()) {
                 UUID kingdomID = UUID.fromString(resultSet.getString("ID"));
                 String name = resultSet.getString("name");
@@ -103,23 +104,20 @@ public class DatabaseUtils {
 
                 Kingdom k = new Kingdom(kingdomID, name, leader, home, description, open, creationTime, level, claimedChunks, health);
                 kingdoms.put(kingdomID, k);
-                Bukkit.getLogger().info("Loaded kingdom: " + name + " with attributes: " +
-                        "ID=" + kingdomID + ", " +
-                        "description=" + description + ", " +
-                        "open=" + open + ", " +
-                        "creationTime=" + creationTime + ", " +
-                        "leader=" + leader + ", " +
-                        "level=" + level + ", " +
-                        "claimedChunks=" + claimedChunks + ", " +
-                        "home=" + home + ", " +
-                        "health=" + health);
+
+                Bukkit.getLogger().info(String.format("Loaded kingdom: %s with attributes: ID=%s, description=%s, open=%b, creationTime=%s, leader=%s, level=%d, claimedChunks=%d, home=%s, health=%d",
+                        name, kingdomID, description, open, creationTime, leader, level, claimedChunks, home, health));
             }
+        } catch (SQLException e) {
+            Bukkit.getLogger().severe("Failed to load kingdoms from database: " + e.getMessage());
+            throw e;
         }
     }
 
     public static void loadTerritoryMappingsFromDatabase(Connection connection, Map<ChunkCoordinate, UUID> territoryMappings) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM chunks")) {
             ResultSet resultSet = statement.executeQuery();
+
             while (resultSet.next()) {
                 int x = (int) resultSet.getDouble("chunk_x");
                 int z = (int) resultSet.getDouble("chunk_z");
@@ -128,12 +126,16 @@ public class DatabaseUtils {
                 UUID kingdomUUID = UUID.fromString(resultSet.getString("chunk_owner"));
                 territoryMappings.put(chunkCoord, kingdomUUID);
             }
+        } catch (SQLException e) {
+            Bukkit.getLogger().severe("Failed to load territory mappings from database: " + e.getMessage());
+            throw e;
         }
     }
 
     public static void loadPlayersFromDatabase(Connection connection, Map<UUID, UUID> playerMappings) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM players")) {
             ResultSet resultSet = statement.executeQuery();
+
             while (resultSet.next()) {
                 UUID playerUUID = UUID.fromString(resultSet.getString("id"));
                 UUID kingdomUUID = resultSet.getString("kingdom") != null ?
@@ -141,6 +143,9 @@ public class DatabaseUtils {
                 playerMappings.put(playerUUID, kingdomUUID);
                 Bukkit.getLogger().info("Added player UUID: " + playerUUID + ", Kingdom UUID: " + kingdomUUID);
             }
+        } catch (SQLException e) {
+            Bukkit.getLogger().severe("Failed to load players from database: " + e.getMessage());
+            throw e;
         }
     }
 

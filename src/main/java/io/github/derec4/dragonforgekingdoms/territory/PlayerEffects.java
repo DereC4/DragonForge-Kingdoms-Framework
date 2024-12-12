@@ -2,23 +2,24 @@ package io.github.derec4.dragonforgekingdoms.territory;
 
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.UUID;
 
+import static io.github.derec4.dragonforgekingdoms.util.PlayerUtils.getPlayerCurrentChunk;
+
 public class PlayerEffects {
 
     public static void applyEffects(Player player) {
         ChunkCoordinate playerChunk = getPlayerCurrentChunk(player);
-
         KingdomManager km = KingdomManager.getInstance();
         UUID playerUUID = player.getUniqueId();
         UUID kingdomUUID = km.getKingdomByChunk(playerChunk);
         Kingdom kingdom = km.getPlayerKingdom(playerUUID);
         UUID playerKingdomUUID = kingdom != null ? kingdom.getID() : null;
+
         if (kingdomUUID != null && playerKingdomUUID != null) {
             int level = km.getKingdomFromID(kingdomUUID).getLevel();
             if (kingdomUUID.equals(playerKingdomUUID)) {
@@ -33,15 +34,6 @@ public class PlayerEffects {
             int level = km.getKingdomFromID(kingdomUUID).getLevel();
             applyDebuffs(player, level);
         }
-    }
-
-
-    private static ChunkCoordinate getPlayerCurrentChunk(Player player) {
-        Location playerLocation = player.getLocation();
-        int x = playerLocation.getBlockX() >> 4;
-        int z = playerLocation.getBlockZ() >> 4;
-        UUID worldID = playerLocation.getWorld().getUID();
-        return new ChunkCoordinate(x, z, worldID);
     }
 
     private static void applyBuffs(Player player, int level) {
