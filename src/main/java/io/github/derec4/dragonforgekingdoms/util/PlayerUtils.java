@@ -14,7 +14,14 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 
 public class PlayerUtils {
-
+    /**
+     * Promotes a player to the next rank within the kingdom.
+     * If the player is a vassal, they will be promoted to duke.
+     * If the player is already a duke, they cannot be promoted further.
+     *
+     * @param player       The player issuing the promotion command.
+     * @param targetPlayer The player to be promoted.
+     */
     public static void promotePlayer(Player player, Player targetPlayer) {
         LuckPerms api = LuckPermsProvider.get();
 
@@ -46,6 +53,11 @@ public class PlayerUtils {
         }
     }
 
+    /**
+     * This method removes the player from the vassal, duke, and lord groups.
+     *
+     * @param playerUUID The UUID of the player whose permissions are to be cleared.
+     */
     public static void clearPlayerPermissions(UUID playerUUID) {
         LuckPerms api = LuckPermsProvider.get();
         Player player = Bukkit.getPlayer(playerUUID);
