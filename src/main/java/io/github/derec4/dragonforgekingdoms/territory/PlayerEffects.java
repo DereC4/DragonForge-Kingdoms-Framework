@@ -20,18 +20,17 @@ public class PlayerEffects {
         Kingdom kingdom = km.getPlayerKingdom(playerUUID);
         UUID playerKingdomUUID = kingdom != null ? kingdom.getID() : null;
 
-        if (kingdomUUID != null && playerKingdomUUID != null) {
-            int level = km.getKingdomFromID(kingdomUUID).getLevel();
-            if (kingdomUUID.equals(playerKingdomUUID)) {
+        if (kingdomUUID == null) {
+            return;
+        }
+
+        int level = km.getKingdomFromID(kingdomUUID).getLevel();
+        if (kingdomUUID.equals(playerKingdomUUID)) {
                 // Player is in their own kingdom
                 applyBuffs(player, level);
-            } else {
-                // Player is in an enemy kingdom
-                applyDebuffs(player, level);
             }
-        } else if (kingdomUUID != null) {
-            // Player is not in any kingdom but on another kingdom's territory
-            int level = km.getKingdomFromID(kingdomUUID).getLevel();
+        else {
+            // Player is not in any kingdom but on another kingdom's territory OR Player is in an enemy kingdom
             applyDebuffs(player, level);
         }
     }
