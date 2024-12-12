@@ -1,10 +1,10 @@
 package io.github.derec4.dragonforgekingdoms.util;
 
-import io.github.derec4.dragonforgekingdoms.territory.ChunkCoordinate;
 import io.github.derec4.dragonforgekingdoms.DragonForgeKingdoms;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
+import io.github.derec4.dragonforgekingdoms.territory.ChunkCoordinate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -139,8 +139,7 @@ public class DatabaseUtils {
 
     public static void saveKingdom(Connection connection, UUID kingdomUUID, Kingdom kingdom) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
-                "INSERT OR REPLACE INTO kingdoms (ID, name, description, open, creationTime, leader, level, claimedChunks, home_world_id, home_x, home_y, home_z, health) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"))
-            {
+                "INSERT OR REPLACE INTO kingdoms (ID, name, description, open, creationTime, leader, level, claimedChunks, home_world_id, home_x, home_y, home_z, health) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
 //            "CREATE TABLE IF NOT EXISTS kingdoms (" +
 //                    "ID TEXT," +
 //                    "name TEXT," +
@@ -231,7 +230,7 @@ public class DatabaseUtils {
                 try {
                     saveTerritoryMapping(connection, chunk, kingdomUUID);
                     Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Saved territory mapping for " +
-                            "chunk " + chunk.getX() +", " + chunk.getZ() + " to kingdom " + kingdomUUID);
+                            "chunk " + chunk.getX() + ", " + chunk.getZ() + " to kingdom " + kingdomUUID);
                 } catch (SQLException e) {
                     Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Failed to save territory mapping for chunk " + chunk + ": " + e.getMessage());
                 }
