@@ -7,9 +7,11 @@ import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.Objects;
@@ -76,6 +78,69 @@ public class DatabaseUtils {
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public static void loadKingdomsFromDatabase(Connection connection, Map<UUID, Kingdom> kingdoms) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM kingdoms")) {
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                UUID kingdomID = UUID.fromString(resultSet.getString("ID"));
+                String name = resultSet.getString("name");
+                String description = resultSet.getString("description");
+                boolean open = resultSet.getBoolean("open");
+                String creationTime = resultSet.getString("creationTime");
+                UUID leader = UUID.fromString(resultSet.getString("leader"));
+                int level = resultSet.getInt("level");
+                int claimedChunks = resultSet.getInt("claimedChunks");
+                Location home = new Location(
+                        Bukkit.getWorld(UUID.fromString(resultSet.getString("home_world_id"))),
+                        resultSet.getInt("home_x"),
+                        resultSet.getInt("home_y"),
+                        resultSet.getInt("home_z")
+                );
+                int health = resultSet.getInt("health");
+
+                Kingdom k = new Kingdom(kingdomID, name, leader, home, description, open, creationTime, level, claimedChunks, health);
+                kingdoms.put(kingdomID, k);
+                Bukkit.getLogger().info("Loaded kingdom: " + name + " with attributes: " +
+                        "ID=" + kingdomID + ", " +
+                        "description=" + description + ", " +
+                        "open=" + open + ", " +
+                        "creationTime=" + creationTime + ", " +
+                        "leader=" + leader + ", " +
+                        "level=" + level + ", " +
+                        "claimedChunks=" + claimedChunks + ", " +
+                        "home=" + home + ", " +
+                        "health=" + health);
+            }
+        }
+    }
+
+    public static void loadTerritoryMappingsFromDatabase(Connection connection, Map<ChunkCoordinate, UUID> territoryMappings) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM chunks")) {
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                int x = (int) resultSet.getDouble("chunk_x");
+                int z = (int) resultSet.getDouble("chunk_z");
+                UUID worldID = UUID.fromString(resultSet.getString("world_id"));
+                ChunkCoordinate chunkCoord = new ChunkCoordinate(x, z, worldID);
+                UUID kingdomUUID = UUID.fromString(resultSet.getString("chunk_owner"));
+                territoryMappings.put(chunkCoord, kingdomUUID);
+            }
+        }
+    }
+
+    public static void loadPlayersFromDatabase(Connection connection, Map<UUID, UUID> playerMappings) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM players")) {
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                UUID playerUUID = UUID.fromString(resultSet.getString("id"));
+                UUID kingdomUUID = resultSet.getString("kingdom") != null ?
+                        UUID.fromString(resultSet.getString("kingdom")) : null;
+                playerMappings.put(playerUUID, kingdomUUID);
+                Bukkit.getLogger().info("Added player UUID: " + playerUUID + ", Kingdom UUID: " + kingdomUUID);
+            }
         }
     }
 

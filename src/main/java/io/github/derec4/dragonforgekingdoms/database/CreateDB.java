@@ -10,10 +10,22 @@ public class CreateDB {
     private static Connection connection;
 //    private final String databasePath = "plugins/YourPluginName/database.db";
 
+    /**
+     * Gets the database connection. If the connection is null or closed, a new connection is created.
+     *
+     * @return the database connection
+     * @throws SQLException if a database access error occurs
+     */
+    public Connection getConnection() throws SQLException {
+        if (connection == null || connection.isClosed()) {
+            connection = DriverManager.getConnection("jdbc:sqlite:plugins/DragonForge_Kingdoms/kingdoms.db");
+        }
+        return connection;
+    }
+
     public boolean connect() {
         try {
             Class.forName("org.sqlite.JDBC");
-//            connection = DriverManager.getConnection("jdbc:sqlite:kingdoms.db");
             connection = DriverManager.getConnection("jdbc:sqlite:plugins/DragonForge_Kingdoms/kingdoms.db");
             return true;
         } catch (SQLException | ClassNotFoundException e) {
@@ -112,13 +124,5 @@ public class CreateDB {
         } catch (SQLException e) {
             Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
         }
-    }
-
-    public Connection getConnection() throws SQLException {
-        if (connection == null || connection.isClosed()) {
-            // Reconnect or create a new connection if it's closed or doesn't exist
-            connection = DriverManager.getConnection("jdbc:sqlite:plugins/DragonForge_Kingdoms/kingdoms.db");
-        }
-        return connection;
     }
 }

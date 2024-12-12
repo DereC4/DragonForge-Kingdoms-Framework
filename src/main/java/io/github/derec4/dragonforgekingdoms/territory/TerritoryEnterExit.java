@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class TerritoryEnterExit implements Listener {
@@ -27,7 +28,7 @@ public class TerritoryEnterExit implements Listener {
                 event.getFrom().getWorld().getUID()
         );
         ChunkCoordinate toChunk = new ChunkCoordinate(
-                event.getTo().getChunk().getX(),
+                Objects.requireNonNull(event.getTo()).getChunk().getX(),
                 event.getTo().getChunk().getZ(),
                 event.getTo().getWorld().getUID()
         );
