@@ -3,6 +3,7 @@ package io.github.derec4.dragonforgekingdoms.kingdom;
 import io.github.derec4.dragonforgekingdoms.EggData;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
 import lombok.Getter;
+import lombok.Setter;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.*;
@@ -16,17 +17,22 @@ import java.util.*;
 
 @Getter
 public class Kingdom {
+    @Setter
     private boolean open;
     private int claimedChunks;
+    @Setter
     private int level;
     // Getters
     @Getter
     private String name;
+    @Setter
     private String description;
     private String creationTime;
+    @Setter
     private UUID leader;
     private UUID ID;
     private Set<UUID> members;
+    @Setter
     private Location home;
     @Getter
     private EggData eggData;
@@ -256,26 +262,6 @@ public class Kingdom {
         this.members.clear();
     }
 
-    public void setLevel(int level) {
-        this.level = level;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setOpen(boolean open) {
-        this.open = open;
-    }
-
-    public void setLeader(UUID leader) {
-        this.leader = leader;
-    }
-
-    public void setHome(Location home) {
-        this.home = home;
-    }
-
     public boolean addPlayer(UUID uuid) {
         boolean res = this.members.add(uuid);
 //        checkLevelUp();
@@ -327,47 +313,4 @@ public class Kingdom {
         }
         return this.ID.equals(((Kingdom) obj).ID);
     }
-
-    //    // Nested class to represent chunk coordinates
-//    private static class ChunkCoordinate {
-//        private final int x;
-//        private final int z;
-//        private final UUID worldID;
-//
-//        public ChunkCoordinate(int x, int z, UUID worldID) {
-//            this.x = x;
-//            this.z = z;
-//            this.worldID = worldID;
-//        }
-//
-//        public int getX() {
-//            return x;
-//        }
-//
-//        public int getZ() {
-//            return z;
-//        }
-//
-//        public UUID getWorldID() {
-//            return worldID;
-//        }
-//
-//        @Override
-//        public int hashCode() {
-//            // Implement a custom hash code that combines x and z values
-//            return 31 * x + z;
-//        }
-//
-//        @Override
-//        public boolean equals(Object obj) {
-//            if (this == obj) {
-//                return true;
-//            }
-//            if (obj == null || getClass() != obj.getClass()) {
-//                return false;
-//            }
-//            ChunkCoordinate other = (ChunkCoordinate) obj;
-//            return x == other.x && z == other.z;
-//        }
-//    }
 }

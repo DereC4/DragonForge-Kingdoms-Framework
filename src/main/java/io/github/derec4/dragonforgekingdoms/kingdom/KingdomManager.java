@@ -4,7 +4,6 @@ import io.github.derec4.dragonforgekingdoms.EggData;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
 import io.github.derec4.dragonforgekingdoms.territory.ChunkCoordinate;
 import io.github.derec4.dragonforgekingdoms.util.DatabaseUtils;
-import io.github.derec4.dragonforgekingdoms.util.PlayerUtils;
 import lombok.Getter;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -23,15 +22,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import static io.github.derec4.dragonforgekingdoms.util.DatabaseUtils.removePlayerFromDatabase;
 import static io.github.derec4.dragonforgekingdoms.util.PlayerUtils.*;
 
+@Getter
 public class KingdomManager {
     private static KingdomManager instance;
-    @Getter
     private final Map<UUID, Kingdom> kingdoms; // Maps UUID to a Kingdom Object
-    @Getter
     private final Map<UUID, UUID> playerMappings; // Maps player UUID to their kingdom UUID
-    @Getter
     private final Map<ChunkCoordinate, UUID> territoryMappings; // Maps chunk coordinates to a Kingdom UUID
-    @Getter
     private final Map<UUID, UUID> pendingInvites; // Maps invites: a player to a kingdom UUID
 
     private KingdomManager() {
@@ -97,18 +93,6 @@ public class KingdomManager {
         Kingdom k = kingdoms.get(kingdomUUID);
         k.addPlayer(playerUUID);
         addPlayerToVassalGroup(playerUUID);
-    }
-
-    public void updatePlayerKingdom(Connection connection, UUID playerUUID, UUID kingdomUUID) {
-        try (PreparedStatement statement = connection.prepareStatement(
-                "INSERT INTO players (id, kingdom) VALUES (?,?)"
-        )) {
-            statement.setString(1, playerUUID.toString());
-            statement.setString(2, kingdomUUID.toString());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**
@@ -241,7 +225,7 @@ public class KingdomManager {
             removePlayerFromDatabase(connection, playerUUID);
 
             // Use PlayerUtils to clear player permissions
-            PlayerUtils.clearPlayerPermissions(playerUUID);
+            clearPlayerPermissions(playerUUID);
 
             kingdoms.get(playerMappings.get(playerUUID)).removePlayer(playerUUID);
             playerMappings.remove(playerUUID);

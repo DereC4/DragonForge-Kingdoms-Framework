@@ -18,6 +18,18 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class DatabaseUtils {
+    public static void updatePlayerKingdom(Connection connection, UUID playerUUID, UUID kingdomUUID) {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "INSERT INTO players (id, kingdom) VALUES (?,?)"
+        )) {
+            statement.setString(1, playerUUID.toString());
+            statement.setString(2, kingdomUUID.toString());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void addInviteToDatabase(UUID playerUUID, UUID senderUUID, UUID kingdomUUID) {
         Bukkit.getScheduler().runTaskAsynchronously(DragonForgeKingdoms.getInstance(), () -> {
             CreateDB databaseManager = new CreateDB();

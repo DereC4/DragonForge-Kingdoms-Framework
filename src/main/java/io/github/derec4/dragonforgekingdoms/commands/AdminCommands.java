@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 import static io.github.derec4.dragonforgekingdoms.util.DatabaseUtils.removeKingdomFromDatabase;
+import static io.github.derec4.dragonforgekingdoms.util.DatabaseUtils.updatePlayerKingdom;
 
 public class AdminCommands implements CommandExecutor {
 
@@ -83,7 +84,7 @@ public class AdminCommands implements CommandExecutor {
                             Kingdom kingdom = km.getKingdomFromID(kingdomUUID);
                             UUID oldOwnerUUID = kingdom.getLeader();
                             kingdom.setLeader(newOwnerUUID);
-                            km.updatePlayerKingdom(connection, newOwnerUUID, kingdomUUID);
+                            updatePlayerKingdom(connection, newOwnerUUID, kingdomUUID);
                             km.removePlayerAsync(oldOwnerUUID);
                             km.addPlayerToKingdom(newOwnerUUID, kingdomUUID);
                             sender.sendMessage(ChatColor.GREEN + "[ADMIN] Kingdom " + kingdomName + " ownership has been transferred to " + newOwnerName + ".");
