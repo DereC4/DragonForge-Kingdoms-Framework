@@ -1,0 +1,140 @@
+pages:
+  Farming:
+    gui-rows: 3
+    title: "&2Farming Shop"
+    items:
+      item1:
+        material: WHEAT
+        name: "&6Wheat"
+        sell: 3
+        amount: 1
+      item2:
+        material: PUMPKIN
+        name: "&6Pumpkin"
+        sell: 5
+        amount: 1
+      item3:
+        material: CAKE
+        name: "&6Cake"
+        sell: 10
+        amount: 1
+      item4:
+        material: COOKED_BEEF
+        name: "&6Cooked Steak"
+        sell: 4
+        amount: 1
+      item5:
+        material: COOKED_PORKCHOP
+        name: "&6Cooked Pork"
+        sell: 4
+        amount: 1
+      item6:
+        material: APPLE
+        name: "&6Apple"
+        sell: 8
+        amount: 1
+
+  Mining:
+    gui-rows: 3
+    title: "&7Mining Shop"
+    items:
+      item1:
+        material: COAL
+        name: "&6Coal"
+        sell: 3
+        amount: 1
+      item2:
+        material: IRON_INGOT
+        name: "&6Iron Ingot"
+        sell: 4
+        amount: 1
+      item3:
+        material: GOLD_INGOT
+        name: "&6Gold Ingot"
+        sell: 8
+        amount: 1
+      item4:
+        material: EMERALD
+        name: "&6Emerald"
+        sell: 20
+        amount: 1
+      item5:
+        material: DIAMOND
+        name: "&6Diamond"
+        sell: 15
+        amount: 1
+      item6:
+        material: OBSIDIAN
+        name: "&6Obsidian"
+        sell: 4
+        amount: 1
+
+  Fishing:
+    gui-rows: 3
+    title: "&3Fishing Shop"
+    items:
+      item1:
+        material: COD
+        name: "&6Fish"
+        sell: 5
+        amount: 1
+      item2:
+        material: COOKED_COD
+        name: "&6Cooked Fish"
+        sell: 6
+        amount: 1
+      item3:
+        material: NAME_TAG
+        name: "&6Name Tag"
+        sell: 12
+        amount: 1
+      item4:
+        material: PUFFERFISH
+        name: "&6Pufferfish"
+        sell: 15
+        amount: 1
+      item5:
+        material: SADDLE
+        name: "&6Saddle"
+        sell: 12
+        amount: 1
+      item6:
+        material: INK_SAC
+        name: "&6Ink Sacks"
+        sell: 6
+        amount: 1
+
+  Hunting:
+    gui-rows: 3
+    title: "&4Hunting Shop"
+    items:
+      item1:
+        material: GLOWSTONE_DUST
+        name: "&6Glowstone Dust"
+        sell: 150
+        amount: 1
+      item2:
+        material: SKELETON_SKULL
+        name: "&6Mob Head"
+        sell: 50
+        amount: 1
+      item3:
+        material: ENDER_PEARL
+        name: "&6Ender Pearl"
+        sell: 15
+        amount: 1
+      item4:
+        material: MUSIC_DISC_CAT
+        name: "&6Music Disc"
+        sell: 50
+        amount: 1
+      item5:
+        material: RABBIT_FOOT
+        name: "&6Rabbit Foot"
+        sell: 15
+        amount: 1
+      item6:
+        material: SLIME_BALL
+        name: "&6Slime Ball"
+        sell: 10
+        amount: 1

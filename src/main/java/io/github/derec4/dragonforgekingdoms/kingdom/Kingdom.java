@@ -1,19 +1,25 @@
 package io.github.derec4.dragonforgekingdoms.kingdom;
 
+import com.earth2me.essentials.IEssentials;
+import com.earth2me.essentials.User;
 import io.github.derec4.dragonforgekingdoms.EggData;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
+import io.github.derec4.dragonforgekingdoms.util.PermissionLevel;
 import lombok.Getter;
 import lombok.Setter;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static io.github.derec4.dragonforgekingdoms.util.PlayerUtils.getPlayerRank;
 
 @Getter
 public class Kingdom {
@@ -272,30 +278,55 @@ public class Kingdom {
         return this.members.remove(uuid);
     }
 
-    public void saveToDatabase(Connection connection) {
-        try (PreparedStatement statement = connection.prepareStatement(
-                "INSERT INTO kingdoms (ID, name, description, open, creationTime, leader, level, " +
-                        "claimedChunks, home_world_id, home_x, home_y, home_z, health) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-            statement.setString(1, this.ID.toString());
-            statement.setString(2, this.name);
-            statement.setString(3, this.description);
-            statement.setBoolean(4, this.open);
-            statement.setString(5, this.creationTime);
-            statement.setString(6, this.leader.toString());
-            statement.setInt(7, this.level);
-            statement.setInt(8, this.claimedChunks);
-            statement.setString(9, Objects.requireNonNull(this.home.getWorld()).getUID().toString());
-            statement.setInt(10, this.home.getBlockX());
-            statement.setInt(11, this.home.getBlockY());
-            statement.setInt(12, this.home.getBlockZ());
-            statement.setInt(13,this.health);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
+    public boolean successionCrisis() {
+        if(members.size() <= 1) {
+            return false;
         }
-    }
 
+        IEssentials essentials;
+        Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("Essentials");
+
+        if (plugin instanceof IEssentials) {
+            essentials = (IEssentials) plugin;
+        } else {
+            throw new IllegalStateException("Essentials plugin not found.");
+        }
+
+        List<UUID> dukes = new ArrayList<>();
+        List<UUID> vassals = new ArrayList<>();
+
+        members.stream().map(Bukkit::getPlayer).filter(Objects::nonNull).
+                forEach(player -> {
+                    PermissionLevel rank = getPlayerRank(player);
+                    if (rank == PermissionLevel.DUKE) {
+                        dukes.add(player.getUniqueId());
+                    } else if (rank == PermissionLevel.VASSAL) {
+                        vassals.add(player.getUniqueId());
+                    }
+                });
+
+        List<UUID> candidates = !dukes.isEmpty() ? dukes : vassals;
+        if (candidates.isEmpty()) {
+            return false;
+        }
+
+        UUID memberWithShortestTime = null;
+        long shortest = Long.MAX_VALUE;
+
+        for (UUID uuid : candidates) {
+            Player player = Bukkit.getPlayer(uuid);
+            User user = essentials.getUser(player);
+            long lastLogin = user.getLastLogin();
+
+            if (lastLogin < shortest) {
+                shortest = lastLogin;
+                memberWithShortestTime = uuid;
+            }
+        }
+
+        this.leader = memberWithShortestTime;
+        return true;
+    }
 
     @Override
     public String toString() {

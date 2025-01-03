@@ -18,6 +18,14 @@ repositories {
         name = "sonatype"
         url = "https://oss.sonatype.org/content/groups/public/"
     }
+    maven {
+        name = "essentialsx-releases"
+        url = "https://repo.essentialsx.net/releases/"
+    }
+    maven {
+        name = "papermc"
+        url = "https://papermc.io/repo/repository/maven-public/"
+    }
 }
 
 dependencies {
@@ -26,6 +34,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.30'
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
     compileOnly 'net.luckperms:api:5.4'
+    compileOnly 'net.essentialsx:EssentialsX:2.20.1'
 }
 
 def targetJavaVersion = 17

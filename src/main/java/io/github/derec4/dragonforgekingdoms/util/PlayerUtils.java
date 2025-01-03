@@ -15,6 +15,24 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 
 public class PlayerUtils {
+    public static PermissionLevel getPlayerRank(Player player) {
+        LuckPerms api = LuckPermsProvider.get();
+
+        if (player == null) {
+            return PermissionLevel.NONE;
+        }
+
+        if (player.hasPermission("group.lord")) {
+            return PermissionLevel.LORD;
+        } else if (player.hasPermission("group.duke")) {
+            return PermissionLevel.DUKE;
+        } else if (player.hasPermission("group.vassal")) {
+            return PermissionLevel.VASSAL;
+        } else {
+            return PermissionLevel.NONE;
+        }
+    }
+
     /**
      * Promotes a player to the next rank within the kingdom.
      * If the player is a vassal, they will be promoted to duke.
