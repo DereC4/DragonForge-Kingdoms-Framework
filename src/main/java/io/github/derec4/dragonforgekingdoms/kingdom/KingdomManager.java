@@ -22,6 +22,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import static io.github.derec4.dragonforgekingdoms.util.DatabaseUtils.removePlayerFromDatabase;
 import static io.github.derec4.dragonforgekingdoms.util.PlayerUtils.*;
 
+/**
+ * [Server thread/INFO]: CommandBlock at -253,22,-165 issued server command: /tp Simpin4Netherite -253 24 -166
+ */
 @Getter
 public class KingdomManager {
     private static KingdomManager instance;
@@ -150,16 +153,18 @@ public class KingdomManager {
 
         UUID playerUUID = player.getUniqueId();
         Kingdom kingdom = kingdoms.get(playerMappings.get(playerUUID));
+
+        if (kingdom.getLeader().equals(playerUUID)) {
+            if (!kingdom.successionCrisis()) {
+                cleanUpKingdomEgg(kingdom);
+                kingdoms.remove(kingdom.getID());
+                removeKingdom(kingdom.getID());
+                territoryMappings.entrySet().removeIf(entry -> entry.getValue().equals(kingdom.getID()));
+            }
+        }
+
         boolean res = kingdom.removePlayer(playerUUID);
         playerMappings.remove(playerUUID);
-
-        if (kingdom.getMembers().isEmpty()) {
-            cleanUpKingdomEgg(kingdom);
-            kingdoms.remove(kingdom.getID());
-            removeKingdom(kingdom.getID());
-            territoryMappings.entrySet().removeIf(entry -> entry.getValue().equals(kingdom.getID()));
-
-        }
 
         clearPlayerPermissions(playerUUID);
 

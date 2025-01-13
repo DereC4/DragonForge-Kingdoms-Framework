@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static io.github.derec4.dragonforgekingdoms.util.PlayerUtils.addPlayerToGroupAsync;
 import static io.github.derec4.dragonforgekingdoms.util.PlayerUtils.getPlayerRank;
 
 @Getter
@@ -278,6 +279,16 @@ public class Kingdom {
         return this.members.remove(uuid);
     }
 
+    /**
+     * Handles the succession crisis within the kingdom by determining the next leader.
+     * The method checks for the presence of dukes and vassals among the members.
+     * If there are dukes, the one with the shortest time since last login is chosen as the new leader.
+     * If there are no dukes, the same process is applied to vassals.
+     * If there are no eligible candidates, the method returns false.
+     *
+     * @return true if a new leader is successfully chosen, false otherwise.
+     * @throws IllegalStateException if the Essentials plugin is not found.
+     */
     public boolean successionCrisis() {
         if(members.size() <= 1) {
             return false;
@@ -325,6 +336,7 @@ public class Kingdom {
         }
 
         this.leader = memberWithShortestTime;
+        addPlayerToGroupAsync(memberWithShortestTime, "lord");
         return true;
     }
 
