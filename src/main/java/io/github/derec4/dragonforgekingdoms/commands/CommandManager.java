@@ -160,7 +160,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         String subCommand = args[0].toLowerCase();
         switch (subCommand) {
             case "help" -> {
-                HelpCommand helpCommand = new HelpCommand();
+                HelpCommand helpCommand = new HelpCommand(CommandRegistry.getCommandDescriptions());
                 return helpCommand.onCommand(source, command, label, args);
             }
             case "create" -> {
@@ -539,8 +539,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length == 1) {
             // List of subcommands for the first argument
-            List<String> subcommands = Arrays.asList("create", "remove", "claim", "rename", "leave", "description",
-                    "sethome", "territory", "join", "home", "promote", "stats", "map", "help", "invite", "transfer");
+            List<String> subcommands = new ArrayList<>(CommandRegistry.getCommandDescriptions().keySet());
             List<String> completions = new ArrayList<>();
 
 //            // If the sender is a player or has specific permissions, add the relevant subcommands
