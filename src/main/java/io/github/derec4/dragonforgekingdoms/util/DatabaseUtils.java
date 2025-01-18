@@ -88,12 +88,14 @@ public class DatabaseUtils {
                         resultSet.getInt("home_z")
                 );
                 int health = resultSet.getInt("health");
+                int wealth = resultSet.getInt("wealth");
 
-                Kingdom k = new Kingdom(kingdomID, name, leader, home, description, open, creationTime, level, claimedChunks, health);
+                Kingdom k = new Kingdom(kingdomID, name, leader, home, description, open, creationTime, level, claimedChunks, health, wealth);
                 kingdoms.put(kingdomID, k);
 
                 Bukkit.getLogger().info(String.format("Loaded kingdom: %s with attributes: ID=%s, description=%s, open=%b, creationTime=%s, leader=%s, level=%d, claimedChunks=%d, home=%s, health=%d",
                         name, kingdomID, description, open, creationTime, leader, level, claimedChunks, home, health));
+                // doesn't include wealth ^
             }
         } catch (SQLException e) {
             Bukkit.getLogger().severe("Failed to load kingdoms from database: " + e.getMessage());
@@ -151,7 +153,7 @@ public class DatabaseUtils {
 
     public static void saveKingdom(Connection connection, UUID kingdomUUID, Kingdom kingdom) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
-                "INSERT OR REPLACE INTO kingdoms (ID, name, description, open, creationTime, leader, level, claimedChunks, home_world_id, home_x, home_y, home_z, health) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                "INSERT OR REPLACE INTO kingdoms (ID, name, description, open, creationTime, leader, level, claimedChunks, home_world_id, home_x, home_y, home_z, health, wealth) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
 //            "CREATE TABLE IF NOT EXISTS kingdoms (" +
 //                    "ID TEXT," +
 //                    "name TEXT," +
@@ -181,6 +183,7 @@ public class DatabaseUtils {
             statement.setInt(11, kingdom.getHome().getBlockY());
             statement.setInt(12, kingdom.getHome().getBlockZ());
             statement.setInt(13, kingdom.getHealth());
+            statement.setInt(14, kingdom.getWealth());
             statement.executeUpdate();
         }
     }

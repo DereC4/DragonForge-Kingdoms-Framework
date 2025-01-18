@@ -44,6 +44,7 @@ public class Kingdom {
     @Getter
     private EggData eggData;
     private int health;
+    private int wealth;
 
     public Kingdom(String name, UUID leader, Location home) {
         this.name = name;
@@ -60,13 +61,14 @@ public class Kingdom {
         Date date = new Date();
         this.creationTime = formatter.format(date);
         this.health = (int) getMaxHealth(); // Bad code i know but it is 2 AM
+        this.wealth = 0;
     }
 
     /**
      * Constructor for loading in from a database
      */
     public Kingdom(UUID ID, String name, UUID leader, Location home, String description, boolean open,
-                   String creationTime, int level, int claimedChunks, int health) {
+                   String creationTime, int level, int claimedChunks, int health, int wealth) {
         this.name = name;
         this.description = description;
         this.open = open;
@@ -79,6 +81,7 @@ public class Kingdom {
         this.creationTime = creationTime;
         this.claimedChunks = claimedChunks;
         this.health = health;
+        this.wealth = wealth;
     }
 
     /**
