@@ -1,5 +1,6 @@
 package io.github.derec4.dragonforgekingdoms.commands;
 
+import com.earth2me.essentials.api.Economy;
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import io.github.derec4.dragonforgekingdoms.territory.ChunkCoordinate;
@@ -16,6 +17,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 import static io.github.derec4.dragonforgekingdoms.util.PlayerUtils.*;
@@ -485,6 +487,48 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 SaveAllCommand saveAllCommand = new SaveAllCommand();
                 return saveAllCommand.onCommand(source, command, label, args);
             }
+            case "transfer" -> {
+                if (args.length < 2) {
+                    player.sendMessage(ChatColor.RED + "Usage: /k transfer <amount>");
+                    return false;
+                }
+
+                if (!inAKingdom(player.getUniqueId())) {
+                    player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
+                    return false;
+                }
+
+                double amount;
+
+                try {
+                    amount = Double.parseDouble(args[1]);
+                } catch (NumberFormatException e) {
+                    player.sendMessage(ChatColor.RED + "Invalid amount. Please enter a valid number.");
+                    return false;
+                }
+
+                if (amount <= 0) {
+                    player.sendMessage(ChatColor.RED + "Can't transfer money that ain't there.");
+                    return false;
+                }
+
+                try {
+                    BigDecimal balance = Economy.getMoneyExact(playerID);
+                    if (balance.compareTo(BigDecimal.valueOf(amount)) < 0) {
+                        player.sendMessage(ChatColor.RED + "You're broke.");
+                        return false;
+                    }
+
+                    Economy.subtract(playerID, new BigDecimal(amount));
+                    Kingdom kingdom = manager.getPlayerKingdom(player.getUniqueId());
+                    kingdom.giveWealth((int) amount);
+                    player.sendMessage(ChatColor.GREEN + "Successfully transferred " + amount + " to your kingdom's wealth.");
+                } catch (Exception e) {
+                    player.sendMessage(ChatColor.RED + "An error occurred while transferring money.");
+                    e.printStackTrace();
+                }
+                return true;
+            }
             default -> player.sendMessage(ChatColor.RED + "Unknown sub-command. Usage: /kingdom <sub-command>");
         }
 
@@ -496,7 +540,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         if (args.length == 1) {
             // List of subcommands for the first argument
             List<String> subcommands = Arrays.asList("create", "remove", "claim", "rename", "leave", "description",
-                    "sethome", "territory", "join", "home", "promote", "stats", "map", "help", "invite");
+                    "sethome", "territory", "join", "home", "promote", "stats", "map", "help", "invite", "transfer");
             List<String> completions = new ArrayList<>();
 
 //            // If the sender is a player or has specific permissions, add the relevant subcommands

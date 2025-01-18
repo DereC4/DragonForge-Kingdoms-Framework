@@ -114,6 +114,10 @@ public class Kingdom {
 //        checkLevelUp();
     }
 
+    public void giveWealth(int money) {
+        wealth += money;
+    }
+
 //    /**
 //     * TODO Get actual territory limits per level and then limit it as such
 //     */
