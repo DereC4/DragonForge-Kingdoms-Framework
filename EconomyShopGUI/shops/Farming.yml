@@ -1,0 +1,21 @@
+pages:
+  page1:
+    items:
+      '1':
+        material: WHEAT
+        sell: 3
+      '2':
+        material: PUMPKIN
+        sell: 5
+      '3':
+        material: CAKE
+        sell: 10
+      '4':
+        material: COOKED_BEEF
+        sell: 4
+      '5':
+        material: COOKED_PORKCHOP
+        sell: 4
+      '6':
+        material: APPLE
+        sell: 8

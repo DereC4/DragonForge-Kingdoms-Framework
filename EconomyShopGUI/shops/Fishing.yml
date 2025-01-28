@@ -1,0 +1,21 @@
+pages:
+  page1:
+    items:
+      '1':
+        material: COD
+        sell: 5
+      '2':
+        material: COOKED_COD
+        sell: 6
+      '3':
+        material: NAME_TAG
+        sell: 12
+      '4':
+        material: PUFFERFISH
+        sell: 15
+      '5':
+        material: SADDLE
+        sell: 12
+      '6':
+        material: INK_SAC
+        sell: 6

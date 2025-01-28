@@ -522,6 +522,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                     Economy.subtract(playerID, new BigDecimal(amount));
                     Kingdom kingdom = manager.getPlayerKingdom(player.getUniqueId());
                     kingdom.giveWealth((int) amount);
+                    player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
                     player.sendMessage(ChatColor.GREEN + "Successfully transferred " + amount + " to your kingdom's wealth.");
                 } catch (Exception e) {
                     player.sendMessage(ChatColor.RED + "An error occurred while transferring money.");

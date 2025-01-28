@@ -1,0 +1,32 @@
+worth:
+  # Farming
+  wheat: 3
+  pumpkin: 5
+  cake: 10
+  cooked_stake: 4
+  cooked_pork: 4
+  apple: 8
+
+  # Mining
+  coal: 3
+  iron: 4
+  gold: 8
+  emerald: 20
+  diamond: 15
+  obsidian: 4
+
+  # Fishing
+  fish: 5
+  cooked_fish: 6
+  nametag: 12
+  pufferfish: 15
+  saddle: 12
+  ink_sack: 6
+
+  # Hunting
+  glowstone_dust: 150
+  mob_head: 50
+  ender_pearl: 15
+  music_disc: 50
+  rabbit_foot: 15
+  slime_ball: 10

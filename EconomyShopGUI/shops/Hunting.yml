@@ -1,0 +1,54 @@
+pages:
+  page1:
+    items:
+      '1':
+        material: GLOWSTONE_DUST
+        sell: 150
+      '2':
+        material: PLAYER_HEAD
+        sell: 50
+      '3':
+        material: ENDER_PEARL
+        sell: 15
+      '4':
+        material: MUSIC_DISC_13
+        sell: 50
+      '5':
+        material: MUSIC_DISC_CAT
+        sell: 50
+      '6':
+        material: MUSIC_DISC_BLOCKS
+        sell: 50
+      '7':
+        material: MUSIC_DISC_CHIRP
+        sell: 50
+      '8':
+        material: MUSIC_DISC_FAR
+        sell: 50
+      '9':
+        material: MUSIC_DISC_MALL
+        sell: 50
+      '10':
+        material: MUSIC_DISC_MELLOHI
+        sell: 50
+      '11':
+        material: MUSIC_DISC_STAL
+        sell: 50
+      '12':
+        material: MUSIC_DISC_STRAD
+        sell: 50
+      '13':
+        material: MUSIC_DISC_WARD
+        sell: 50
+      '14':
+        material: MUSIC_DISC_11
+        sell: 50
+      '15':
+        material: MUSIC_DISC_WAIT
+        sell: 50
+      '16':
+        material: RABBIT_FOOT
+        sell: 15
+      '17':
+        material: SLIME_BALL
+        sell: 10

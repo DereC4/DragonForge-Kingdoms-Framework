@@ -1,0 +1,21 @@
+pages:
+  page1:
+    items:
+      '1':
+        material: COAL
+        sell: 3
+      '2':
+        material: IRON_ORE
+        sell: 4
+      '3':
+        material: GOLD_ORE
+        sell: 8
+      '4':
+        material: EMERALD
+        sell: 20
+      '5':
+        material: DIAMOND
+        sell: 15
+      '6':
+        material: OBSIDIAN
+        sell: 4
