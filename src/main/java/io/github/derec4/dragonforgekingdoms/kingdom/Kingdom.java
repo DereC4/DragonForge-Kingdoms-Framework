@@ -242,8 +242,9 @@ public class Kingdom {
         System.out.println(this.home.getWorld().getUID());
         return new ComponentBuilder(this.name + " (level" + this.level  + ") ").color(net.md_5.bungee.api.ChatColor.BLUE)
                 .append("\nHome to " + this.members.size() + " people")
-                .append("\nEgg Health " + this.getHealth())
                 .append("\nDescription: " + this.description)
+                .append("\nEgg Health " + this.getHealth())
+                .append("\nWealth " + this.getWealth())
                 .append("\nDestroyed Kingdoms: 0")
                 .append("\nLand Power: " + this.claimedChunks)
                 .append("\nLed by Lord " + Bukkit.getOfflinePlayer(this.leader).getName()).create();
