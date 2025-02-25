@@ -1,5 +1,6 @@
 package io.github.derec4.dragonforgekingdoms.util;
 
+import com.earth2me.essentials.api.Economy;
 import io.github.derec4.dragonforgekingdoms.DragonForgeKingdoms;
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
@@ -15,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.*;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 public class PlayerUtils {
@@ -180,16 +182,11 @@ public class PlayerUtils {
         Objective objective;
 
         KingdomManager kingdomManager = KingdomManager.getInstance();
+        objective = board.registerNewObjective("sidebar", Criteria.DUMMY, ChatColor.GOLD + "Kingdom Status");
+        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-        if (uuid == null) {
-            objective = board.registerNewObjective("sidebar", Criteria.DUMMY, ChatColor.GREEN + "Wilderness");
-            objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-            Score score = objective.getScore(ChatColor.GREEN + "Wilderness");
-            score.setScore(1);
-        } else {
+        if (uuid != null) {
             Kingdom kingdom = kingdomManager.getKingdomFromID(uuid);
-            objective = board.registerNewObjective("sidebar", Criteria.DUMMY, ChatColor.GOLD + "Kingdom Status");
-            objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
             Score kingdomName = objective.getScore(ChatColor.BLUE + "Kingdom: " + kingdom.getName());
             kingdomName.setScore(5);
@@ -207,7 +204,32 @@ public class PlayerUtils {
             level.setScore(1);
         }
 
+        Score playerStatsTitle = objective.getScore(ChatColor.GOLD + "Player Stats");
+        playerStatsTitle.setScore(1);
+
+        double playerWealth;
+        try {
+            playerWealth = Economy.getMoneyExact(player.getUniqueId()).doubleValue();
+        } catch (Exception e) {
+            playerWealth = -1;
+        }
+
+        Score playerWealthScore = objective.getScore(ChatColor.GREEN + "Wealth: " + playerWealth);
+        playerWealthScore.setScore(0);
+
         player.setScoreboard(board);
+    }
+
+    /**
+     * Updates sidebars for all players
+     * There is probably a better way to do this...
+     */
+    public static void updateAllSidebars() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            ChunkCoordinate chunkCoordinate = getChunk(player.getLocation());
+            UUID uuid = KingdomManager.getInstance().getKingdomByChunk(chunkCoordinate);
+            setSidebar(player, uuid);
+        }
     }
 
     /**

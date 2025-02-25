@@ -6,6 +6,7 @@ import io.github.derec4.dragonforgekingdoms.database.CreateDB;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import io.github.derec4.dragonforgekingdoms.territory.*;
 import io.github.derec4.dragonforgekingdoms.util.DatabaseUtils;
+import io.github.derec4.dragonforgekingdoms.util.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -83,6 +84,8 @@ public final class DragonForgeKingdoms extends JavaPlugin {
                 kingdomManager.getKingdoms().get(uuid).updateHealth(2);
             }
         }, 0L, 100L);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, PlayerUtils::updateAllSidebars, 0L, 60L);
+
     }
 
     @Override
