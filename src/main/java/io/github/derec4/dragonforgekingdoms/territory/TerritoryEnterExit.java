@@ -38,20 +38,23 @@ public class TerritoryEnterExit implements Listener {
             return;
         }
 
-        String message;
+        String titleMessage;
+        String subtitleMessage = "";
 
         // 12/10/2024 remember to use .equals for object comparisons lol, idk how we got away with this for so long
         if (toKingdomUUID == null) {
-            message = ChatColor.GREEN + "Wilderness";
+            titleMessage = ChatColor.GREEN + "Wilderness";
         } else if (fromKingdomUUID == null || !fromKingdomUUID.equals(toKingdomUUID)) {
             Kingdom toKingdom = kingdomManager.getKingdomFromID(toKingdomUUID);
-            message = ChatColor.BLUE + toKingdom.getName();
+            titleMessage = ChatColor.BLUE + toKingdom.getName();
+            subtitleMessage = ChatColor.GOLD + "Wealth: " + toKingdom.getWealth();
         } else {
             // Still in the same kingdom
             return;
         }
 
-        player.sendTitle(message, "", 10, 70, 20);
-        Bukkit.getServer().getConsoleSender().sendMessage("Title message to " + player.getName() + ": " + message);
+        player.sendTitle(titleMessage, subtitleMessage, 10, 70, 20);
+        PlayerUtils.setSidebar(player,toKingdomUUID);
+//        Bukkit.getServer().getConsoleSender().sendMessage("Title message to " + player.getName() + ": " + titleMessage);
     }
 }

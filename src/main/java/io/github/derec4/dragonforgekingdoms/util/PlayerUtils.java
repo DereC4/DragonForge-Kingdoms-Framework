@@ -1,6 +1,8 @@
 package io.github.derec4.dragonforgekingdoms.util;
 
 import io.github.derec4.dragonforgekingdoms.DragonForgeKingdoms;
+import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
+import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import io.github.derec4.dragonforgekingdoms.territory.ChunkCoordinate;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
@@ -11,6 +13,7 @@ import net.luckperms.api.node.types.InheritanceNode;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scoreboard.*;
 
 import java.util.*;
 
@@ -163,6 +166,48 @@ public class PlayerUtils {
                 location.getChunk().getZ(),
                 Objects.requireNonNull(location.getWorld()).getUID()
         );
+    }
+
+    /**
+     * Initializes the in-game sidebar as a HUD for the current kingdom the player is in
+     * @param player Player to display sidebar
+     * @param uuid Current kingdom the player is standing in
+     */
+    public static void setSidebar(Player player, UUID uuid) {
+        ScoreboardManager manager = Bukkit.getScoreboardManager();
+        assert manager != null;
+        Scoreboard board = manager.getNewScoreboard();
+        Objective objective;
+
+        KingdomManager kingdomManager = KingdomManager.getInstance();
+
+        if (uuid == null) {
+            objective = board.registerNewObjective("sidebar", Criteria.DUMMY, ChatColor.GREEN + "Wilderness");
+            objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+            Score score = objective.getScore(ChatColor.GREEN + "Wilderness");
+            score.setScore(1);
+        } else {
+            Kingdom kingdom = kingdomManager.getKingdomFromID(uuid);
+            objective = board.registerNewObjective("sidebar", Criteria.DUMMY, ChatColor.GOLD + "Kingdom Status");
+            objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+
+            Score kingdomName = objective.getScore(ChatColor.BLUE + "Kingdom: " + kingdom.getName());
+            kingdomName.setScore(5);
+
+            Score leader = objective.getScore(ChatColor.YELLOW + "Leader: " + Bukkit.getOfflinePlayer(kingdom.getLeader()).getName());
+            leader.setScore(4);
+
+            Score wealth = objective.getScore(ChatColor.GOLD + "Wealth: " + kingdom.getWealth());
+            wealth.setScore(3);
+
+            Score members = objective.getScore(ChatColor.AQUA + "Members: " + kingdom.getMembers().size());
+            members.setScore(2);
+
+            Score level = objective.getScore(ChatColor.RED + "Level: " + kingdom.getLevel());
+            level.setScore(1);
+        }
+
+        player.setScoreboard(board);
     }
 
     /**
