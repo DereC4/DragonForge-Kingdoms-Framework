@@ -63,8 +63,7 @@ public final class DragonForgeKingdoms extends JavaPlugin {
         Bukkit.getLogger().info("");
         Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "  |_______|                             " +
                 "  ");
-        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "  | Derex |     DragonForgeKingdoms v1.5" +
-                ".0");
+        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "  | Derex |     DragonForgeKingdoms v1.7.0");
         Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "  |_______|     Running on " + Bukkit.getName() + " - " + Bukkit.getVersion());
         Bukkit.getLogger().info("");
 

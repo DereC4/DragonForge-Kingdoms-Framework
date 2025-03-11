@@ -1,18 +1,21 @@
-package io.github.derec4.dragonforgekingdoms;
+package io.github.derec4.dragonforgekingdoms.entity;
 
 
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.monster.WitherSkeleton;
 import net.minecraft.world.level.Level;
 
+import java.util.UUID;
+
 public class CustomWitherSkeleton extends WitherSkeleton {
 
-    public CustomWitherSkeleton(Level world) {
+    private final UUID factionId;
+
+    public CustomWitherSkeleton(Level world, UUID factionId) {
         super(EntityType.WITHER_SKELETON, world);
+        this.factionId = factionId;
         this.collides = false;
         this.expToDrop = 0;
         this.goalSelector = new GoalSelector(world.getProfilerSupplier());
@@ -22,7 +25,10 @@ public class CustomWitherSkeleton extends WitherSkeleton {
         this.setAggressive(false);
         this.setCustomNameVisible(true);
         this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.0D, true));
-        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Cow.class, true));
+        this.targetSelector.addGoal(1, new TargetNonFactionPlayersGoal(this, factionId));
     }
 
+    public UUID getFactionId() {
+        return factionId;
+    }
 }

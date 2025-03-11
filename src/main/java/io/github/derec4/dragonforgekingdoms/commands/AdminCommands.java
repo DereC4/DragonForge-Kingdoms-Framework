@@ -1,11 +1,10 @@
 package io.github.derec4.dragonforgekingdoms.commands;
 
-import io.github.derec4.dragonforgekingdoms.CustomWitherSkeleton;
+import io.github.derec4.dragonforgekingdoms.entity.CustomWitherSkeleton;
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -104,7 +103,7 @@ public class AdminCommands implements CommandExecutor {
 
                     Location location = player.getLocation();
                     ServerLevel world = ((CraftWorld) Objects.requireNonNull(location.getWorld())).getHandle();
-                    CustomWitherSkeleton customWitherSkeleton = new CustomWitherSkeleton(world);
+                    CustomWitherSkeleton customWitherSkeleton = new CustomWitherSkeleton(world, null);
                     customWitherSkeleton.setPos(location.getX(), location.getY(), location.getZ());
                     world.addFreshEntity(customWitherSkeleton);
                     sender.sendMessage(ChatColor.GREEN + "[ADMIN] Custom Wither Skeleton has been spawned.");
