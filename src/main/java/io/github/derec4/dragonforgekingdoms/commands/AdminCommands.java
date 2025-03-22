@@ -32,6 +32,8 @@ public class AdminCommands implements CommandExecutor {
             return true;
         }
 
+        KingdomManager manager = KingdomManager.getInstance();
+
         if (args.length == 0) {
             sender.sendMessage(ChatColor.RED + "Usage: /admin <arguments>");
             return true;
@@ -103,7 +105,8 @@ public class AdminCommands implements CommandExecutor {
 
                     Location location = player.getLocation();
                     ServerLevel world = ((CraftWorld) Objects.requireNonNull(location.getWorld())).getHandle();
-                    CustomWitherSkeleton customWitherSkeleton = new CustomWitherSkeleton(world, null);
+                    CustomWitherSkeleton customWitherSkeleton = new CustomWitherSkeleton(world,
+                            manager.getPlayerKingdom(((Player) sender).getUniqueId()).getID());
                     customWitherSkeleton.setPos(location.getX(), location.getY(), location.getZ());
                     world.addFreshEntity(customWitherSkeleton);
                     sender.sendMessage(ChatColor.GREEN + "[ADMIN] Custom Wither Skeleton has been spawned.");

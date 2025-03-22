@@ -18,11 +18,11 @@ public class CustomWitherSkeleton extends WitherSkeleton {
     public CustomWitherSkeleton(Level world, UUID kingdomID) {
         super(EntityType.WITHER_SKELETON, world);
         this.kingdomID = kingdomID;
-        this.collides = false;
+        this.collides = true;
         this.expToDrop = 0;
         this.goalSelector = new GoalSelector(world.getProfilerSupplier());
         this.targetSelector = new GoalSelector(world.getProfilerSupplier());
-        this.setInvulnerable(true);
+        this.setInvulnerable(false);
         this.setCanPickUpLoot(false);
         this.setAggressive(false);
         this.setCustomNameVisible(true);
