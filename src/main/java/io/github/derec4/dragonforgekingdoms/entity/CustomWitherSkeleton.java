@@ -1,6 +1,7 @@
 package io.github.derec4.dragonforgekingdoms.entity;
 
 
+import lombok.Getter;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
@@ -9,13 +10,14 @@ import net.minecraft.world.level.Level;
 
 import java.util.UUID;
 
+@Getter
 public class CustomWitherSkeleton extends WitherSkeleton {
 
-    private final UUID factionId;
+    private final UUID kingdomID;
 
-    public CustomWitherSkeleton(Level world, UUID factionId) {
+    public CustomWitherSkeleton(Level world, UUID kingdomID) {
         super(EntityType.WITHER_SKELETON, world);
-        this.factionId = factionId;
+        this.kingdomID = kingdomID;
         this.collides = false;
         this.expToDrop = 0;
         this.goalSelector = new GoalSelector(world.getProfilerSupplier());
@@ -25,10 +27,7 @@ public class CustomWitherSkeleton extends WitherSkeleton {
         this.setAggressive(false);
         this.setCustomNameVisible(true);
         this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.0D, true));
-        this.targetSelector.addGoal(1, new TargetNonFactionPlayersGoal(this, factionId));
+        this.targetSelector.addGoal(1, new TargetNonFactionPlayersGoal(this, kingdomID));
     }
 
-    public UUID getFactionId() {
-        return factionId;
-    }
 }
