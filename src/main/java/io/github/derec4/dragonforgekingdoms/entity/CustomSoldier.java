@@ -30,7 +30,7 @@ public class CustomSoldier extends Skeleton {
         this.setAggressive(false);
         this.setCustomNameVisible(true);
         this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.0D, true));
-        this.targetSelector.addGoal(1, new TargetNonFactionPlayersGoal(this, kingdomID));
+        this.targetSelector.addGoal(1, new TargetNonFactionPlayersGoal<>(this, kingdomID));
 
         this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.NETHERITE_CHESTPLATE));
         this.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.NETHERITE_LEGGINGS));

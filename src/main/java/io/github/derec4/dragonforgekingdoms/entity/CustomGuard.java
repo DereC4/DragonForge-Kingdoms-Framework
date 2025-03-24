@@ -15,11 +15,11 @@ import net.minecraft.world.level.Level;
 import java.util.UUID;
 
 @Getter
-public class CustomWitherSkeleton extends WitherSkeleton {
+public class CustomGuard extends WitherSkeleton {
 
     private final UUID kingdomID;
 
-    public CustomWitherSkeleton(Level world, UUID kingdomID) {
+    public CustomGuard(Level world, UUID kingdomID) {
         super(EntityType.WITHER_SKELETON, world);
         this.kingdomID = kingdomID;
         this.collides = true;
@@ -31,7 +31,7 @@ public class CustomWitherSkeleton extends WitherSkeleton {
         this.setAggressive(false);
         this.setCustomNameVisible(true);
         this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.0D, true));
-        this.targetSelector.addGoal(1, new TargetNonFactionPlayersGoal(this, kingdomID));
+        this.targetSelector.addGoal(1, new TargetNonFactionPlayersGoal<>(this, kingdomID));
         this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.NETHERITE_CHESTPLATE));
         this.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.NETHERITE_LEGGINGS));
         this.setItemSlot(EquipmentSlot.FEET, new ItemStack(Items.NETHERITE_BOOTS));

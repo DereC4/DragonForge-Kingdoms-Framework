@@ -1,6 +1,6 @@
 package io.github.derec4.dragonforgekingdoms.commands;
 
-import io.github.derec4.dragonforgekingdoms.entity.CustomWitherSkeleton;
+import io.github.derec4.dragonforgekingdoms.entity.CustomGuard;
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
@@ -105,7 +105,7 @@ public class AdminCommands implements CommandExecutor {
 
                     Location location = player.getLocation();
                     ServerLevel world = ((CraftWorld) Objects.requireNonNull(location.getWorld())).getHandle();
-                    CustomWitherSkeleton customWitherSkeleton = new CustomWitherSkeleton(world,
+                    CustomGuard customWitherSkeleton = new CustomGuard(world,
                             manager.getPlayerKingdom(((Player) sender).getUniqueId()).getID());
                     customWitherSkeleton.setPos(location.getX(), location.getY(), location.getZ());
                     world.addFreshEntity(customWitherSkeleton);
