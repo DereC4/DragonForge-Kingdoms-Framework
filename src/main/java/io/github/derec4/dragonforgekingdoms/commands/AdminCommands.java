@@ -1,10 +1,11 @@
 package io.github.derec4.dragonforgekingdoms.commands;
 
+import io.github.derec4.dragonforgekingdoms.database.CreateDB;
 import io.github.derec4.dragonforgekingdoms.entity.CustomGuard;
 import io.github.derec4.dragonforgekingdoms.entity.CustomSoldier;
+import io.github.derec4.dragonforgekingdoms.entity.CustomSpawnEgg;
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
-import io.github.derec4.dragonforgekingdoms.database.CreateDB;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,6 +15,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -107,7 +109,7 @@ public class AdminCommands implements CommandExecutor {
                     Location location = player.getLocation();
                     ServerLevel world = ((CraftWorld) Objects.requireNonNull(location.getWorld())).getHandle();
                     CustomGuard customGuard = new CustomGuard(world,
-                            manager.getPlayerKingdom(((Player) sender).getUniqueId()).getID());
+                            manager.getPlayerKingdom(player.getUniqueId()).getID());
                     customGuard.setPos(location.getX(), location.getY(), location.getZ());
                     world.addFreshEntity(customGuard);
                     sender.sendMessage(ChatColor.GREEN + "[ADMIN] Custom Guard has been spawned.");
@@ -121,10 +123,30 @@ public class AdminCommands implements CommandExecutor {
                     Location location = player.getLocation();
                     ServerLevel world = ((CraftWorld) Objects.requireNonNull(location.getWorld())).getHandle();
                     CustomSoldier customSoldier = new CustomSoldier(world,
-                            manager.getPlayerKingdom(((Player) sender).getUniqueId()).getID());
+                            manager.getPlayerKingdom(player.getUniqueId()).getID());
                     customSoldier.setPos(location.getX(), location.getY(), location.getZ());
                     world.addFreshEntity(customSoldier);
                     sender.sendMessage(ChatColor.GREEN + "[ADMIN] Custom Soldier has been spawned.");
+                }
+                case "guardegg" -> {
+                    if (!(sender instanceof Player player)) {
+                        sender.sendMessage(ChatColor.RED + "This command can only be used by a player.");
+                        return true;
+                    }
+
+                    ItemStack guardEgg = CustomSpawnEgg.createCustomSpawnEgg(1);
+                    player.getInventory().addItem(guardEgg);
+                    sender.sendMessage(ChatColor.GREEN + "[ADMIN] Custom Guard Spawn Egg has been given.");
+                }
+                case "soldieregg" -> {
+                    if (!(sender instanceof Player player)) {
+                        sender.sendMessage(ChatColor.RED + "This command can only be used by a player.");
+                        return true;
+                    }
+
+                    ItemStack soldierEgg = CustomSpawnEgg.createCustomSpawnEgg(2);
+                    player.getInventory().addItem(soldierEgg);
+                    sender.sendMessage(ChatColor.GREEN + "[ADMIN] Custom Soldier Spawn Egg has been given.");
                 }
             }
         }

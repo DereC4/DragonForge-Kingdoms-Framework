@@ -8,6 +8,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,19 +29,16 @@ public class CustomSpawnEgg extends Item implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         ItemStack itemStack = Objects.requireNonNull(player.getEquipment()).getItemInMainHand();
-
-        if (itemStack.getType() == Material.DRAGON_EGG && itemStack.getItemMeta().hasCustomModelData()) {
+        if (itemStack.getType() == Material.SKELETON_SPAWN_EGG && itemStack.getEnchantmentLevel(Enchantment.DURABILITY) == 5 && itemStack.getItemMeta().hasCustomModelData()) {
             int customModelData = itemStack.getItemMeta().getCustomModelData();
             Block clickedBlock = event.getClickedBlock();
             Level world = (Level) clickedBlock.getWorld();
-            UUID kingdomID = UUID.randomUUID(); // Replace with actual kingdom ID
+            UUID kingdomID = UUID.randomUUID();
 
             if (customModelData == 1) {
-                // Spawn CustomGuard
                 CustomGuard customGuard = new CustomGuard(world, kingdomID);
                 world.addFreshEntity(customGuard);
             } else if (customModelData == 2) {
-                // Spawn CustomSoldier
                 CustomSoldier customSoldier = new CustomSoldier(world, kingdomID);
                 world.addFreshEntity(customSoldier);
             }
@@ -55,6 +53,7 @@ public class CustomSpawnEgg extends Item implements Listener {
         ItemMeta meta = spawnEgg.getItemMeta();
         assert meta != null;
         meta.setCustomModelData(customModelData);
+        meta.addEnchant(Enchantment.DURABILITY, 5, true);
         spawnEgg.setItemMeta(meta);
         return spawnEgg;
     }
