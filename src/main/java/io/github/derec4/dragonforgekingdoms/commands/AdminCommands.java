@@ -1,6 +1,7 @@
 package io.github.derec4.dragonforgekingdoms.commands;
 
 import io.github.derec4.dragonforgekingdoms.entity.CustomGuard;
+import io.github.derec4.dragonforgekingdoms.entity.CustomSoldier;
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
@@ -97,7 +98,7 @@ public class AdminCommands implements CommandExecutor {
                         sender.sendMessage(ChatColor.RED + "[ADMIN] An error occurred while changing the kingdom owner.");
                     }
                 }
-                case "spawnwither" -> {
+                case "spawnguard" -> {
                     if (!(sender instanceof Player player)) {
                         sender.sendMessage(ChatColor.RED + "This command can only be used by a player.");
                         return true;
@@ -105,11 +106,25 @@ public class AdminCommands implements CommandExecutor {
 
                     Location location = player.getLocation();
                     ServerLevel world = ((CraftWorld) Objects.requireNonNull(location.getWorld())).getHandle();
-                    CustomGuard customWitherSkeleton = new CustomGuard(world,
+                    CustomGuard customGuard = new CustomGuard(world,
                             manager.getPlayerKingdom(((Player) sender).getUniqueId()).getID());
-                    customWitherSkeleton.setPos(location.getX(), location.getY(), location.getZ());
-                    world.addFreshEntity(customWitherSkeleton);
-                    sender.sendMessage(ChatColor.GREEN + "[ADMIN] Custom Wither Skeleton has been spawned.");
+                    customGuard.setPos(location.getX(), location.getY(), location.getZ());
+                    world.addFreshEntity(customGuard);
+                    sender.sendMessage(ChatColor.GREEN + "[ADMIN] Custom Guard has been spawned.");
+                }
+                case "spawnsoldier" -> {
+                    if (!(sender instanceof Player player)) {
+                        sender.sendMessage(ChatColor.RED + "This command can only be used by a player.");
+                        return true;
+                    }
+
+                    Location location = player.getLocation();
+                    ServerLevel world = ((CraftWorld) Objects.requireNonNull(location.getWorld())).getHandle();
+                    CustomSoldier customSoldier = new CustomSoldier(world,
+                            manager.getPlayerKingdom(((Player) sender).getUniqueId()).getID());
+                    customSoldier.setPos(location.getX(), location.getY(), location.getZ());
+                    world.addFreshEntity(customSoldier);
+                    sender.sendMessage(ChatColor.GREEN + "[ADMIN] Custom Soldier has been spawned.");
                 }
             }
         }
