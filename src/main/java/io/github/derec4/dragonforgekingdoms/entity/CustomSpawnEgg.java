@@ -25,35 +25,12 @@ public class CustomSpawnEgg extends Item implements Listener {
         super(properties);
     }
 
-    @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        ItemStack itemStack = Objects.requireNonNull(player.getEquipment()).getItemInMainHand();
-        if (itemStack.getType() == Material.SKELETON_SPAWN_EGG && itemStack.getEnchantmentLevel(Enchantment.DURABILITY) == 5 && itemStack.getItemMeta().hasCustomModelData()) {
-            int customModelData = itemStack.getItemMeta().getCustomModelData();
-            Block clickedBlock = event.getClickedBlock();
-            Level world = (Level) clickedBlock.getWorld();
-            UUID kingdomID = UUID.randomUUID();
-
-            if (customModelData == 1) {
-                CustomGuard customGuard = new CustomGuard(world, kingdomID);
-                world.addFreshEntity(customGuard);
-            } else if (customModelData == 2) {
-                CustomSoldier customSoldier = new CustomSoldier(world, kingdomID);
-                world.addFreshEntity(customSoldier);
-            }
-
-            itemStack.setAmount(itemStack.getAmount() - 1);
-            event.setCancelled(true);
-        }
-    }
-
     public static ItemStack createCustomSpawnEgg(int customModelData) {
         ItemStack spawnEgg = new ItemStack(Material.SKELETON_SPAWN_EGG);
         ItemMeta meta = spawnEgg.getItemMeta();
         assert meta != null;
-        meta.setCustomModelData(customModelData);
         meta.addEnchant(Enchantment.DURABILITY, 5, true);
+        meta.setCustomModelData(customModelData);
         spawnEgg.setItemMeta(meta);
         return spawnEgg;
     }
