@@ -6,6 +6,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.entity.monster.WitherSkeleton;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -15,12 +16,12 @@ import net.minecraft.world.level.Level;
 import java.util.UUID;
 
 @Getter
-public class CustomGuard extends WitherSkeleton {
+public class CustomArcher extends Skeleton {
 
     private final UUID kingdomID;
 
-    public CustomGuard(Level world, UUID kingdomID) {
-        super(EntityType.WITHER_SKELETON, world);
+    public CustomArcher(Level world, UUID kingdomID) {
+        super(EntityType.SKELETON, world);
         this.kingdomID = kingdomID;
         this.collides = true;
         this.expToDrop = 0;
@@ -35,9 +36,8 @@ public class CustomGuard extends WitherSkeleton {
         this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.NETHERITE_CHESTPLATE));
         this.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.NETHERITE_LEGGINGS));
         this.setItemSlot(EquipmentSlot.FEET, new ItemStack(Items.NETHERITE_BOOTS));
-        ItemStack diamondSword = new ItemStack(Items.DIAMOND_SWORD);
-        diamondSword.enchant(Enchantments.SHARPNESS, 3);
-        this.setItemSlot(EquipmentSlot.MAINHAND, diamondSword);
+        ItemStack helmet = new ItemStack(Items.CHAINMAIL_HELMET);
+
 
     }
 }
