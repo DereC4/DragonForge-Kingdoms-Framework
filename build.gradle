@@ -35,6 +35,8 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
     compileOnly 'net.luckperms:api:5.4'
     compileOnly 'net.essentialsx:EssentialsX:2.20.1'
+    implementation 'com.github.Gypopo:EconomyShopGUI-API:VERSION'
+
 }
 
 def targetJavaVersion = 17
