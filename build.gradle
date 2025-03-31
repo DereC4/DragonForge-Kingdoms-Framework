@@ -26,6 +26,10 @@ repositories {
         name = "papermc"
         url = "https://papermc.io/repo/repository/maven-public/"
     }
+    maven {
+        name = "economyshopgui"
+        url = 'https://jitpack.io'
+    }
 }
 
 dependencies {
@@ -35,8 +39,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
     compileOnly 'net.luckperms:api:5.4'
     compileOnly 'net.essentialsx:EssentialsX:2.20.1'
-    implementation 'com.github.Gypopo:EconomyShopGUI-API:VERSION'
-
+    compileOnly 'com.github.Gypopo:EconomyShopGUI-API:1.7.3'
 }
 
 def targetJavaVersion = 17

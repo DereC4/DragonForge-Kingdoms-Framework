@@ -1,5 +1,6 @@
 package io.github.derec4.dragonforgekingdoms.entity;
 
+import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -30,6 +31,9 @@ public class CustomSpawnEggListener implements Listener {
         ItemStack itemStack = Objects.requireNonNull(player.getEquipment()).getItemInMainHand();
 //        System.out.println("TEMP TEMP " + itemStack.getItemMeta().getAsString());
         if (itemStack.getType() == Material.SKELETON_SPAWN_EGG && itemStack.getEnchantmentLevel(Enchantment.DURABILITY) == 5 && itemStack.getItemMeta().hasCustomModelData()) {
+            UUID playerUUID = player.getUniqueId();
+            Kingdom kingdom = kingdomManager.getPlayerKingdom(playerUUID);
+
             int customModelData = itemStack.getItemMeta().getCustomModelData();
             ServerLevel world = ((CraftWorld) player.getWorld()).getHandle();
             UUID kingdomID = kingdomManager.getPlayerKingdom(player.getUniqueId()).getID();
@@ -45,7 +49,7 @@ public class CustomSpawnEggListener implements Listener {
                         event.getPlayer().getLocation().getZ());
                 world.addFreshEntity(customSoldier);
             }
-
+            kingdom.incrementMobCount();
             itemStack.setAmount(itemStack.getAmount() - 1);
             event.setCancelled(true);
         }

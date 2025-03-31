@@ -45,6 +45,7 @@ public class Kingdom {
     private EggData eggData;
     private int health;
     private int wealth;
+    private int mobCount;
 
     public Kingdom(String name, UUID leader, Location home) {
         this.name = name;
@@ -272,6 +273,30 @@ public class Kingdom {
 //            this.level = 1;
 //        }
 //    }
+
+    public int getMaxMobs() {
+        return switch (level) {
+            case 2 -> 10;
+            case 3 -> 15;
+            case 4 -> 20;
+            case 5 -> 25;
+            case 6 -> 30;
+            case 7 -> 35;
+            default -> 5;
+        };
+    }
+
+    public boolean canSpawnMoreMobs() {
+        return mobCount < getMaxMobs();
+    }
+
+    public void incrementMobCount() {
+        mobCount++;
+    }
+
+    public void decrementMobCount() {
+        if (mobCount > 0) mobCount--;
+    }
 
     public void clearMembers() {
         this.members.clear();
