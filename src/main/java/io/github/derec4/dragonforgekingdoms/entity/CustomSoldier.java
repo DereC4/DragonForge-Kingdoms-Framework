@@ -40,6 +40,7 @@ public class CustomSoldier extends Skeleton {
         this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.IRON_CHESTPLATE));
         this.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.IRON_LEGGINGS));
         this.setItemSlot(EquipmentSlot.FEET, new ItemStack(Items.IRON_BOOTS));
+        this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.CARVED_PUMPKIN));
         ItemStack diamondSword = new ItemStack(Items.DIAMOND_SWORD);
         diamondSword.enchant(Enchantments.SHARPNESS, 1);
         this.setItemSlot(EquipmentSlot.MAINHAND, diamondSword);

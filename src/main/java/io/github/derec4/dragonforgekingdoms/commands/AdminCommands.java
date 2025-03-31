@@ -100,34 +100,34 @@ public class AdminCommands implements CommandExecutor {
                         sender.sendMessage(ChatColor.RED + "[ADMIN] An error occurred while changing the kingdom owner.");
                     }
                 }
-                case "spawnguard" -> {
-                    if (!(sender instanceof Player player)) {
-                        sender.sendMessage(ChatColor.RED + "This command can only be used by a player.");
-                        return true;
-                    }
-
-                    Location location = player.getLocation();
-                    ServerLevel world = ((CraftWorld) Objects.requireNonNull(location.getWorld())).getHandle();
-                    CustomGuard customGuard = new CustomGuard(world,
-                            manager.getPlayerKingdom(player.getUniqueId()).getID());
-                    customGuard.setPos(location.getX(), location.getY(), location.getZ());
-                    world.addFreshEntity(customGuard);
-                    sender.sendMessage(ChatColor.GREEN + "[ADMIN] Custom Guard has been spawned.");
-                }
-                case "spawnsoldier" -> {
-                    if (!(sender instanceof Player player)) {
-                        sender.sendMessage(ChatColor.RED + "This command can only be used by a player.");
-                        return true;
-                    }
-
-                    Location location = player.getLocation();
-                    ServerLevel world = ((CraftWorld) Objects.requireNonNull(location.getWorld())).getHandle();
-                    CustomSoldier customSoldier = new CustomSoldier(world,
-                            manager.getPlayerKingdom(player.getUniqueId()).getID());
-                    customSoldier.setPos(location.getX(), location.getY(), location.getZ());
-                    world.addFreshEntity(customSoldier);
-                    sender.sendMessage(ChatColor.GREEN + "[ADMIN] Custom Soldier has been spawned.");
-                }
+//                case "spawnguard" -> {
+//                    if (!(sender instanceof Player player)) {
+//                        sender.sendMessage(ChatColor.RED + "This command can only be used by a player.");
+//                        return true;
+//                    }
+//
+//                    Location location = player.getLocation();
+//                    ServerLevel world = ((CraftWorld) Objects.requireNonNull(location.getWorld())).getHandle();
+//                    CustomGuard customGuard = new CustomGuard(world,
+//                            manager.getPlayerKingdom(player.getUniqueId()).getID());
+//                    customGuard.setPos(location.getX(), location.getY(), location.getZ());
+//                    world.addFreshEntity(customGuard);
+//                    sender.sendMessage(ChatColor.GREEN + "[ADMIN] Custom Guard has been spawned.");
+//                }
+//                case "spawnsoldier" -> {
+//                    if (!(sender instanceof Player player)) {
+//                        sender.sendMessage(ChatColor.RED + "This command can only be used by a player.");
+//                        return true;
+//                    }
+//
+//                    Location location = player.getLocation();
+//                    ServerLevel world = ((CraftWorld) Objects.requireNonNull(location.getWorld())).getHandle();
+//                    CustomSoldier customSoldier = new CustomSoldier(world,
+//                            manager.getPlayerKingdom(player.getUniqueId()).getID());
+//                    customSoldier.setPos(location.getX(), location.getY(), location.getZ());
+//                    world.addFreshEntity(customSoldier);
+//                    sender.sendMessage(ChatColor.GREEN + "[ADMIN] Custom Soldier has been spawned.");
+//                }
                 case "guardegg" -> {
                     if (!(sender instanceof Player player)) {
                         sender.sendMessage(ChatColor.RED + "This command can only be used by a player.");
