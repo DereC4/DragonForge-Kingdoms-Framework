@@ -1,6 +1,7 @@
 package io.github.derec4.dragonforgekingdoms.entity;
 
 import lombok.Getter;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
@@ -17,8 +18,9 @@ import java.util.UUID;
 public class CustomSoldier extends Skeleton {
 
     private final UUID kingdomID;
+    private final BlockPos spawnPoint;
 
-    public CustomSoldier(Level world, UUID kingdomID) {
+    public CustomSoldier(Level world, UUID kingdomID, BlockPos spawnPoint) {
         super(EntityType.SKELETON, world);
         this.kingdomID = kingdomID;
         this.collides = true;
@@ -29,8 +31,11 @@ public class CustomSoldier extends Skeleton {
         this.setCanPickUpLoot(false);
         this.setAggressive(false);
         this.setCustomNameVisible(true);
+        this.spawnPoint = spawnPoint;
+
         this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.0D, true));
         this.targetSelector.addGoal(1, new TargetNonFactionPlayersGoal<>(this, kingdomID));
+        this.goalSelector.addGoal(2, new ReturnToPointGoal(this, spawnPoint));
 
         this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.IRON_CHESTPLATE));
         this.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.IRON_LEGGINGS));
