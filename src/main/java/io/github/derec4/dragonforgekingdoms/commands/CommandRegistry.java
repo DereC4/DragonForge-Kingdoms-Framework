@@ -27,6 +27,7 @@ public class CommandRegistry {
         commandDescriptions.put("invite", "Invite a player to your kingdom");
         commandDescriptions.put("transfer", "Transfer money to your kingdom's wealth");
         commandDescriptions.put("save-all", "Save all data to the database");
+        commandDescriptions.put("banish", "Banish a player in your kingdom");
     }
 
 }

@@ -102,10 +102,8 @@ public class KingdomManager {
      * Returns the Kingdom a player UUID belongs to
      */
     public Kingdom getPlayerKingdom(UUID playerUUID) {
-        if (playerMappings.getOrDefault(playerUUID, null) == null) {
-            return null;
-        }
-        return kingdoms.getOrDefault(playerMappings.get(playerUUID), null);
+        UUID kingdomID = playerMappings.getOrDefault(playerUUID, null);
+        return kingdomID != null ? kingdoms.get(kingdomID) : null;
     }
 
     /**
@@ -211,6 +209,7 @@ public class KingdomManager {
     }
 
     public void removePlayer(UUID playerUUID) {
+        getPlayerKingdom(playerUUID).removePlayer(playerUUID);
         clearPlayerPermissions(playerUUID);
 //        kingdoms.get(playerMappings.get(playerUUID)).removePlayer(playerUUID);
         playerMappings.remove(playerUUID);

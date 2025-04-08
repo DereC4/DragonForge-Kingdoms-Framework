@@ -6,10 +6,7 @@ import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import io.github.derec4.dragonforgekingdoms.territory.ChunkCoordinate;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -165,6 +162,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             }
             case "create" -> {
                 player.sendMessage("Creating a new kingdom...");
+
                 if (!player.hasPermission("kingdom.create")) {
                     player.sendMessage(permsError);
                     return false;
@@ -410,6 +408,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                     player.sendMessage(ChatColor.RED + "Usage: /kingdom promote <player>");
                     return false;
                 }
+
                 String name = args[1];
                 Player targetPlayer = Bukkit.getPlayer(name);
 
@@ -486,6 +485,61 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
                 SaveAllCommand saveAllCommand = new SaveAllCommand();
                 return saveAllCommand.onCommand(source, command, label, args);
+            }
+            case "banish" -> {
+                if (!player.hasPermission("kingdom.banish")) {
+                    player.sendMessage(permsError);
+                    return false;
+                }
+
+                if (args.length < 2) {
+                    player.sendMessage(ChatColor.RED + "Usage: /kingdom banish <player name>");
+                    return false;
+                }
+
+                String targetPlayerName = args[1];
+
+                if (targetPlayerName.equals(player.getName())) {
+                    player.sendMessage(ChatColor.RED + "Can't banish yourself...");
+                    return false;
+                }
+
+                OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(targetPlayerName);
+
+
+
+                if (!targetPlayer.hasPlayedBefore()) {
+                    player.sendMessage(ChatColor.RED + "Player " + targetPlayerName + " not found.");
+                    return false;
+                }
+
+                UUID targetPlayerUUID = targetPlayer.getUniqueId();
+                Kingdom playerKingdom = manager.getPlayerKingdom(player.getUniqueId());
+
+                if (playerKingdom == null) {
+                    player.sendMessage(ChatColor.RED + "You are not in a kingdom.");
+                    return false;
+                }
+
+                Kingdom targetPlayerKingdom = manager.getPlayerKingdom(targetPlayerUUID);
+
+                if (targetPlayerKingdom == null || !targetPlayerKingdom.equals(playerKingdom)) {
+                    player.sendMessage(ChatColor.RED + "Player " + targetPlayerName + " is not in your kingdom.");
+                    return false;
+                }
+
+                manager.removePlayer(targetPlayerUUID);
+//                playerKingdom.removePlayer(targetPlayerUUID);
+
+                player.sendMessage(ChatColor.GREEN + "Player " + targetPlayerName + " has been banished from your kingdom.");
+
+                if (targetPlayer.isOnline()) {
+                    Player onlineTarget = targetPlayer.getPlayer();
+                    if (onlineTarget != null) {
+                        onlineTarget.sendMessage(ChatColor.RED + "You have been banished from the kingdom " + playerKingdom.getName() + ".");
+                    }
+                }
+
             }
             case "transfer" -> {
                 if (args.length < 2) {
