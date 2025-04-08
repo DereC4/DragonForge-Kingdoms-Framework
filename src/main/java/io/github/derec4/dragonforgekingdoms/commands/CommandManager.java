@@ -22,6 +22,7 @@ import static io.github.derec4.dragonforgekingdoms.util.PlayerUtils.*;
 public class CommandManager implements CommandExecutor, TabCompleter {
     final String permsError = ChatColor.RED + "You do not have permission to use this command! Check" +
             " with the server staff?";
+    private final Map<UUID, Long> pendingDeletions = new HashMap<>();
 
     /**
      * Checks if a player is in a kingdom
@@ -218,15 +219,22 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                     return false;
                 }
 
-                player.sendMessage("Removing your kingdom...");
-                manager.removeKingdom(manager.getPlayerKingdom(playerID).getID());
-
-                // Send in connection and try to remove the kingdom row from table
-//                try (Connection connection = databaseManager.getConnection()) {
-//                    kManager.removeKingdom(playerID, connection);
-//                } catch (Exception e) {
-//                    Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
-//                }
+                if (pendingDeletions.containsKey(playerID)) {
+                    long requestTime = pendingDeletions.get(playerID);
+                    long currentTime = System.currentTimeMillis();
+                    if (currentTime - requestTime <= 30 * 1000) {
+                        Kingdom kingdom = manager.getPlayerKingdom(playerID);
+                        player.sendMessage("Removing your kingdom...");
+                        manager.removeKingdom(manager.getPlayerKingdom(playerID).getID());
+                        pendingDeletions.remove(playerID);
+                        player.sendMessage(ChatColor.GREEN + "Your kingdom has been deleted.");
+                    }
+                } else {
+                    pendingDeletions.put(playerID,System.currentTimeMillis());
+                    player.sendMessage(ChatColor.YELLOW + "Are you sure you want to delete your kingdom? This action cannot be undone.");
+                    player.sendMessage(ChatColor.YELLOW + "If so, please repeat the command within 30 seconds.");
+                    return true;
+                }
             }
             case "claim" -> {
                 if (!player.hasPermission("kingdom.claim")) {
