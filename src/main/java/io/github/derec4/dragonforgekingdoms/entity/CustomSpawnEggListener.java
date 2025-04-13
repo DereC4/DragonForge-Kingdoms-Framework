@@ -1,10 +1,13 @@
 package io.github.derec4.dragonforgekingdoms.entity;
 
+import io.github.derec4.dragonforgekingdoms.DragonForgeKingdoms;
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
+import io.github.derec4.dragonforgekingdoms.util.EntityTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
 import org.bukkit.enchantments.Enchantment;
@@ -13,6 +16,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -61,16 +65,24 @@ public class CustomSpawnEggListener implements Listener {
         double spawnY = clickedBlock.getY() + 1.0;
         double spawnZ = clickedBlock.getZ() + 0.5;
 
-        if (customModelData == 1) {
+        NamespacedKey namespacedKey = new NamespacedKey(DragonForgeKingdoms.getInstance(), "custom_entity");
+
+        if (customModelData == 1) { // CustomGuard
             CustomGuard customGuard = new CustomGuard(world, kingdomID, new BlockPos((int) spawnX, (int) spawnY, (int) spawnZ));
             customGuard.setPos(spawnX, spawnY, spawnZ);
             world.addFreshEntity(customGuard);
-        } else if (customModelData == 2) {
+            customGuard.getBukkitEntity().getPersistentDataContainer().set(EntityTags.MOB_TYPE_KEY, PersistentDataType.INTEGER, 0);
+        } else if (customModelData == 2) { // CustomSoldier
             CustomSoldier customSoldier = new CustomSoldier(world, kingdomID, new BlockPos((int) spawnX, (int) spawnY, (int) spawnZ));
             customSoldier.setPos(spawnX, spawnY, spawnZ);
             world.addFreshEntity(customSoldier);
+            customSoldier.getBukkitEntity().getPersistentDataContainer().set(EntityTags.MOB_TYPE_KEY, PersistentDataType.INTEGER, 1);
+        } else if (customModelData == 3) { // CustomArcher
+            CustomArcher customArcher = new CustomArcher(world, kingdomID);
+            customArcher.setPos(spawnX, spawnY, spawnZ);
+            world.addFreshEntity(customArcher);
+            customArcher.getBukkitEntity().getPersistentDataContainer().set(EntityTags.MOB_TYPE_KEY, PersistentDataType.INTEGER, 2);
         } else {
-            player.sendMessage("Invalid spawn egg.");
             return;
         }
 
