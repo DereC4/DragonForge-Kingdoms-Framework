@@ -241,6 +241,7 @@ public class Kingdom {
 
     public BaseComponent[] getStats() {
         System.out.println(this.home.getWorld().getUID());
+        System.out.println(this.getMobCount() + "TEMP MOB COUNT");
         return new ComponentBuilder(this.name + " (level" + this.level  + ") ").color(net.md_5.bungee.api.ChatColor.BLUE)
                 .append("\nHome to " + this.members.size() + " people")
                 .append("\nDescription: " + this.description)

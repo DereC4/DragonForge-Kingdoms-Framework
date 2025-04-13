@@ -43,6 +43,15 @@ public class CustomGuard extends WitherSkeleton {
         ItemStack diamondSword = new ItemStack(Items.DIAMOND_SWORD);
         diamondSword.enchant(Enchantments.SHARPNESS, 3);
         this.setItemSlot(EquipmentSlot.MAINHAND, diamondSword);
+        setDropChance();
+    }
 
+    private void setDropChance() {
+        this.setDropChance(EquipmentSlot.MAINHAND, 0.0F);
+        this.setDropChance(EquipmentSlot.OFFHAND, 0.0F);
+        this.setDropChance(EquipmentSlot.HEAD, 0.0F);
+        this.setDropChance(EquipmentSlot.CHEST, 0.0F);
+        this.setDropChance(EquipmentSlot.LEGS, 0.0F);
+        this.setDropChance(EquipmentSlot.FEET, 0.0F);
     }
 }

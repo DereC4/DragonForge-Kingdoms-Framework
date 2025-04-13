@@ -33,12 +33,23 @@ public class CustomArcher extends Skeleton {
         this.setAggressive(false);
         this.setCustomNameVisible(true);
 //        this.goalSelector.addGoal(1, new RangedAttackGoal(this, 1.0D, true));
+
         this.targetSelector.addGoal(1, new TargetNonFactionPlayersGoal<>(this, kingdomID));
         this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.NETHERITE_CHESTPLATE));
         this.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.NETHERITE_LEGGINGS));
         this.setItemSlot(EquipmentSlot.FEET, new ItemStack(Items.NETHERITE_BOOTS));
         ItemStack helmet = new ItemStack(Items.CHAINMAIL_HELMET);
 
+        setDropChance();
 
+    }
+
+    private void setDropChance() {
+        this.setDropChance(EquipmentSlot.MAINHAND, 0.0F);
+        this.setDropChance(EquipmentSlot.OFFHAND, 0.0F);
+        this.setDropChance(EquipmentSlot.HEAD, 0.0F);
+        this.setDropChance(EquipmentSlot.CHEST, 0.0F);
+        this.setDropChance(EquipmentSlot.LEGS, 0.0F);
+        this.setDropChance(EquipmentSlot.FEET, 0.0F);
     }
 }

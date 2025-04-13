@@ -33,6 +33,8 @@ public class CustomSoldier extends Skeleton {
         this.setCustomNameVisible(true);
         this.spawnPoint = spawnPoint;
 
+        setDropChance();
+
         this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.0D, true));
         this.targetSelector.addGoal(1, new TargetNonFactionPlayersGoal<>(this, kingdomID));
         this.goalSelector.addGoal(2, new ReturnToPointGoal(this, spawnPoint));
@@ -44,5 +46,14 @@ public class CustomSoldier extends Skeleton {
         ItemStack diamondSword = new ItemStack(Items.DIAMOND_SWORD);
         diamondSword.enchant(Enchantments.SHARPNESS, 1);
         this.setItemSlot(EquipmentSlot.MAINHAND, diamondSword);
+    }
+
+    private void setDropChance() {
+        this.setDropChance(EquipmentSlot.MAINHAND, 0.0F);
+        this.setDropChance(EquipmentSlot.OFFHAND, 0.0F);
+        this.setDropChance(EquipmentSlot.HEAD, 0.0F);
+        this.setDropChance(EquipmentSlot.CHEST, 0.0F);
+        this.setDropChance(EquipmentSlot.LEGS, 0.0F);
+        this.setDropChance(EquipmentSlot.FEET, 0.0F);
     }
 }
