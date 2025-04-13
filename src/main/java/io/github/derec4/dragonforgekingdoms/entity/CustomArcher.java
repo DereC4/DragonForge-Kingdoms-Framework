@@ -32,7 +32,7 @@ public class CustomArcher extends Skeleton {
         this.setCanPickUpLoot(false);
         this.setAggressive(false);
         this.setCustomNameVisible(true);
-        this.goalSelector.addGoal(1, new RangedAttackGoal(this, 1.0D, true));
+//        this.goalSelector.addGoal(1, new RangedAttackGoal(this, 1.0D, true));
         this.targetSelector.addGoal(1, new TargetNonFactionPlayersGoal<>(this, kingdomID));
         this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.NETHERITE_CHESTPLATE));
         this.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.NETHERITE_LEGGINGS));
