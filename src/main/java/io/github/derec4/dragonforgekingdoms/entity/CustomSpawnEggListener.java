@@ -44,21 +44,28 @@ public class CustomSpawnEggListener implements Listener {
             return;
         }
 
+        int customModelData = itemStack.getItemMeta().getCustomModelData();
+
+        if (customModelData != 1 && customModelData != 2 && customModelData != 3) {
+            return;
+        }
+
 //        System.out.println("TEMP TEMP " + itemStack.getItemMeta().getAsString());
         UUID playerUUID = player.getUniqueId();
         Kingdom kingdom = kingdomManager.getPlayerKingdom(playerUUID);
 
         if (kingdom == null) {
             player.sendMessage("You are not part of a kingdom.");
+            event.setCancelled(true);
             return;
         }
 
         if (!kingdom.canSpawnMoreMobs()) {
             player.sendMessage("Your kingdom has reached the maximum number of mobs for its level.");
+            event.setCancelled(true);
             return;
         }
 
-        int customModelData = itemStack.getItemMeta().getCustomModelData();
         ServerLevel world = ((CraftWorld) player.getWorld()).getHandle();
         UUID kingdomID = kingdomManager.getPlayerKingdom(player.getUniqueId()).getID();
         double spawnX = clickedBlock.getX() + 0.5;
