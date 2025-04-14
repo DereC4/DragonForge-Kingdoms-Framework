@@ -10,6 +10,7 @@ import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.Node;
+import net.luckperms.api.node.NodeType;
 import net.luckperms.api.node.types.InheritanceNode;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -258,6 +259,49 @@ public class PlayerUtils {
                 }
             }
         }
+    }
+
+    /**
+     * Strips a player of all LuckPerms groups and assigns them to the "adventurer" group.
+     *
+     * @param playerUUID The UUID of the player to modify.
+     */
+    public static void resetPlayerToAdventurer(UUID playerUUID) {
+        LuckPerms api = LuckPermsProvider.get();
+
+        Bukkit.getScheduler().runTaskAsynchronously(DragonForgeKingdoms.getInstance(), () -> {
+            User user = api.getUserManager().getUser(playerUUID);
+
+            if (user == null) {
+                api.getUserManager().loadUser(playerUUID).thenAcceptAsync(loadedUser -> {
+                    if (loadedUser != null) {
+                        stripGroupsAndSetAdventurer(api, loadedUser);
+                    }
+                });
+            } else {
+                stripGroupsAndSetAdventurer(api, user);
+            }
+        });
+    }
+
+    /**
+     * Helper method to strip all groups from a user and assign them to the "adventurer" group.
+     *
+     * @param api  The LuckPerms API instance.
+     * @param user The LuckPerms user to modify.
+     */
+    private static void stripGroupsAndSetAdventurer(LuckPerms api, User user) {
+        user.data().clear(NodeType.INHERITANCE::matches);
+
+        Group adventurerGroup = api.getGroupManager().getGroup("adventurer");
+        if (adventurerGroup != null) {
+            Node adventurerNode = InheritanceNode.builder(adventurerGroup).build();
+            user.data().add(adventurerNode);
+        } else {
+            Bukkit.getLogger().warning("Group 'adventurer' does not exist in LuckPerms.");
+        }
+
+        api.getUserManager().saveUser(user);
     }
 
 }

@@ -6,6 +6,7 @@ import io.github.derec4.dragonforgekingdoms.entity.CustomSoldier;
 import io.github.derec4.dragonforgekingdoms.entity.CustomSpawnEgg;
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
+import io.github.derec4.dragonforgekingdoms.util.PlayerUtils;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -45,28 +46,31 @@ public class AdminCommands implements CommandExecutor {
             String subCommand = args[0].toLowerCase();
             KingdomManager km = KingdomManager.getInstance();
             switch (subCommand) {
-                case "delete" -> {
+                case "forcedelete" -> {
+                    // Force delete will remove from hashmap for kingdom, depending on the rmeoveKingdom function, but first it will remove all players from the kingdom and set them to adventurer indiscriminately
                     if (args.length < 2) {
-                        sender.sendMessage(ChatColor.RED + "Usage: /admin delete <kingdom name>");
+                        sender.sendMessage(ChatColor.RED + "Usage: /admin forcedelete <kingdom name>");
                         return true;
                     }
 
                     String kingdomName = args[1];
-                    CreateDB databaseManager = new CreateDB();
+                    UUID kingdomUUID = manager.getKingdomFromName(kingdomName);
 
-                    try (Connection connection = databaseManager.getConnection()) {
-                        UUID kingdomUUID = km.getKingdomFromName(kingdomName);
-                        if (kingdomUUID != null) {
-                            km.removeKingdom(kingdomUUID);
-                            removeKingdomFromDatabase(connection, kingdomUUID);
-                            sender.sendMessage(ChatColor.GREEN + "[ADMIN] Kingdom " + kingdomName + " has been deleted.");
-                        } else {
-                            sender.sendMessage(ChatColor.RED + "[ADMIN] Kingdom " + kingdomName + " not found.");
-                        }
-                    } catch (Exception e) {
-                        Bukkit.getServer().getConsoleSender().sendMessage(e.toString());
-                        sender.sendMessage(ChatColor.RED + "[ADMIN] An error occurred while deleting the kingdom.");
+                    if (kingdomUUID == null) {
+                        sender.sendMessage(ChatColor.RED + "[ADMIN] Kingdom " + kingdomName + " not found.");
+                        return true;
                     }
+
+                    Kingdom kingdom = manager.getKingdomFromID(kingdomUUID);
+
+                    // Reset all players in the kingdom to "adventurer"
+                    for (UUID memberUUID : kingdom.getMembers()) {
+                        PlayerUtils.resetPlayerToAdventurer(memberUUID);
+                        manager.removePlayer(memberUUID);
+                    }
+
+                    manager.removeKingdom(kingdomUUID);
+                    return true;
                 }
                 case "changewner" -> {
                     if (args.length < 3) {
