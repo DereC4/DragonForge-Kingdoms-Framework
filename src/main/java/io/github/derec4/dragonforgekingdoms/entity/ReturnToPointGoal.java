@@ -14,7 +14,7 @@ public class ReturnToPointGoal extends Goal {
     public ReturnToPointGoal(PathfinderMob mob, BlockPos spawnPoint) {
         this.mob = mob;
         this.spawnPoint = spawnPoint;
-        this.speed = 1.0D;
+        this.speed = 1.3D;
         this.setFlags(EnumSet.of(Flag.MOVE));
     }
 

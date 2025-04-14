@@ -35,7 +35,7 @@ public class CustomSoldier extends Skeleton {
 
         setDropChance();
 
-        this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.0D, true));
+        this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.0D, false));
         this.targetSelector.addGoal(1, new TargetNonFactionPlayersGoal<>(this, kingdomID));
         this.goalSelector.addGoal(2, new ReturnToPointGoal(this, spawnPoint));
 
