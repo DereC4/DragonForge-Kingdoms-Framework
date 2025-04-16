@@ -5,6 +5,7 @@ import io.github.derec4.dragonforgekingdoms.commands.CommandManager;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
 import io.github.derec4.dragonforgekingdoms.entity.CustomSpawnEggListener;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
+import io.github.derec4.dragonforgekingdoms.shop.KingdomShopListener;
 import io.github.derec4.dragonforgekingdoms.territory.*;
 import io.github.derec4.dragonforgekingdoms.util.DatabaseUtils;
 import io.github.derec4.dragonforgekingdoms.util.PlayerUtils;
@@ -74,6 +75,7 @@ public final class DragonForgeKingdoms extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new EggListener(), this);
         getServer().getPluginManager().registerEvents(new EggBossBar(), this);
         getServer().getPluginManager().registerEvents(new CustomSpawnEggListener(), this);
+        getServer().getPluginManager().registerEvents(new KingdomShopListener(),this);
 
         int taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
             for (Player player : Bukkit.getOnlinePlayers()) {

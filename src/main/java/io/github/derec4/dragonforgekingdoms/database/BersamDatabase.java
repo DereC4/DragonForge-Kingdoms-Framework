@@ -9,7 +9,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
-public class KingdomDatabase {
+public class BersamDatabase {
     private final Cache<String, Kingdom> kingdomCache = CacheBuilder.newBuilder()
             .expireAfterWrite(5, TimeUnit.MINUTES).build();
 

@@ -22,8 +22,8 @@ public class KingdomShopListener implements Listener {
 
     private final KingdomManager kingdomManager;
 
-    public KingdomShopListener(KingdomManager kingdomManager) {
-        this.kingdomManager = kingdomManager;
+    public KingdomShopListener() {
+        this.kingdomManager = KingdomManager.getInstance();
     }
 
     /**
@@ -59,6 +59,7 @@ public class KingdomShopListener implements Listener {
 
             double cost = event.getAmount();
 
+            // make sure player keeps their money but kingdom money deducted
             if (kingdom.getWealth() >= cost) {
                 kingdom.giveWealth((int) -cost);
                 Economy.add(player.getUniqueId(), new BigDecimal(cost));
