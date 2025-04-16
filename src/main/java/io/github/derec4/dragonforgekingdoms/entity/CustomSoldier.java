@@ -2,6 +2,7 @@ package io.github.derec4.dragonforgekingdoms.entity;
 
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
@@ -31,6 +32,7 @@ public class CustomSoldier extends Skeleton {
         this.setCanPickUpLoot(false);
         this.setAggressive(false);
         this.setCustomNameVisible(true);
+        this.setCustomName(Component.literal("Soldier"));
         this.spawnPoint = spawnPoint;
 
         setDropChance();

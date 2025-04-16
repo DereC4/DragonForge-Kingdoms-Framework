@@ -37,18 +37,22 @@ public class EntityDeathListener implements Listener {
                 default -> Bukkit.getLogger().info("Unknown custom mob type.");
             }
         }
-
+        System.out.println("REACHED ONE");
         if (entity instanceof CustomGuard guard) {
+            System.out.println("REACHED THREE");
+
             UUID kingdomID = guard.getKingdomID();
-            Kingdom kingdom = KingdomManager.getInstance().getKingdomFromID(kingdomID);
+            Kingdom kingdom = kingdomManager.getKingdomFromID(kingdomID);
             if (kingdom != null) {
+                System.out.println("REACHED TWO");
+
                 kingdom.decrementMobCount();
             }
         }
 
         if (entity instanceof CustomSoldier soldier) {
             UUID kingdomID = soldier.getKingdomID();
-            Kingdom kingdom = KingdomManager.getInstance().getKingdomFromID(kingdomID);
+            Kingdom kingdom = kingdomManager.getKingdomFromID(kingdomID);
             if (kingdom != null) {
                 kingdom.decrementMobCount();
             }
@@ -56,7 +60,7 @@ public class EntityDeathListener implements Listener {
 
         if (entity instanceof CustomArcher archer) {
             UUID kingdomID = archer.getKingdomID();
-            Kingdom kingdom = KingdomManager.getInstance().getKingdomFromID(kingdomID);
+            Kingdom kingdom = kingdomManager.getKingdomFromID(kingdomID);
             if (kingdom != null) {
                 kingdom.decrementMobCount();
             }

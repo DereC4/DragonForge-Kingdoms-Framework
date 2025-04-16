@@ -3,11 +3,13 @@ package io.github.derec4.dragonforgekingdoms.entity;
 
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.monster.WitherSkeleton;
+import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -15,13 +17,13 @@ import net.minecraft.world.level.Level;
 
 import java.util.UUID;
 @Getter
-public class CustomGuard extends WitherSkeleton {
+public class CustomGuard extends Zombie {
 
     private final UUID kingdomID;
     private final BlockPos spawnPoint;
 
     public CustomGuard(Level world, UUID kingdomID, BlockPos spawnPoint) {
-        super(EntityType.WITHER_SKELETON, world);
+        super(EntityType.ZOMBIE, world);
         this.kingdomID = kingdomID;
         this.collides = true;
         this.expToDrop = 0;
@@ -32,6 +34,7 @@ public class CustomGuard extends WitherSkeleton {
         this.setCanPickUpLoot(false);
         this.setAggressive(false);
         this.setCustomNameVisible(true);
+        this.setCustomName(Component.literal("Guard"));
 
         this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.0D, false));
         this.targetSelector.addGoal(1, new TargetNonFactionPlayersGoal<>(this, kingdomID));
