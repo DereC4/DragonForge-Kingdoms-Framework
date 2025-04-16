@@ -79,7 +79,7 @@ public final class DragonForgeKingdoms extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new KingdomShopListener(),this);
         getServer().getPluginManager().registerEvents(new EntityDeathListener(), this);
 
-        int taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 PlayerEffects.applyEffects(player);
             }
@@ -90,7 +90,6 @@ public final class DragonForgeKingdoms extends JavaPlugin {
             }
         }, 0L, 100L);
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, PlayerUtils::updateAllSidebars, 0L, 60L);
-
     }
 
     @Override
