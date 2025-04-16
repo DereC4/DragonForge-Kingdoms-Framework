@@ -514,8 +514,6 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
                 OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(targetPlayerName);
 
-
-
                 if (!targetPlayer.hasPlayedBefore()) {
                     player.sendMessage(ChatColor.RED + "Player " + targetPlayerName + " not found.");
                     return false;

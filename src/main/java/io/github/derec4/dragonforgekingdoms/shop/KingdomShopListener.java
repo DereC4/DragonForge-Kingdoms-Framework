@@ -1,16 +1,22 @@
 package io.github.derec4.dragonforgekingdoms.shop;
 
+import com.earth2me.essentials.api.Economy;
+import com.earth2me.essentials.api.NoLoanPermittedException;
+import com.earth2me.essentials.api.UserDoesNotExistException;
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import io.github.derec4.dragonforgekingdoms.util.PermissionLevel;
 import io.github.derec4.dragonforgekingdoms.util.PlayerUtils;
 import me.gypopo.economyshopgui.api.events.PreTransactionEvent;
 import me.gypopo.economyshopgui.objects.ShopItem;
+import net.ess3.api.MaxMoneyException;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+
+import java.math.BigDecimal;
 
 public class KingdomShopListener implements Listener {
 
@@ -27,7 +33,7 @@ public class KingdomShopListener implements Listener {
      * @param event Event to listen for
      */
     @EventHandler
-    public void onPreTransaction(PreTransactionEvent event) {
+    public void onPreTransaction(PreTransactionEvent event) throws MaxMoneyException, UserDoesNotExistException, NoLoanPermittedException {
         Player player = event.getPlayer();
         ShopItem shopItem = event.getShopItem();
 
@@ -55,10 +61,11 @@ public class KingdomShopListener implements Listener {
 
             if (kingdom.getWealth() >= cost) {
                 kingdom.giveWealth((int) -cost);
-                
+                Economy.add(player.getUniqueId(), new BigDecimal(cost));
                 player.sendMessage(ChatColor.GREEN + "The cost of the item has been deducted from your kingdom's wealth.");
             } else {
                 player.sendMessage(ChatColor.RED + "Your kingdom does not have enough wealth to purchase this item.");
+                event.setCancelled(true);
             }
         }
     }
