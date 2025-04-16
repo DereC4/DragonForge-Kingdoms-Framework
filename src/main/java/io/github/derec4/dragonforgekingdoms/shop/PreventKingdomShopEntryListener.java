@@ -22,15 +22,22 @@ public class PreventKingdomShopEntryListener implements Listener {
 
     /**
      * Use PreTransactionEvent, check if the player is allowed to buy kingdom eggs (and any future items added
-     * under the section titled "kingdom" (case insensitive). If not a duke or lord in LuckPerms, deny the transaction
-     * @param event
+     * under the section titled "kingdom" (case insensitive). If not a duke or lord in LuckPerms, OR in a kingdom, deny the transaction
+     * @param event Event to listen for
      */
     @EventHandler
     public void onPreTransaction (PreTransactionEvent event) {
         Player player = event.getPlayer();
+
+        if (kingdomManager.getPlayerKingdom(player.getUniqueId()) == null) {
+            player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
+            Bukkit.getLogger().info("Player " + player.getUniqueId() + " was denied a purchase in Kingdom shop");
+            event.setCancelled(true);
+        }
+
         String sectionTitle = event.getShopItem().getSubSection();
 
-        if (sectionTitle.equalsIgnoreCase("Kingdom")) {
+        if (sectionTitle.equalsIgnoreCase("kingdom")) {
             PermissionLevel rank = PlayerUtils.getPlayerRank(player);
 
             if (rank != PermissionLevel.LORD && rank != PermissionLevel.DUKE) {
