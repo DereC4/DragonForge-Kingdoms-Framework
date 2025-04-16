@@ -50,6 +50,8 @@ public class CustomSpawnEggListener implements Listener {
             return;
         }
 
+        // From here we confirm it is a kingdom spawn egg (99% chance)
+
 //        System.out.println("TEMP TEMP " + itemStack.getItemMeta().getAsString());
         UUID playerUUID = player.getUniqueId();
         Kingdom kingdom = kingdomManager.getPlayerKingdom(playerUUID);
@@ -71,8 +73,6 @@ public class CustomSpawnEggListener implements Listener {
         double spawnX = clickedBlock.getX() + 0.5;
         double spawnY = clickedBlock.getY() + 1.0;
         double spawnZ = clickedBlock.getZ() + 0.5;
-
-        NamespacedKey namespacedKey = new NamespacedKey(DragonForgeKingdoms.getInstance(), "custom_entity");
 
         if (customModelData == 1) { // CustomGuard
             CustomGuard customGuard = new CustomGuard(world, kingdomID, new BlockPos((int) spawnX, (int) spawnY, (int) spawnZ));
