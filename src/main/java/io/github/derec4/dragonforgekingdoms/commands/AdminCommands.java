@@ -67,7 +67,7 @@ public class AdminCommands implements CommandExecutor {
                     for (UUID memberUUID : kingdom.getMembers()) {
                         PlayerUtils.resetPlayerToAdventurer(memberUUID);
                         manager.removePlayer(memberUUID);
-                    }z
+                    }
 
                     manager.removeKingdom(kingdomUUID);
                     return true;
