@@ -1,7 +1,6 @@
 package io.github.derec4.dragonforgekingdoms.entity;
 
 import io.github.derec4.dragonforgekingdoms.util.EntityTags;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
