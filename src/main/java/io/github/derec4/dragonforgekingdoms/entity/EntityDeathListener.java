@@ -47,11 +47,9 @@ public class EntityDeathListener implements Listener {
             default -> Bukkit.getLogger().info("Unknown custom mob type.");
         }
 
-
         Kingdom kingdom = kingdomManager.getKingdomFromID(kingdomID);
         System.out.println(kingdomID);
         if (kingdom != null) {
-            System.out.println("TEMP TEMP THREE");
             kingdom.decrementMobCount();
         }
     }
