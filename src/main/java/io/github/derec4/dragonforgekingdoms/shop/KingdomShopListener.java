@@ -38,6 +38,11 @@ public class KingdomShopListener implements Listener {
         ShopItem shopItem = event.getShopItem();
 
         String sectionTitle = shopItem.getSubSection();
+
+        if (sectionTitle == null) {
+            return;
+        }
+
         if (sectionTitle.equalsIgnoreCase("kingdom")) {
             Kingdom kingdom = kingdomManager.getPlayerKingdom(player.getUniqueId());
 
