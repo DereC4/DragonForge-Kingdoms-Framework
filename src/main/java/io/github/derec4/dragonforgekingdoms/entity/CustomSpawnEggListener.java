@@ -89,7 +89,7 @@ public class CustomSpawnEggListener implements Listener {
             customSoldier.getBukkitEntity().getPersistentDataContainer().set(EntityTags.KINGDOM_ID_KEY,
                     PersistentDataType.STRING, kingdomID.toString());
         } else if (customModelData == 3) { // CustomArcher
-            CustomArcher customArcher = new CustomArcher(world, kingdomID);
+            CustomArcher customArcher = new CustomArcher(world, kingdomID, new BlockPos((int) spawnX, (int) spawnY, (int) spawnZ));
             customArcher.setPos(spawnX, spawnY, spawnZ);
             world.addFreshEntity(customArcher);
             customArcher.getBukkitEntity().getPersistentDataContainer().set(EntityTags.MOB_TYPE_KEY, PersistentDataType.INTEGER, 2);
