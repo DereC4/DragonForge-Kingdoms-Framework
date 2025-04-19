@@ -27,43 +27,30 @@ public class EntityDeathListener implements Listener {
         Entity entity = event.getEntity();
         PersistentDataContainer persistentDataContainer = entity.getPersistentDataContainer();
 
-        if (persistentDataContainer.has(EntityTags.MOB_TYPE_KEY, PersistentDataType.INTEGER)) {
-            int mobType = persistentDataContainer.get(EntityTags.MOB_TYPE_KEY, PersistentDataType.INTEGER);
-
-            switch(mobType) {
-                case 0 -> Bukkit.getLogger().info("A CustomGuard has died.");
-                case 1 -> Bukkit.getLogger().info("A CustomSoldier has died.");
-                case 2 -> Bukkit.getLogger().info("A CustomArcher has died.");
-                default -> Bukkit.getLogger().info("Unknown custom mob type.");
-            }
-        }
-        System.out.println("REACHED ONE");
-        if (entity instanceof CustomGuard guard) {
-            System.out.println("REACHED THREE");
-
-            UUID kingdomID = guard.getKingdomID();
-            Kingdom kingdom = kingdomManager.getKingdomFromID(kingdomID);
-            if (kingdom != null) {
-                System.out.println("REACHED TWO");
-
-                kingdom.decrementMobCount();
-            }
+        if (!persistentDataContainer.has(EntityTags.MOB_TYPE_KEY, PersistentDataType.INTEGER)) {
+            return;
         }
 
-        if (entity instanceof CustomSoldier soldier) {
-            UUID kingdomID = soldier.getKingdomID();
-            Kingdom kingdom = kingdomManager.getKingdomFromID(kingdomID);
-            if (kingdom != null) {
-                kingdom.decrementMobCount();
-            }
+        if (!persistentDataContainer.has(EntityTags.KINGDOM_ID_KEY, PersistentDataType.STRING)) {
+            return;
         }
 
-        if (entity instanceof CustomArcher archer) {
-            UUID kingdomID = archer.getKingdomID();
-            Kingdom kingdom = kingdomManager.getKingdomFromID(kingdomID);
-            if (kingdom != null) {
-                kingdom.decrementMobCount();
-            }
+        int mobType = persistentDataContainer.get(EntityTags.MOB_TYPE_KEY, PersistentDataType.INTEGER);
+        String kingdomIDString = persistentDataContainer.get(EntityTags.KINGDOM_ID_KEY, PersistentDataType.STRING);
+        assert kingdomIDString != null;
+        UUID kingdomID = UUID.fromString(kingdomIDString);
+
+        switch(mobType) {
+            case 0 -> Bukkit.getLogger().info("A CustomGuard has died.");
+            case 1 -> Bukkit.getLogger().info("A CustomSoldier has died.");
+            case 2 -> Bukkit.getLogger().info("A CustomArcher has died.");
+            default -> Bukkit.getLogger().info("Unknown custom mob type.");
+        }
+
+        Kingdom kingdom = kingdomManager.getKingdomFromID(kingdomID);
+
+        if (kingdom != null) {
+            kingdom.decrementMobCount();
         }
     }
 }

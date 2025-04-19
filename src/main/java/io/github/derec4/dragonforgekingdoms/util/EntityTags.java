@@ -5,4 +5,5 @@ import org.bukkit.NamespacedKey;
 
 public class EntityTags {
     public static final NamespacedKey MOB_TYPE_KEY = new NamespacedKey(DragonForgeKingdoms.getInstance(), "kingdom_mob");
+    public static final NamespacedKey KINGDOM_ID_KEY = new NamespacedKey(DragonForgeKingdoms.getInstance(), "kingdom_id");
 }

@@ -296,7 +296,11 @@ public class Kingdom {
     }
 
     public void decrementMobCount() {
-        if (mobCount > 0) mobCount--;
+        if (mobCount > 0) {
+            mobCount--;
+            Bukkit.getLogger().info("Decremented mob count from " + this.name);
+        }
+        Bukkit.getLogger().info("Failed to decrement mob count from " + this.name);
     }
 
     public void clearMembers() {
