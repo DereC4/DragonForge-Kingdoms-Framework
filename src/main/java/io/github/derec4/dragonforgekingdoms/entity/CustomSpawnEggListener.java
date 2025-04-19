@@ -79,16 +79,22 @@ public class CustomSpawnEggListener implements Listener {
             customGuard.setPos(spawnX, spawnY, spawnZ);
             world.addFreshEntity(customGuard);
             customGuard.getBukkitEntity().getPersistentDataContainer().set(EntityTags.MOB_TYPE_KEY, PersistentDataType.INTEGER, 0);
+            customGuard.getBukkitEntity().getPersistentDataContainer().set(EntityTags.KINGDOM_ID_KEY,
+                    PersistentDataType.STRING, kingdomID.toString());
         } else if (customModelData == 2) { // CustomSoldier
             CustomSoldier customSoldier = new CustomSoldier(world, kingdomID, new BlockPos((int) spawnX, (int) spawnY, (int) spawnZ));
             customSoldier.setPos(spawnX, spawnY, spawnZ);
             world.addFreshEntity(customSoldier);
             customSoldier.getBukkitEntity().getPersistentDataContainer().set(EntityTags.MOB_TYPE_KEY, PersistentDataType.INTEGER, 1);
+            customSoldier.getBukkitEntity().getPersistentDataContainer().set(EntityTags.KINGDOM_ID_KEY,
+                    PersistentDataType.STRING, kingdomID.toString());
         } else if (customModelData == 3) { // CustomArcher
             CustomArcher customArcher = new CustomArcher(world, kingdomID);
             customArcher.setPos(spawnX, spawnY, spawnZ);
             world.addFreshEntity(customArcher);
             customArcher.getBukkitEntity().getPersistentDataContainer().set(EntityTags.MOB_TYPE_KEY, PersistentDataType.INTEGER, 2);
+            customArcher.getBukkitEntity().getPersistentDataContainer().set(EntityTags.KINGDOM_ID_KEY,
+                    PersistentDataType.STRING, kingdomID.toString());
         } else {
             return;
         }
