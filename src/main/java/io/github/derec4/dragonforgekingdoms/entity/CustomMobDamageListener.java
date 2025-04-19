@@ -41,6 +41,7 @@ public class CustomMobDamageListener implements Listener {
 
             if (distance > 10) {
                 event.setCancelled(true);
+                arrow.remove();
             }
         }
     }

@@ -28,12 +28,13 @@ public class CustomSoldier extends Skeleton {
         this.expToDrop = 0;
         this.goalSelector = new GoalSelector(world.getProfilerSupplier());
         this.targetSelector = new GoalSelector(world.getProfilerSupplier());
+        this.spawnPoint = spawnPoint;
         this.setInvulnerable(false);
         this.setCanPickUpLoot(false);
         this.setAggressive(false);
         this.setCustomNameVisible(true);
+        this.setPersistenceRequired(true);
         this.setCustomName(Component.literal("Soldier"));
-        this.spawnPoint = spawnPoint;
 
         setDropChance();
 
