@@ -16,7 +16,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.UUID;
@@ -76,6 +75,7 @@ public final class DragonForgeKingdoms extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new TerritorySidebar(), this);
         getServer().getPluginManager().registerEvents(new EggListener(), this);
         getServer().getPluginManager().registerEvents(new EggBossBar(), this);
+        getServer().getPluginManager().registerEvents(new EggExplosionListener(), this);
         getServer().getPluginManager().registerEvents(new CustomSpawnEggListener(), this);
         getServer().getPluginManager().registerEvents(new KingdomShopListener(),this);
         getServer().getPluginManager().registerEvents(new EntityDeathListener(), this);

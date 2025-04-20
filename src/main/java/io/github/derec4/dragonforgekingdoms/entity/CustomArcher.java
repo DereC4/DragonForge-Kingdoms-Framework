@@ -8,11 +8,13 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
+import net.minecraft.world.entity.ai.goal.RangedAttackGoal;
 import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -38,13 +40,14 @@ public class CustomArcher extends Skeleton {
 
         setDropChance();
 
-
         this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.CARVED_PUMPKIN));
         this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
         this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.NETHERITE_CHESTPLATE));
         this.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.NETHERITE_LEGGINGS));
         this.setItemSlot(EquipmentSlot.FEET, new ItemStack(Items.NETHERITE_BOOTS));
-        this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.0D);
+        Objects.requireNonNull(this.getAttribute(Attributes.MOVEMENT_SPEED)).setBaseValue(0.0D);
+
+        this.goalSelector.addGoal(1, new RangedAttackGoal(this, 1.0, 10, 10, 32.0f));
         this.targetSelector.addGoal(1, new ShootNonFactionPlayersGoal(this, kingdomID));
 
     }
