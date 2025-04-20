@@ -1,5 +1,7 @@
 package io.github.derec4.dragonforgekingdoms.util;
 
+import io.github.derec4.dragonforgekingdoms.entity.CustomSpawnEgg;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -42,5 +44,26 @@ public class ItemUtils {
                 }
             }
         }
+    }
+
+    public static void giveCustomEgg(Player player, int customModelData, int quantity) {
+        if (quantity <= 0) {
+            player.sendMessage(ChatColor.RED + "Quantity must be a positive number.");
+            return;
+        }
+
+        ItemStack customEgg = CustomSpawnEgg.createCustomSpawnEgg(customModelData);
+        customEgg.setAmount(quantity);
+        player.getInventory().addItem(customEgg);
+
+        String eggName;
+        switch (customModelData) {
+            case 1 -> eggName = "Guard Spawn Egg";
+            case 2 -> eggName = "Soldier Spawn Egg";
+            case 3 -> eggName = "Archer Spawn Egg";
+            default -> eggName = "Unknown Spawn Egg";
+        }
+
+        player.sendMessage(ChatColor.GREEN + "[ADMIN] " + quantity + " " + eggName + "(s) have been given.");
     }
 }

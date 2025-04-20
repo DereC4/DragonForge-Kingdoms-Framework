@@ -6,6 +6,7 @@ import io.github.derec4.dragonforgekingdoms.entity.CustomSoldier;
 import io.github.derec4.dragonforgekingdoms.entity.CustomSpawnEgg;
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
+import io.github.derec4.dragonforgekingdoms.util.ItemUtils;
 import io.github.derec4.dragonforgekingdoms.util.PlayerUtils;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.Bukkit;
@@ -143,6 +144,7 @@ public class AdminCommands implements CommandExecutor {
                     }
 
                     int quantity = 1;
+
                     if (args.length > 1) {
                         try {
                             quantity = Integer.parseInt(args[1]);
@@ -156,10 +158,7 @@ public class AdminCommands implements CommandExecutor {
                         }
                     }
 
-                    ItemStack guardEgg = CustomSpawnEgg.createCustomSpawnEgg(1);
-                    guardEgg.setAmount(quantity);
-                    player.getInventory().addItem(guardEgg);
-                    sender.sendMessage(ChatColor.GREEN + "[ADMIN] " + quantity + " Custom Guard Spawn Egg(s) have been given.");
+                    ItemUtils.giveCustomEgg(player, 1, quantity);
                 }
                 case "soldieregg" -> {
                     if (!(sender instanceof Player player)) {
@@ -168,6 +167,7 @@ public class AdminCommands implements CommandExecutor {
                     }
 
                     int quantity = 1;
+
                     if (args.length > 1) {
                         try {
                             quantity = Integer.parseInt(args[1]);
@@ -181,10 +181,7 @@ public class AdminCommands implements CommandExecutor {
                         }
                     }
 
-                    ItemStack soldierEgg = CustomSpawnEgg.createCustomSpawnEgg(2);
-                    soldierEgg.setAmount(quantity);
-                    player.getInventory().addItem(soldierEgg);
-                    sender.sendMessage(ChatColor.GREEN + "[ADMIN] " + quantity + " Custom Soldier Spawn Egg(s) have been given.");
+                    ItemUtils.giveCustomEgg(player, 2, quantity);
                 }
                 case "archeregg" -> {
                     if (!(sender instanceof Player player)) {
@@ -193,6 +190,7 @@ public class AdminCommands implements CommandExecutor {
                     }
 
                     int quantity = 1;
+
                     if (args.length > 1) {
                         try {
                             quantity = Integer.parseInt(args[1]);
@@ -206,10 +204,7 @@ public class AdminCommands implements CommandExecutor {
                         }
                     }
 
-                    ItemStack archerEgg = CustomSpawnEgg.createCustomSpawnEgg(3);
-                    archerEgg.setAmount(quantity);
-                    player.getInventory().addItem(archerEgg);
-                    sender.sendMessage(ChatColor.GREEN + "[ADMIN] " + quantity + " Custom Archer Spawn Egg(s) have been given.");
+                    ItemUtils.giveCustomEgg(player, 3, quantity);
                 }
             }
         }
