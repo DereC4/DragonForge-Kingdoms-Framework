@@ -3,6 +3,7 @@ package io.github.derec4.dragonforgekingdoms.entity;
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.RangedAttackGoal;
 import net.minecraft.world.entity.player.Player;
 import org.bukkit.event.entity.EntityTargetEvent;
@@ -10,13 +11,12 @@ import org.bukkit.event.entity.EntityTargetEvent;
 import java.util.EnumSet;
 import java.util.UUID;
 
-public class RangedTargetNonFactionPlayersGoal extends RangedAttackGoal {
+public class RangedTargetNonFactionPlayersGoal extends Goal {
     private final CustomArcher archer;
     private final UUID kingdomID;
     private final KingdomManager kingdomManager;
 
     public RangedTargetNonFactionPlayersGoal(CustomArcher archer, UUID kingdomID) {
-        super(archer, 1.0, 40, 60, 32.0F);
         this.archer = archer;
         this.kingdomID = kingdomID;
         this.kingdomManager = KingdomManager.getInstance();
@@ -62,6 +62,6 @@ public class RangedTargetNonFactionPlayersGoal extends RangedAttackGoal {
             return false;
         }
 
-        return super.canContinueToUse();
+        return true;
     }
 }
