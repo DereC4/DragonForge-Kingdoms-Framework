@@ -77,17 +77,21 @@ public class AdminCommands implements CommandExecutor {
                         sender.sendMessage(ChatColor.RED + "Usage: /admin changeowner <kingdom name> <new owner>");
                         return true;
                     }
+
                     String kingdomName = args[1];
                     String newOwnerName = args[2];
                     Player newOwner = Bukkit.getPlayer(newOwnerName);
+
                     if (newOwner == null) {
                         sender.sendMessage(ChatColor.RED + "Player " + newOwnerName + " not found or is offline.");
                         return false;
                     }
+
                     UUID newOwnerUUID = newOwner.getUniqueId();
                     CreateDB databaseManager = new CreateDB();
                     try (Connection connection = databaseManager.getConnection()) {
                         UUID kingdomUUID = km.getKingdomFromName(kingdomName);
+
                         if (kingdomUUID != null) {
                             Kingdom kingdom = km.getKingdomFromID(kingdomUUID);
                             UUID oldOwnerUUID = kingdom.getLeader();
@@ -151,6 +155,16 @@ public class AdminCommands implements CommandExecutor {
                     ItemStack soldierEgg = CustomSpawnEgg.createCustomSpawnEgg(2);
                     player.getInventory().addItem(soldierEgg);
                     sender.sendMessage(ChatColor.GREEN + "[ADMIN] Custom Soldier Spawn Egg has been given.");
+                }
+                case "archeregg" -> {
+                    if (!(sender instanceof Player player)) {
+                        sender.sendMessage(ChatColor.RED + "This command can only be used by a player.");
+                        return true;
+                    }
+
+                    ItemStack archerEgg = CustomSpawnEgg.createCustomSpawnEgg(3);
+                    player.getInventory().addItem(archerEgg);
+                    sender.sendMessage(ChatColor.GREEN + "[ADMIN] Custom Archer Spawn Egg has been given.");
                 }
             }
         }

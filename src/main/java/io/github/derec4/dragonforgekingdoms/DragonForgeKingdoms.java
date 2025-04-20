@@ -3,7 +3,7 @@ package io.github.derec4.dragonforgekingdoms;
 import io.github.derec4.dragonforgekingdoms.commands.AdminCommands;
 import io.github.derec4.dragonforgekingdoms.commands.CommandManager;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
-import io.github.derec4.dragonforgekingdoms.entity.CustomMobDamageListener;
+import io.github.derec4.dragonforgekingdoms.entity.DenyArrowsListener;
 import io.github.derec4.dragonforgekingdoms.entity.CustomSpawnEggListener;
 import io.github.derec4.dragonforgekingdoms.entity.EntityDeathListener;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
@@ -79,7 +79,7 @@ public final class DragonForgeKingdoms extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CustomSpawnEggListener(), this);
         getServer().getPluginManager().registerEvents(new KingdomShopListener(),this);
         getServer().getPluginManager().registerEvents(new EntityDeathListener(), this);
-        getServer().getPluginManager().registerEvents(new CustomMobDamageListener(), this);
+        getServer().getPluginManager().registerEvents(new DenyArrowsListener(), this);
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
             for (Player player : Bukkit.getOnlinePlayers()) {

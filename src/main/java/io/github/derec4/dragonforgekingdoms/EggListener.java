@@ -2,6 +2,7 @@ package io.github.derec4.dragonforgekingdoms;
 
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
+import io.github.derec4.dragonforgekingdoms.util.ItemUtils;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
@@ -32,6 +33,7 @@ public class EggListener implements Listener {
         }
 
         EggData eggData = getKingdomEgg(clickedBlock);
+
         if (eggData == null) {
             return;
         }
@@ -59,7 +61,7 @@ public class EggListener implements Listener {
         }
 
 //        System.out.println("DEBUG LOL BERSAM BASAG");
-        getDamageModifiers(event.getPlayer().getInventory().getItemInMainHand());
+        ItemUtils.getDamageModifiers(event.getPlayer().getInventory().getItemInMainHand());
         int dmg = (int) player.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue();
 //        player.sendMessage("Damage to egg: " + dmg);
 
@@ -85,17 +87,6 @@ public class EggListener implements Listener {
         }
         eggData.updateHealth(eggData.getHealth() - dmg, true);
         player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_HURT, 1.0f, 1.0f);
-    }
-
-
-
-    private void getDamageModifiers(ItemStack itemStack) {
-        ItemMeta itemMeta = itemStack.getItemMeta();
-
-        if (itemMeta != null && itemMeta.getPersistentDataContainer().has(Attribute.GENERIC_ATTACK_DAMAGE.getKey(), PersistentDataType.STRING)) {
-            itemMeta.getAttributeModifiers(Attribute.GENERIC_ATTACK_DAMAGE);
-        }
-
     }
 
     private EggData getKingdomEgg(Block block) {

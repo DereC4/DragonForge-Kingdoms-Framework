@@ -4,6 +4,7 @@ import io.github.derec4.dragonforgekingdoms.EggData;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
 import io.github.derec4.dragonforgekingdoms.territory.ChunkCoordinate;
 import io.github.derec4.dragonforgekingdoms.util.DatabaseUtils;
+import io.github.derec4.dragonforgekingdoms.util.ItemUtils;
 import io.github.derec4.dragonforgekingdoms.util.MobUtils;
 import lombok.Getter;
 import org.bukkit.*;
@@ -147,7 +148,8 @@ public class KingdomManager {
                 player.sendMessage(ChatColor.RED + "You need at least 8 Pufferfish to leave.");
                 return false;
             }
-            removePufferfish(player);
+
+            ItemUtils.removePufferfish(player);
         }
 
         UUID playerUUID = player.getUniqueId();

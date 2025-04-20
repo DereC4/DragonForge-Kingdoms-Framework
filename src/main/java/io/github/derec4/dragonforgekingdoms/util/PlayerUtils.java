@@ -234,34 +234,6 @@ public class PlayerUtils {
     }
 
     /**
-     * Because Why Not?
-     *
-     * @param player
-     */
-    public static void removePufferfish(Player player) {
-        removeItem(player, Material.PUFFERFISH, 8);
-    }
-
-    private static void removeItem(Player player, Material material, int amount) {
-        int remainingAmount = amount;
-        for (ItemStack item : player.getInventory().getContents()) {
-            if (item != null && item.getType() == material) {
-                int itemAmount = item.getAmount();
-                if (itemAmount <= remainingAmount) {
-                    player.getInventory().remove(item);
-                    remainingAmount -= itemAmount;
-                } else {
-                    item.setAmount(itemAmount - remainingAmount);
-                    break;
-                }
-                if (remainingAmount <= 0) {
-                    break;
-                }
-            }
-        }
-    }
-
-    /**
      * Strips a player of all LuckPerms groups and assigns them to the "adventurer" group.
      *
      * @param playerUUID The UUID of the player to modify.

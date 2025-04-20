@@ -3,19 +3,20 @@ package io.github.derec4.dragonforgekingdoms.entity;
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.RangedAttackGoal;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
+import org.bukkit.event.entity.EntityTargetEvent;
 
 import java.util.EnumSet;
 import java.util.UUID;
 
-public class ShootNonFactionPlayersGoal extends Goal {
+public class RangedTargetNonFactionPlayersGoal extends RangedAttackGoal {
     private final CustomArcher archer;
     private final UUID kingdomID;
     private final KingdomManager kingdomManager;
 
-    public ShootNonFactionPlayersGoal(CustomArcher archer, UUID kingdomID) {
+    public RangedTargetNonFactionPlayersGoal(CustomArcher archer, UUID kingdomID) {
+        super(archer, 1.0, 40, 60, 32.0F);
         this.archer = archer;
         this.kingdomID = kingdomID;
         this.kingdomManager = KingdomManager.getInstance();
@@ -24,13 +25,12 @@ public class ShootNonFactionPlayersGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        Level level = archer.level();
-        for (Player player : level.players()) {
+        for (Player player : this.archer.level().players()) {
             Kingdom playerKingdom = kingdomManager.getPlayerKingdom(player.getUUID());
             UUID playerKingdomID = (playerKingdom != null) ? playerKingdom.getID() : null;
 
-            if (!player.isCreative() && !player.isSpectator() && (!kingdomID.equals(playerKingdomID))) {
-                archer.setTarget(player);
+            if (!player.isCreative() && !player.isSpectator() && (playerKingdomID == null || !kingdomID.equals(playerKingdomID))) {
+                archer.setTarget(player, EntityTargetEvent.TargetReason.CLOSEST_PLAYER, true);
                 return true;
             }
         }
@@ -54,6 +54,14 @@ public class ShootNonFactionPlayersGoal extends Goal {
             return false;
         }
 
-        return player.isAlive() && !player.isCreative() && !player.isSpectator();
+        Kingdom playerKingdom = kingdomManager.getPlayerKingdom(player.getUUID());
+        UUID playerKingdomID = (playerKingdom != null) ? playerKingdom.getID() : null;
+
+        if (player.isCreative() || player.isSpectator() || (playerKingdomID != null && kingdomID.equals(playerKingdomID))) {
+            archer.setTarget(null);
+            return false;
+        }
+
+        return super.canContinueToUse();
     }
 }
