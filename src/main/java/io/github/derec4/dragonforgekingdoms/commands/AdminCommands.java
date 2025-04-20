@@ -142,9 +142,24 @@ public class AdminCommands implements CommandExecutor {
                         return true;
                     }
 
+                    int quantity = 1;
+                    if (args.length > 1) {
+                        try {
+                            quantity = Integer.parseInt(args[1]);
+                            if (quantity <= 0) {
+                                sender.sendMessage(ChatColor.RED + "Quantity must be a positive number.");
+                                return true;
+                            }
+                        } catch (NumberFormatException e) {
+                            sender.sendMessage(ChatColor.RED + "Invalid quantity. Please enter a valid number.");
+                            return true;
+                        }
+                    }
+
                     ItemStack guardEgg = CustomSpawnEgg.createCustomSpawnEgg(1);
+                    guardEgg.setAmount(quantity);
                     player.getInventory().addItem(guardEgg);
-                    sender.sendMessage(ChatColor.GREEN + "[ADMIN] Custom Guard Spawn Egg has been given.");
+                    sender.sendMessage(ChatColor.GREEN + "[ADMIN] " + quantity + " Custom Guard Spawn Egg(s) have been given.");
                 }
                 case "soldieregg" -> {
                     if (!(sender instanceof Player player)) {
@@ -152,9 +167,24 @@ public class AdminCommands implements CommandExecutor {
                         return true;
                     }
 
+                    int quantity = 1;
+                    if (args.length > 1) {
+                        try {
+                            quantity = Integer.parseInt(args[1]);
+                            if (quantity <= 0) {
+                                sender.sendMessage(ChatColor.RED + "Quantity must be a positive number.");
+                                return true;
+                            }
+                        } catch (NumberFormatException e) {
+                            sender.sendMessage(ChatColor.RED + "Invalid quantity. Please enter a valid number.");
+                            return true;
+                        }
+                    }
+
                     ItemStack soldierEgg = CustomSpawnEgg.createCustomSpawnEgg(2);
+                    soldierEgg.setAmount(quantity);
                     player.getInventory().addItem(soldierEgg);
-                    sender.sendMessage(ChatColor.GREEN + "[ADMIN] Custom Soldier Spawn Egg has been given.");
+                    sender.sendMessage(ChatColor.GREEN + "[ADMIN] " + quantity + " Custom Soldier Spawn Egg(s) have been given.");
                 }
                 case "archeregg" -> {
                     if (!(sender instanceof Player player)) {
@@ -162,9 +192,24 @@ public class AdminCommands implements CommandExecutor {
                         return true;
                     }
 
+                    int quantity = 1;
+                    if (args.length > 1) {
+                        try {
+                            quantity = Integer.parseInt(args[1]);
+                            if (quantity <= 0) {
+                                sender.sendMessage(ChatColor.RED + "Quantity must be a positive number.");
+                                return true;
+                            }
+                        } catch (NumberFormatException e) {
+                            sender.sendMessage(ChatColor.RED + "Invalid quantity. Please enter a valid number.");
+                            return true;
+                        }
+                    }
+
                     ItemStack archerEgg = CustomSpawnEgg.createCustomSpawnEgg(3);
+                    archerEgg.setAmount(quantity);
                     player.getInventory().addItem(archerEgg);
-                    sender.sendMessage(ChatColor.GREEN + "[ADMIN] Custom Archer Spawn Egg has been given.");
+                    sender.sendMessage(ChatColor.GREEN + "[ADMIN] " + quantity + " Custom Archer Spawn Egg(s) have been given.");
                 }
             }
         }

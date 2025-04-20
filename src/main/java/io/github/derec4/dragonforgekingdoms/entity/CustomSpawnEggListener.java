@@ -6,6 +6,7 @@ import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import io.github.derec4.dragonforgekingdoms.util.EntityTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -51,6 +52,10 @@ public class CustomSpawnEggListener implements Listener {
         }
 
         // From here we confirm it is a kingdom spawn egg (99% chance)
+
+        if (player.getGameMode().equals(GameMode.SPECTATOR)) {
+            return;
+        }
 
 //        System.out.println("TEMP TEMP " + itemStack.getItemMeta().getAsString());
         UUID playerUUID = player.getUniqueId();
