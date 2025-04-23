@@ -178,25 +178,25 @@ public class Kingdom {
     public float getMaxHealth() {
         switch (getLevel()) {
             case 2 -> {
-                return 40;
+                return 2000;
             }
             case 3 -> {
-                return 60;
+                return 3000;
             }
             case 4 -> {
-                return 80;
+                return 4000;
             }
             case 5 -> {
-                return 100;
+                return 5000;
             }
             case 6 -> {
-                return 200;
+                return 6000;
             }
             case 7 -> {
-                return 300;
+                return 7000;
             }
             default -> {
-                return 30;
+                return 1000; // Level 1 or default
             }
         }
     }
