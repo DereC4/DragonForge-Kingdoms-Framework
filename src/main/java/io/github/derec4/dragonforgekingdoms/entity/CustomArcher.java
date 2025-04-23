@@ -2,6 +2,7 @@ package io.github.derec4.dragonforgekingdoms.entity;
 
 
 import io.github.derec4.dragonforgekingdoms.entity.goals.RangedTargetNonFactionPlayersGoal;
+import io.github.derec4.dragonforgekingdoms.util.MobUtils;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -39,8 +40,6 @@ public class CustomArcher extends Skeleton {
         this.setPersistenceRequired(true);
         this.setCustomName(Component.literal("Archer"));
 
-        setDropChance();
-
         this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.CARVED_PUMPKIN));
         this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
         this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.NETHERITE_CHESTPLATE));
@@ -51,14 +50,8 @@ public class CustomArcher extends Skeleton {
         this.targetSelector.addGoal(1, new RangedAttackGoal(this, 1.0, 40, 60, 32.0F));
         this.targetSelector.addGoal(1, new RangedTargetNonFactionPlayersGoal(this, kingdomID));
 
-    }
-
-    private void setDropChance() {
-        this.setDropChance(EquipmentSlot.MAINHAND, 0.0F);
-        this.setDropChance(EquipmentSlot.OFFHAND, 0.0F);
-        this.setDropChance(EquipmentSlot.HEAD, 0.0F);
-        this.setDropChance(EquipmentSlot.CHEST, 0.0F);
-        this.setDropChance(EquipmentSlot.LEGS, 0.0F);
-        this.setDropChance(EquipmentSlot.FEET, 0.0F);
+        MobUtils.applySpawnEffects(this);
+        MobUtils.applyDefenseEnchants(this);
+        MobUtils.removeDrops(this);
     }
 }

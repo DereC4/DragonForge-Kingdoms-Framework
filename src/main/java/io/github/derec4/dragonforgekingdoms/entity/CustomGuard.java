@@ -2,6 +2,7 @@ package io.github.derec4.dragonforgekingdoms.entity;
 
 import io.github.derec4.dragonforgekingdoms.entity.goals.ReturnToPointGoal;
 import io.github.derec4.dragonforgekingdoms.entity.goals.TargetNonFactionPlayersGoal;
+import io.github.derec4.dragonforgekingdoms.util.MobUtils;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -38,8 +39,6 @@ public class CustomGuard extends Zombie {
         this.setPersistenceRequired(true);
         this.setCustomName(Component.literal("Guard"));
 
-        setDropChance();
-
         this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.0D, false));
         this.targetSelector.addGoal(1, new TargetNonFactionPlayersGoal<>(this, kingdomID));
         this.goalSelector.addGoal(2, new ReturnToPointGoal(this, spawnPoint));
@@ -51,14 +50,9 @@ public class CustomGuard extends Zombie {
         ItemStack diamondSword = new ItemStack(Items.DIAMOND_SWORD);
         diamondSword.enchant(Enchantments.SHARPNESS, 3);
         this.setItemSlot(EquipmentSlot.MAINHAND, diamondSword);
-    }
 
-    private void setDropChance() {
-        this.setDropChance(EquipmentSlot.MAINHAND, 0.0F);
-        this.setDropChance(EquipmentSlot.OFFHAND, 0.0F);
-        this.setDropChance(EquipmentSlot.HEAD, 0.0F);
-        this.setDropChance(EquipmentSlot.CHEST, 0.0F);
-        this.setDropChance(EquipmentSlot.LEGS, 0.0F);
-        this.setDropChance(EquipmentSlot.FEET, 0.0F);
+        MobUtils.applySpawnEffects(this);
+        MobUtils.applyDefenseEnchants(this);
+        MobUtils.removeDrops(this);
     }
 }
