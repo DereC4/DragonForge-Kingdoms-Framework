@@ -40,7 +40,9 @@ public class KingdomShopListener implements Listener {
         System.out.println("Player: " + player.getName());
 
         ShopItem shopItem = event.getShopItem();
-        String sectionTitle = shopItem.getSubSection();
+        System.out.println(shopItem.itemLoc);
+
+        String sectionTitle = shopItem.section;
         System.out.println("SectionTitle: " + sectionTitle);
 
         if (sectionTitle == null) {
