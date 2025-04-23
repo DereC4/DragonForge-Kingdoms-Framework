@@ -1,4 +1,4 @@
-package io.github.derec4.dragonforgekingdoms.entity;
+package io.github.derec4.dragonforgekingdoms.entity.goals;
 
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;

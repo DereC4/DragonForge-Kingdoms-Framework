@@ -1,5 +1,7 @@
 package io.github.derec4.dragonforgekingdoms.entity;
 
+import io.github.derec4.dragonforgekingdoms.entity.goals.ReturnToPointGoal;
+import io.github.derec4.dragonforgekingdoms.entity.goals.TargetNonFactionPlayersGoal;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;

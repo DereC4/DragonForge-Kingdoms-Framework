@@ -1,4 +1,4 @@
-package io.github.derec4.dragonforgekingdoms.entity;
+package io.github.derec4.dragonforgekingdoms.entity.goals;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.PathfinderMob;

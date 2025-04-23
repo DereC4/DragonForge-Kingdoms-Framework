@@ -1,10 +1,10 @@
-package io.github.derec4.dragonforgekingdoms.entity;
+package io.github.derec4.dragonforgekingdoms.entity.goals;
 
+import io.github.derec4.dragonforgekingdoms.entity.CustomArcher;
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.RangedAttackGoal;
 import net.minecraft.world.entity.player.Player;
 import org.bukkit.event.entity.EntityTargetEvent;
 
