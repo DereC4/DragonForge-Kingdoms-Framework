@@ -20,7 +20,7 @@ public class ReturnToPointGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        return !mob.blockPosition().closerThan(spawnPoint, 5.0D);
+        return !mob.blockPosition().closerThan(spawnPoint, 3.0D);
     }
 
     @Override

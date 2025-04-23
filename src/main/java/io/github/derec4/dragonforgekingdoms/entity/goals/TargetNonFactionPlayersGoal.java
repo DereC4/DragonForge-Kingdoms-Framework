@@ -13,6 +13,7 @@ public class TargetNonFactionPlayersGoal<T extends Mob> extends TargetGoal {
     private final T customMob;
     private final UUID kingdomID;
     private final KingdomManager kingdomManager;
+    private static final double MAX_TRACKING_RANGE = 16.0;
 
     public TargetNonFactionPlayersGoal(T customMob, UUID kingdomID) {
         super(customMob, false);
@@ -23,15 +24,38 @@ public class TargetNonFactionPlayersGoal<T extends Mob> extends TargetGoal {
 
     @Override
     public boolean canUse() {
+        Player closestPlayer = null;
+        double closestDistance = MAX_TRACKING_RANGE;
+
         for (Player player : this.customMob.level().players()) {
+            if (player.isCreative() || player.isSpectator()) continue;
+
             Kingdom playerKingdom = kingdomManager.getPlayerKingdom(player.getUUID());
             UUID playerKingdomID = (playerKingdom != null) ? playerKingdom.getID() : null;
 
-            if (!player.isCreative() && !player.isSpectator() && (playerKingdomID == null || !kingdomID.equals(playerKingdomID))) {
-                this.customMob.setTarget(player, EntityTargetEvent.TargetReason.CLOSEST_PLAYER, true);
-                return true;
+            if (playerKingdomID == null || !kingdomID.equals(playerKingdomID)) {
+                double distance = player.position().distanceTo(this.customMob.position());
+                if (distance < closestDistance) {
+                    closestPlayer = player;
+                    closestDistance = distance;
+                }
             }
         }
+
+        if (closestPlayer != null) {
+            this.customMob.setTarget(closestPlayer, EntityTargetEvent.TargetReason.CLOSEST_PLAYER, true);
+            return true;
+        }
+
         return false;
     }
+
+    @Override
+    public boolean canContinueToUse() {
+        if (this.customMob.getTarget() == null) return false;
+
+        double distanceToTarget = this.customMob.position().distanceTo(this.customMob.getTarget().position());
+        return distanceToTarget <= MAX_TRACKING_RANGE;
+    }
+
 }
