@@ -17,6 +17,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.math.BigDecimal;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class KingdomShopListener implements Listener {
 
@@ -40,9 +42,11 @@ public class KingdomShopListener implements Listener {
         System.out.println("Player: " + player.getName());
 
         ShopItem shopItem = event.getShopItem();
-        System.out.println(shopItem.itemLoc);
+//        System.out.println(shopItem.getShopItem().toString());
+//        System.out.println(shopItem.getItemPath());
+//        System.out.println(shopItem.itemLoc);
 
-        String sectionTitle = shopItem.section;
+        String sectionTitle = shopItem.getItemPath();
         System.out.println("SectionTitle: " + sectionTitle);
 
         if (sectionTitle == null) {
@@ -50,7 +54,10 @@ public class KingdomShopListener implements Listener {
             return;
         }
 
-        if (sectionTitle.equalsIgnoreCase("kingdom")) {
+        Pattern pattern = Pattern.compile("kingdom", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(sectionTitle);
+
+        if (matcher.find()) {
             System.out.println("SectionTitle is 'kingdom'");
 
             Kingdom kingdom = kingdomManager.getPlayerKingdom(player.getUniqueId());
