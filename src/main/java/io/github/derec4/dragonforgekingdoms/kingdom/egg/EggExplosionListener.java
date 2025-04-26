@@ -1,5 +1,6 @@
 package io.github.derec4.dragonforgekingdoms.kingdom.egg;
 
+import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -37,6 +38,16 @@ public class EggExplosionListener implements Listener {
     }
 
     private EggData getKingdomEgg(Block block) {
-        return EggData.getChunkEggData(block.getChunk());
+        Chunk chunk = block.getChunk();
+        EggData data = EggData.getChunkEggData(chunk);
+
+        if(data == null) {
+            return null;
+        }
+//        System.out.println(data.getX());
+//        System.out.println(data.getY());
+//        System.out.println(data.getZ());
+        return (data.getX() == block.getX() && data.getY() == block.getY() && data.getZ() == block.getZ())
+                ? data : null;
     }
 }
