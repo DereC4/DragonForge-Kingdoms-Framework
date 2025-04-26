@@ -1,7 +1,8 @@
-package io.github.derec4.dragonforgekingdoms.territory;
+package io.github.derec4.dragonforgekingdoms.kingdom.egg;
 
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
+import io.github.derec4.dragonforgekingdoms.territory.ChunkCoordinate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.boss.BarColor;

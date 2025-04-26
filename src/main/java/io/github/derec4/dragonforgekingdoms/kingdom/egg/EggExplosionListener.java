@@ -1,6 +1,5 @@
-package io.github.derec4.dragonforgekingdoms.territory;
+package io.github.derec4.dragonforgekingdoms.kingdom.egg;
 
-import io.github.derec4.dragonforgekingdoms.EggData;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;

@@ -2,7 +2,7 @@ package io.github.derec4.dragonforgekingdoms.kingdom;
 
 import com.earth2me.essentials.IEssentials;
 import com.earth2me.essentials.User;
-import io.github.derec4.dragonforgekingdoms.EggData;
+import io.github.derec4.dragonforgekingdoms.kingdom.egg.EggData;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
 import io.github.derec4.dragonforgekingdoms.util.PermissionLevel;
 import lombok.Getter;

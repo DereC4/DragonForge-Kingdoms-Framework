@@ -1,11 +1,10 @@
 package io.github.derec4.dragonforgekingdoms.kingdom;
 
-import io.github.derec4.dragonforgekingdoms.EggData;
+import io.github.derec4.dragonforgekingdoms.kingdom.egg.EggData;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
 import io.github.derec4.dragonforgekingdoms.territory.ChunkCoordinate;
 import io.github.derec4.dragonforgekingdoms.util.DatabaseUtils;
 import io.github.derec4.dragonforgekingdoms.util.ItemUtils;
-import io.github.derec4.dragonforgekingdoms.util.MobUtils;
 import lombok.Getter;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -14,7 +13,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.Map;
