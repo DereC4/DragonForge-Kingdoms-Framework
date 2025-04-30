@@ -91,7 +91,7 @@ public final class DragonForgeKingdoms extends JavaPlugin {
         }, 0L, 2L);
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
             for (UUID uuid : kingdomManager.getKingdoms().keySet()) {
-                kingdomManager.getKingdoms().get(uuid).updateHealth(2);
+                kingdomManager.getKingdoms().get(uuid).updateHealth(40);
             }
         }, 0L, 100L);
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, PlayerUtils::updateAllSidebars, 0L, 60L);
