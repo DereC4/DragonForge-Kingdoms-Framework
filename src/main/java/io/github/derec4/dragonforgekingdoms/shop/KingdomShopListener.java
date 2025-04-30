@@ -88,7 +88,8 @@ public class KingdomShopListener implements Listener {
             if (kingdom.getWealth() >= cost) {
                 System.out.println("Kingdom has enough wealth, deducting cost");
                 kingdom.giveWealth((int) -cost);
-                Economy.add(player.getUniqueId(), new BigDecimal(cost));
+                BigDecimal playerBalance = Economy.getMoneyExact(player.getUniqueId()); // Get player's current balance
+                Economy.setMoney(player.getUniqueId(), playerBalance);
                 player.sendMessage(ChatColor.GREEN + "The cost of the item has been deducted from your kingdom's wealth.");
             } else {
                 System.out.println("Kingdom does not have enough wealth, cancelling event");

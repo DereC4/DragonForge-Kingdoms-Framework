@@ -46,7 +46,7 @@ public class CustomGuard extends Zombie {
         this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.NETHERITE_CHESTPLATE));
         this.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.NETHERITE_LEGGINGS));
         this.setItemSlot(EquipmentSlot.FEET, new ItemStack(Items.NETHERITE_BOOTS));
-        this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.CARVED_PUMPKIN));
+        this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.CREEPER_HEAD));
         ItemStack diamondSword = new ItemStack(Items.DIAMOND_SWORD);
         diamondSword.enchant(Enchantments.SHARPNESS, 3);
         this.setItemSlot(EquipmentSlot.MAINHAND, diamondSword);

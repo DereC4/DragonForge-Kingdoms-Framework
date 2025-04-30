@@ -40,7 +40,7 @@ public class CustomArcher extends Skeleton {
         this.setPersistenceRequired(true);
         this.setCustomName(Component.literal("Archer"));
 
-        this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.CARVED_PUMPKIN));
+        this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.SKELETON_SKULL));
         this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
         this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.NETHERITE_CHESTPLATE));
         this.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.NETHERITE_LEGGINGS));
