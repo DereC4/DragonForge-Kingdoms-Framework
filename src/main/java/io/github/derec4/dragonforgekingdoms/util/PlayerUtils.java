@@ -25,7 +25,7 @@ public class PlayerUtils {
         LuckPerms api = LuckPermsProvider.get();
 
         if (player == null) {
-            return PermissionLevel.NONE;
+            return PermissionLevel.ADVENTURE;
         }
 
         if (player.hasPermission("group.lord")) {
@@ -35,7 +35,7 @@ public class PlayerUtils {
         } else if (player.hasPermission("group.vassal")) {
             return PermissionLevel.VASSAL;
         } else {
-            return PermissionLevel.NONE;
+            return PermissionLevel.ADVENTURE;
         }
     }
 

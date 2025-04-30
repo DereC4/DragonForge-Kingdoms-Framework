@@ -4,5 +4,5 @@ public enum PermissionLevel {
     VASSAL,
     DUKE,
     LORD,
-    NONE
+    ADVENTURE
 }
