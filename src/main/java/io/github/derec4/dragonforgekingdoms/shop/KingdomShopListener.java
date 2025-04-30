@@ -82,7 +82,7 @@ public class KingdomShopListener implements Listener {
                 return;
             }
 
-            double cost = event.getAmount();
+            double cost = event.getPrice();
             System.out.println("Item Cost: " + cost);
 
             if (kingdom.getWealth() >= cost) {

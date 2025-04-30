@@ -8,6 +8,7 @@ import io.github.derec4.dragonforgekingdoms.entity.CustomSpawnEggListener;
 import io.github.derec4.dragonforgekingdoms.entity.EntityDeathListener;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import io.github.derec4.dragonforgekingdoms.kingdom.egg.EggBossBar;
+import io.github.derec4.dragonforgekingdoms.kingdom.egg.EggEntityExplosionListener;
 import io.github.derec4.dragonforgekingdoms.kingdom.egg.EggExplosionListener;
 import io.github.derec4.dragonforgekingdoms.kingdom.egg.EggListener;
 import io.github.derec4.dragonforgekingdoms.shop.KingdomShopListener;
@@ -79,6 +80,7 @@ public final class DragonForgeKingdoms extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new EggListener(), this);
         getServer().getPluginManager().registerEvents(new EggBossBar(), this);
         getServer().getPluginManager().registerEvents(new EggExplosionListener(), this);
+        getServer().getPluginManager().registerEvents(new EggEntityExplosionListener(), this);
         getServer().getPluginManager().registerEvents(new CustomSpawnEggListener(), this);
         getServer().getPluginManager().registerEvents(new KingdomShopListener(),this);
         getServer().getPluginManager().registerEvents(new EntityDeathListener(), this);

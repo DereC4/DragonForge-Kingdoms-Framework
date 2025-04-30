@@ -190,23 +190,30 @@ public class PlayerUtils {
             Kingdom kingdom = kingdomManager.getKingdomFromID(uuid);
 
             Score kingdomName = objective.getScore(ChatColor.BLUE + "Kingdom: " + kingdom.getName());
-            kingdomName.setScore(5);
+            kingdomName.setScore(6);
 
             Score leader = objective.getScore(ChatColor.YELLOW + "Leader: " + Bukkit.getOfflinePlayer(kingdom.getLeader()).getName());
-            leader.setScore(4);
+            leader.setScore(5);
 
             Score wealth = objective.getScore(ChatColor.GOLD + "Wealth: " + kingdom.getWealth());
-            wealth.setScore(3);
+            wealth.setScore(4);
 
             Score members = objective.getScore(ChatColor.AQUA + "Members: " + kingdom.getMembers().size());
-            members.setScore(2);
+            members.setScore(3);
 
             Score level = objective.getScore(ChatColor.RED + "Level: " + kingdom.getLevel());
-            level.setScore(1);
+            level.setScore(2);
         }
 
+        Score divider = objective.getScore(ChatColor.GRAY + "----------------");
+        divider.setScore(1);
+
         Score playerStatsTitle = objective.getScore(ChatColor.GOLD + "Player Stats");
-        playerStatsTitle.setScore(1);
+        playerStatsTitle.setScore(0);
+
+        String rank = PlayerUtils.getPlayerRank(player).name();
+        Score playerRank = objective.getScore(ChatColor.LIGHT_PURPLE + "Rank: " + rank);
+        playerRank.setScore(-1);
 
         double playerWealth;
         try {
@@ -216,7 +223,7 @@ public class PlayerUtils {
         }
 
         Score playerWealthScore = objective.getScore(ChatColor.GREEN + "Wealth: " + playerWealth);
-        playerWealthScore.setScore(0);
+        playerWealthScore.setScore(-2);
 
         player.setScoreboard(board);
     }
