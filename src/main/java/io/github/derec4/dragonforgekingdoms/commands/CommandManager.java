@@ -4,6 +4,8 @@ import com.earth2me.essentials.api.Economy;
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import io.github.derec4.dragonforgekingdoms.territory.ChunkCoordinate;
+import io.github.derec4.dragonforgekingdoms.util.PermissionLevel;
+import io.github.derec4.dragonforgekingdoms.util.PlayerUtils;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.*;
@@ -496,6 +498,11 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             }
             case "banish" -> {
                 if (!player.hasPermission("kingdom.banish")) {
+                    player.sendMessage(permsError);
+                    return false;
+                }
+
+                if (!PlayerUtils.getPlayerRank(player).equals(PermissionLevel.LORD)) {
                     player.sendMessage(permsError);
                     return false;
                 }
