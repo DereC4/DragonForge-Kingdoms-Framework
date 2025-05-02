@@ -55,8 +55,8 @@ public class MobUtils {
     }
 
     public static void applySpawnEffects (LivingEntity entity) {
-        entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, Integer.MAX_VALUE, 2));
-        entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION, Integer.MAX_VALUE, 1));
+        entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, MobEffectInstance.INFINITE_DURATION, 2));
+        entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION, MobEffectInstance.INFINITE_DURATION, 1));
     }
 
     public static void applyDefenseEnchants(LivingEntity entity) {

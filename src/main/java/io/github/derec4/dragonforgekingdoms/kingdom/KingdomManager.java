@@ -6,6 +6,7 @@ import io.github.derec4.dragonforgekingdoms.territory.ChunkCoordinate;
 import io.github.derec4.dragonforgekingdoms.util.DatabaseUtils;
 import io.github.derec4.dragonforgekingdoms.util.ItemUtils;
 import lombok.Getter;
+import net.minecraft.core.BlockPos;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -399,5 +400,13 @@ public class KingdomManager {
         }
 
         inviter.sendMessage(ChatColor.GREEN + "Invitation sent to " + recipient + ".");
+    }
+
+    public boolean isWithinKingdomTerritory(UUID kingdomID, BlockPos position, UUID worldID) {
+        Kingdom kingdom = kingdoms.get(kingdomID);
+        if (kingdom == null) return false;
+
+        ChunkCoordinate chunkCoord = new ChunkCoordinate(position.getX() >> 4, position.getZ() >> 4, worldID);
+        return territoryMappings.containsKey(chunkCoord);
     }
 }
