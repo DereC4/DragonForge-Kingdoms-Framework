@@ -3,9 +3,11 @@ package io.github.derec4.dragonforgekingdoms.entity;
 import io.github.derec4.dragonforgekingdoms.DragonForgeKingdoms;
 import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
+import io.github.derec4.dragonforgekingdoms.territory.ChunkCoordinate;
 import io.github.derec4.dragonforgekingdoms.util.EntityTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -67,6 +69,15 @@ public class CustomSpawnEggListener implements Listener {
             return;
         }
 
+        UUID worldUUID = player.getWorld().getUID();
+        ChunkCoordinate chunkCoordinate = new ChunkCoordinate(clickedBlock.getChunk().getX(), clickedBlock.getChunk().getZ(), worldUUID);
+
+        if (!kingdomManager.isWithinKingdomTerritory(kingdom.getID(), chunkCoordinate)) {
+            player.sendMessage(ChatColor.RED + "You can only use spawn eggs within your kingdom's territory.");
+            event.setCancelled(true);
+            return;
+        }
+
         if (!kingdom.canSpawnMoreMobs()) {
             player.sendMessage("Your kingdom has reached the maximum number of mobs for its level.");
             event.setCancelled(true);
@@ -104,8 +115,11 @@ public class CustomSpawnEggListener implements Listener {
             return;
         }
 
+        if (!player.getGameMode().equals(GameMode.CREATIVE)) {
+            itemStack.setAmount(itemStack.getAmount() - 1);
+        }
+
         kingdom.incrementMobCount();
-        itemStack.setAmount(itemStack.getAmount() - 1);
         event.setCancelled(true);
     }
 }

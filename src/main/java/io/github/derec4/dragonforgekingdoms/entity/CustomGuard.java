@@ -1,7 +1,8 @@
 package io.github.derec4.dragonforgekingdoms.entity;
 
+import io.github.derec4.dragonforgekingdoms.entity.goals.GuardTargetingGoal;
 import io.github.derec4.dragonforgekingdoms.entity.goals.ReturnToPointGoal;
-import io.github.derec4.dragonforgekingdoms.entity.goals.TargetNonFactionPlayersGoal;
+import io.github.derec4.dragonforgekingdoms.entity.goals.SoldierTargetingGoal;
 import io.github.derec4.dragonforgekingdoms.util.MobUtils;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
@@ -37,16 +38,17 @@ public class CustomGuard extends Zombie {
         this.setAggressive(false);
         this.setCustomNameVisible(true);
         this.setPersistenceRequired(true);
+        this.setSilent(true);
         this.setCustomName(Component.literal("Guard"));
 
         this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.0D, false));
-        this.targetSelector.addGoal(1, new TargetNonFactionPlayersGoal<>(this, kingdomID));
+        this.targetSelector.addGoal(1, new GuardTargetingGoal<>(this, this.kingdomID, spawnPoint));
         this.goalSelector.addGoal(2, new ReturnToPointGoal(this, spawnPoint));
 
         this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.NETHERITE_CHESTPLATE));
         this.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.NETHERITE_LEGGINGS));
         this.setItemSlot(EquipmentSlot.FEET, new ItemStack(Items.NETHERITE_BOOTS));
-        this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.CREEPER_HEAD));
+        this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.ZOMBIE_HEAD));
         ItemStack diamondSword = new ItemStack(Items.DIAMOND_SWORD);
         diamondSword.enchant(Enchantments.SHARPNESS, 3);
         this.setItemSlot(EquipmentSlot.MAINHAND, diamondSword);

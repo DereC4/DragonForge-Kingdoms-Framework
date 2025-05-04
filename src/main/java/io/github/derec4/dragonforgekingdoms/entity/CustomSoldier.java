@@ -1,7 +1,7 @@
 package io.github.derec4.dragonforgekingdoms.entity;
 
 import io.github.derec4.dragonforgekingdoms.entity.goals.ReturnToPointGoal;
-import io.github.derec4.dragonforgekingdoms.entity.goals.TargetNonFactionPlayersGoal;
+import io.github.derec4.dragonforgekingdoms.entity.goals.SoldierTargetingGoal;
 import io.github.derec4.dragonforgekingdoms.util.MobUtils;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
@@ -37,10 +37,11 @@ public class CustomSoldier extends Skeleton {
         this.setAggressive(false);
         this.setCustomNameVisible(true);
         this.setPersistenceRequired(true);
+        this.setSilent(true);
         this.setCustomName(Component.literal("Soldier"));
 
         this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.0D, false));
-        this.targetSelector.addGoal(1, new TargetNonFactionPlayersGoal<>(this, kingdomID));
+        this.targetSelector.addGoal(1, new SoldierTargetingGoal<>(this, kingdomID));
         this.goalSelector.addGoal(2, new ReturnToPointGoal(this, spawnPoint));
 
         this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.IRON_CHESTPLATE));

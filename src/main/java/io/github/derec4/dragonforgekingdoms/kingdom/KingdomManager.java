@@ -409,4 +409,11 @@ public class KingdomManager {
         ChunkCoordinate chunkCoord = new ChunkCoordinate(position.getX() >> 4, position.getZ() >> 4, worldID);
         return territoryMappings.containsKey(chunkCoord);
     }
+
+    public boolean isWithinKingdomTerritory(UUID kingdomID, ChunkCoordinate chunkCoordinate) {
+        Kingdom kingdom = kingdoms.get(kingdomID);
+        if (kingdom == null) return false;
+
+        return territoryMappings.containsKey(chunkCoordinate);
+    }
 }
