@@ -42,6 +42,16 @@ public class KingdomShopListener implements Listener {
         Player player = event.getPlayer();
         UUID playerID = player.getUniqueId();
         System.out.println("Player: " + player.getName());
+        Kingdom kingdom = kingdomManager.getPlayerKingdom(playerID);
+        System.out.println("Kingdom: " + (kingdom != null ? kingdom.getName() : "null"));
+
+        if (kingdom == null) {
+            System.out.println("Player is not in a kingdom, cancelling event");
+            player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
+            Bukkit.getLogger().info("Player " + playerID + " was denied a purchase in Kingdom shop (not in a kingdom)");
+            event.setCancelled(true);
+            return;
+        }
 
         ShopItem shopItem = event.getShopItem();
 //        System.out.println(shopItem.getShopItem().toString());
@@ -62,16 +72,7 @@ public class KingdomShopListener implements Listener {
         if (matcher.find()) {
             System.out.println("SectionTitle is 'kingdom'");
 
-            Kingdom kingdom = kingdomManager.getPlayerKingdom(playerID);
-            System.out.println("Kingdom: " + (kingdom != null ? kingdom.getName() : "null"));
 
-            if (kingdom == null) {
-                System.out.println("Player is not in a kingdom, cancelling event");
-                player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
-                Bukkit.getLogger().info("Player " + playerID + " was denied a purchase in Kingdom shop (not in a kingdom)");
-                event.setCancelled(true);
-                return;
-            }
 
             PermissionLevel rank = PlayerUtils.getPlayerRank(player);
             System.out.println("Player Rank: " + rank);

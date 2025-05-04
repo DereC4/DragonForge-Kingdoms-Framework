@@ -22,6 +22,12 @@ import java.math.BigDecimal;
 import java.util.*;
 
 public class PlayerUtils {
+    /**
+     * Gets highest permission level (Kingdoms context) of a player
+     * Warning: Anyone with server operator status or * permissions will also have these permissions
+     * @param player Player to check
+     * @return The highest kingdom permission level of a player, from Lord to Adventurer
+     */
     public static PermissionLevel getPlayerRank(Player player) {
         if (player == null) {
             return PermissionLevel.ADVENTURE;
