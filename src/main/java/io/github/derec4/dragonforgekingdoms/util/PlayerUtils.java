@@ -68,22 +68,11 @@ public class PlayerUtils {
         if (getPlayerRank(targetPlayer).equals(PermissionLevel.VASSAL)) {
             // Promote vassal to duke
 //            targetPlayer.addAttachment(DragonForgeKingdoms.getInstance(), "kingdom.role.duke", true, 1);
-            Group group = api.getGroupManager().getGroup("duke");
+            addPlayerToDukeGroup(targetPlayer.getUniqueId());
+            targetPlayer.sendMessage(ChatColor.GREEN + "You have been promoted to Duke. " +
+                    "You can now add, remove, and banish players, as well as access the kingdom store.");
+            player.sendMessage(ChatColor.GREEN + "Player has been successfully promoted.");
 
-            if (group == null) {
-                player.sendMessage(ChatColor.RED + " group does not exist!");
-                return;
-            }
-
-            api.getUserManager().modifyUser(player.getUniqueId(), (User user) -> {
-                // Create a node to add to the player.
-                Node node = InheritanceNode.builder(group).build();
-                user.data().add(node);
-                api.getUserManager().saveUser(user);
-                targetPlayer.sendMessage(ChatColor.GREEN + "You have been promoted to Duke. " +
-                        "You can now add, remove, and banish players, as well as access the kingdom store.");
-                player.sendMessage(ChatColor.GREEN + "Player has been successfully promoted.");
-            });
         } else if (getPlayerRank(targetPlayer).equals(PermissionLevel.DUKE)) {
             player.sendMessage(ChatColor.YELLOW + targetPlayer.getName() + " cannot be promoted any higher than Duke.");
         } else {
@@ -139,6 +128,38 @@ public class PlayerUtils {
                 user.data().add(node);
             });
         });
+    }
+
+    /**
+     * Adds a player to the "duke" group asynchronously.
+     *
+     * @param playerUUID The UUID of the player to add to the "duke" group.
+     */
+    public static void addPlayerToDukeGroup(UUID playerUUID) {
+        LuckPerms luckPerms = LuckPermsProvider.get();
+        User user = luckPerms.getUserManager().getUser(playerUUID);
+
+        if (user == null) {
+            luckPerms.getUserManager().loadUser(playerUUID).thenAcceptAsync(loadedUser -> {
+                if (loadedUser != null) {
+                    addDukeGroup(luckPerms, loadedUser);
+                }
+            });
+        } else {
+            addDukeGroup(luckPerms, user);
+        }
+    }
+
+    /**
+     * Helper method to add the "duke" group to a LuckPerms user.
+     *
+     * @param luckPerms The LuckPerms API instance.
+     * @param user      The LuckPerms user to modify.
+     */
+    private static void addDukeGroup(LuckPerms luckPerms, User user) {
+        Node node = Node.builder("group.duke").build();
+        user.data().add(node);
+        luckPerms.getUserManager().saveUser(user);
     }
 
     public static void addPlayerToVassalGroup(UUID playerUUID) {
