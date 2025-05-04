@@ -65,7 +65,7 @@ public class PlayerUtils {
     public static void promotePlayer(Player player, Player targetPlayer) {
         LuckPerms api = LuckPermsProvider.get();
 
-        if (targetPlayer.hasPermission("group.vassal") && !targetPlayer.hasPermission("group.duke")) {
+        if (getPlayerRank(targetPlayer).equals(PermissionLevel.VASSAL)) {
             // Promote vassal to duke
 //            targetPlayer.addAttachment(DragonForgeKingdoms.getInstance(), "kingdom.role.duke", true, 1);
             Group group = api.getGroupManager().getGroup("duke");
@@ -78,14 +78,13 @@ public class PlayerUtils {
             api.getUserManager().modifyUser(player.getUniqueId(), (User user) -> {
                 // Create a node to add to the player.
                 Node node = InheritanceNode.builder(group).build();
-
-                // Add the node to the user.
                 user.data().add(node);
+                api.getUserManager().saveUser(user);
                 targetPlayer.sendMessage(ChatColor.GREEN + "You have been promoted to Duke. " +
                         "You can now add, remove, and banish players, as well as access the kingdom store.");
                 player.sendMessage(ChatColor.GREEN + "Player has been successfully promoted.");
             });
-        } else if (targetPlayer.hasPermission("group.duke")) {
+        } else if (getPlayerRank(targetPlayer).equals(PermissionLevel.DUKE)) {
             player.sendMessage(ChatColor.YELLOW + targetPlayer.getName() + " cannot be promoted any higher than Duke.");
         } else {
             player.sendMessage(ChatColor.RED + targetPlayer.getName() + " could not be promoted.");
