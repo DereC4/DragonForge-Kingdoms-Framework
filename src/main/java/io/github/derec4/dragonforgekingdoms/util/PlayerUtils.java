@@ -7,6 +7,7 @@ import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import io.github.derec4.dragonforgekingdoms.territory.ChunkCoordinate;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.cacheddata.CachedPermissionData;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.Node;
@@ -22,17 +23,25 @@ import java.util.*;
 
 public class PlayerUtils {
     public static PermissionLevel getPlayerRank(Player player) {
-        LuckPerms api = LuckPermsProvider.get();
-
         if (player == null) {
             return PermissionLevel.ADVENTURE;
         }
 
-        if (player.hasPermission("group.lord")) {
+        LuckPerms api = LuckPermsProvider.get();
+        User user = api.getUserManager().getUser(player.getUniqueId());
+
+        if (user == null) {
+            return PermissionLevel.ADVENTURE;
+        }
+
+        // CachedPermissionData for efficient permission checks
+        CachedPermissionData permissionData = user.getCachedData().getPermissionData();
+
+        if (permissionData.checkPermission("group.lord").asBoolean()) {
             return PermissionLevel.LORD;
-        } else if (player.hasPermission("group.duke")) {
+        } else if (permissionData.checkPermission("group.duke").asBoolean()) {
             return PermissionLevel.DUKE;
-        } else if (player.hasPermission("group.vassal")) {
+        } else if (permissionData.checkPermission("group.vassal").asBoolean()) {
             return PermissionLevel.VASSAL;
         } else {
             return PermissionLevel.ADVENTURE;

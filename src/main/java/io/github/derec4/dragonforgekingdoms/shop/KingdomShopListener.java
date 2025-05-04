@@ -17,6 +17,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,6 +40,7 @@ public class KingdomShopListener implements Listener {
         System.out.println("onPreTransaction called");
 
         Player player = event.getPlayer();
+        UUID playerID = player.getUniqueId();
         System.out.println("Player: " + player.getName());
 
         ShopItem shopItem = event.getShopItem();
@@ -60,13 +62,13 @@ public class KingdomShopListener implements Listener {
         if (matcher.find()) {
             System.out.println("SectionTitle is 'kingdom'");
 
-            Kingdom kingdom = kingdomManager.getPlayerKingdom(player.getUniqueId());
+            Kingdom kingdom = kingdomManager.getPlayerKingdom(playerID);
             System.out.println("Kingdom: " + (kingdom != null ? kingdom.getName() : "null"));
 
             if (kingdom == null) {
                 System.out.println("Player is not in a kingdom, cancelling event");
                 player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
-                Bukkit.getLogger().info("Player " + player.getUniqueId() + " was denied a purchase in Kingdom shop (not in a kingdom)");
+                Bukkit.getLogger().info("Player " + playerID + " was denied a purchase in Kingdom shop (not in a kingdom)");
                 event.setCancelled(true);
                 return;
             }
@@ -77,7 +79,7 @@ public class KingdomShopListener implements Listener {
             if (rank != PermissionLevel.LORD && rank != PermissionLevel.DUKE) {
                 System.out.println("Player rank insufficient, cancelling event");
                 player.sendMessage(ChatColor.RED + "You must be a Lord or Duke to access the Kingdom shop section.");
-                Bukkit.getLogger().info("Player " + player.getUniqueId() + " was denied a purchase in Kingdom shop (insufficient rank)");
+                Bukkit.getLogger().info("Player " + playerID + " was denied a purchase in Kingdom shop (insufficient rank)");
                 event.setCancelled(true);
                 return;
             }
@@ -88,8 +90,9 @@ public class KingdomShopListener implements Listener {
             if (kingdom.getWealth() >= cost) {
                 System.out.println("Kingdom has enough wealth, deducting cost");
                 kingdom.giveWealth((int) -cost);
-                BigDecimal playerBalance = Economy.getMoneyExact(player.getUniqueId()); // Get player's current balance
-                Economy.setMoney(player.getUniqueId(), playerBalance);
+                BigDecimal playerBalanceFixed = Economy.getMoneyExact(playerID).add(BigDecimal.valueOf(cost));
+                // Get player current balance and add value to offset the spend
+                Economy.setMoney(playerID, playerBalanceFixed);
                 player.sendMessage(ChatColor.GREEN + "The cost of the item has been deducted from your kingdom's wealth.");
             } else {
                 System.out.println("Kingdom does not have enough wealth, cancelling event");
