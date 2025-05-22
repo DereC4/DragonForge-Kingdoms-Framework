@@ -33,8 +33,11 @@ public class SoldierTargetingGoal<T extends Mob> extends TargetGoal {
 
             Kingdom playerKingdom = kingdomManager.getPlayerKingdom(player.getUUID());
             UUID playerKingdomID = (playerKingdom != null) ? playerKingdom.getID() : null;
+            BlockPos targetPosition = this.customMob.getTarget().blockPosition();
+            UUID worldID = this.customMob.level().getWorld().getUID();
 
-            if (playerKingdomID == null || !kingdomID.equals(playerKingdomID)) {
+            if ((playerKingdomID == null || !kingdomID.equals(playerKingdomID)) &&
+                    kingdomManager.isWithinKingdomTerritory(playerKingdomID, targetPosition, worldID)) {
                 double distance = player.position().distanceTo(this.customMob.position());
 
                 if (distance < closestDistance) {

@@ -16,6 +16,25 @@ commands:
     usage: /kingdom <arguments>
     permission: dragonforge.kingdom
     aliases: [k]
+    children:
+      kingdom.create: true
+      kingdom.remove: true
+      kingdom.claim: true
+      kingdom.rename: true
+      kingdom.leave: true
+      kingdom.description: true
+      kingdom.sethome: true
+      kingdom.territory: true
+      kingdom.join: true
+      kingdom.home: true
+      kingdom.promote: true
+      kingdom.stats: true
+      kingdom.map: true
+      kingdom.help: true
+      kingdom.invite: true
+      kingdom.transfer: true
+      kingdom.save-all: true
+      kingdom.banish: true
   admin:
     description: Admin commands for managing kingdoms
     usage: /admin <arguments>

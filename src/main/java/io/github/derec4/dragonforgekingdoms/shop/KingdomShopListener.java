@@ -7,11 +7,13 @@ import io.github.derec4.dragonforgekingdoms.kingdom.Kingdom;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import io.github.derec4.dragonforgekingdoms.util.PermissionLevel;
 import io.github.derec4.dragonforgekingdoms.util.PlayerUtils;
+import me.gypopo.economyshopgui.api.EconomyShopGUIHook;
 import me.gypopo.economyshopgui.api.events.PreTransactionEvent;
 import me.gypopo.economyshopgui.objects.ShopItem;
 import net.ess3.api.MaxMoneyException;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -37,16 +39,13 @@ public class KingdomShopListener implements Listener {
      */
     @EventHandler
     public void onPreTransaction(PreTransactionEvent event) throws MaxMoneyException, UserDoesNotExistException, NoLoanPermittedException {
-        System.out.println("onPreTransaction called");
-
         Player player = event.getPlayer();
         UUID playerID = player.getUniqueId();
-        System.out.println("Player: " + player.getName());
         Kingdom kingdom = kingdomManager.getPlayerKingdom(playerID);
-        System.out.println("Kingdom: " + (kingdom != null ? kingdom.getName() : "null"));
+        Bukkit.getLogger().info("onPreTransaction called from Player: " + player.getName());
+        Bukkit.getLogger().info("Kingdom: " + (kingdom != null ? kingdom.getName() : "null"));
 
         if (kingdom == null) {
-            System.out.println("Player is not in a kingdom, cancelling event");
             player.sendMessage(ChatColor.RED + "You are not in a kingdom!");
             Bukkit.getLogger().info("Player " + playerID + " was denied a purchase in Kingdom shop (not in a kingdom)");
             event.setCancelled(true);
@@ -54,49 +53,62 @@ public class KingdomShopListener implements Listener {
         }
 
         ShopItem shopItem = event.getShopItem();
-//        System.out.println(shopItem.getShopItem().toString());
-//        System.out.println(shopItem.getItemPath());
-//        System.out.println(shopItem.itemLoc);
 
+//        Personal note - Right now only getItemPath seems to work but we can't access parents. For now we will hard
+//        code categories
         String sectionTitle = shopItem.getItemPath();
-        System.out.println("SectionTitle: " + sectionTitle);
+        String shopTitle = shopItem.getSubSection();
+        Bukkit.getLogger().info("Purchase being made:");
+        Bukkit.getLogger().info("SectionTitle: " + sectionTitle);
+        Bukkit.getLogger().info("subSection: " + shopTitle);
 
         if (sectionTitle == null) {
-            System.out.println("SectionTitle is null, returning");
+            Bukkit.getLogger().warning("SectionTitle is null, returning");
             return;
         }
 
-        Pattern pattern = Pattern.compile("kingdom", Pattern.CASE_INSENSITIVE);
+        Pattern pattern = Pattern.compile("kingdom|wood|stone|mobs|redstone|mining|hunting|fishing|farming|armor|tools|potions|extras|offense|mobility", Pattern.CASE_INSENSITIVE);
+        Pattern kingdomItems = Pattern.compile("kingdom", Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(sectionTitle);
 
         if (matcher.find()) {
-            System.out.println("SectionTitle is 'kingdom'");
-
-
-
             PermissionLevel rank = PlayerUtils.getPlayerRank(player);
-            System.out.println("Player Rank: " + rank);
+            Bukkit.getLogger().info("Player Rank: " + rank);
+            boolean isKingdomPurchase = false;
 
-            if (rank != PermissionLevel.LORD && rank != PermissionLevel.DUKE) {
-                System.out.println("Player rank insufficient, cancelling event");
+            if (rank == PermissionLevel.ADVENTURE) {
+                player.sendMessage(ChatColor.RED + "You have to be in a kingdom!");
+                Bukkit.getLogger().info("Player " + playerID + " was denied a purchase in Kingdom shop (not in a " +
+                        "kingdom)");
+                event.setCancelled(true);
+                return;
+            }
+
+            if (shopItem.getShopItem().getType().equals(Material.SKELETON_SPAWN_EGG) && rank != PermissionLevel.LORD && rank != PermissionLevel.DUKE) {
                 player.sendMessage(ChatColor.RED + "You must be a Lord or Duke to access the Kingdom shop section.");
                 Bukkit.getLogger().info("Player " + playerID + " was denied a purchase in Kingdom shop (insufficient rank)");
                 event.setCancelled(true);
                 return;
             }
 
-            double cost = event.getPrice();
-            System.out.println("Item Cost: " + cost);
+            if (kingdomItems.matcher(sectionTitle).find()) {
+                isKingdomPurchase = true;
+                Bukkit.getLogger().info("Purchase is using Kingdom funds");
+            }
 
-            if (kingdom.getWealth() >= cost) {
-                System.out.println("Kingdom has enough wealth, deducting cost");
+            double cost = event.getPrice();
+            Bukkit.getLogger().info("Item Cost: " + cost);
+
+            if (isKingdomPurchase && kingdom.getWealth() >= cost) {
+                Bukkit.getLogger().info("Kingdom has enough wealth, deducting cost");
                 kingdom.giveWealth((int) -cost);
                 BigDecimal playerBalanceFixed = Economy.getMoneyExact(playerID).add(BigDecimal.valueOf(cost));
+
                 // Get player current balance and add value to offset the spend
                 Economy.setMoney(playerID, playerBalanceFixed);
                 player.sendMessage(ChatColor.GREEN + "The cost of the item has been deducted from your kingdom's wealth.");
-            } else {
-                System.out.println("Kingdom does not have enough wealth, cancelling event");
+            } else if (!isKingdomPurchase) {
+                Bukkit.getLogger().info("Kingdom does not have enough wealth, cancelling event");
                 player.sendMessage(ChatColor.RED + "Your kingdom does not have enough wealth to purchase this item.");
                 event.setCancelled(true);
             }
