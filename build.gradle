@@ -23,8 +23,8 @@ repositories {
         url = "https://repo.essentialsx.net/releases/"
     }
     maven {
-        name = "papermc"
-        url = "https://papermc.io/repo/repository/maven-public/"
+        name = 'papermc'
+        url = 'https://repo.papermc.io/repository/maven-public/'
     }
     maven {
         name = "economyshopgui"
@@ -38,7 +38,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.30'
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
     compileOnly 'net.luckperms:api:5.4'
-    compileOnly 'net.essentialsx:EssentialsX:2.20.1'
+    compileOnly 'net.essentialsx:EssentialsX:2.19.0'
     compileOnly 'com.github.Gypopo:EconomyShopGUI-API:1.7.3'
 }
 

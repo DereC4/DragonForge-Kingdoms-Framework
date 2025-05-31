@@ -7,10 +7,7 @@ import io.github.derec4.dragonforgekingdoms.territory.ChunkCoordinate;
 import io.github.derec4.dragonforgekingdoms.util.EntityTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
 import org.bukkit.enchantments.Enchantment;
@@ -33,8 +30,12 @@ public class CustomSpawnEggListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
+        Bukkit.getLogger().info("[DEBUG] onPlayerInteract called");
+
         Block clickedBlock = event.getClickedBlock();
         if (clickedBlock == null) {
+            Bukkit.getLogger().info("[DEBUG] Clicked block is null, returning");
+
             return;
         }
 
@@ -44,20 +45,24 @@ public class CustomSpawnEggListener implements Listener {
         if (itemStack.getType() != Material.SKELETON_SPAWN_EGG
                 || itemStack.getEnchantmentLevel(Enchantment.DURABILITY) != 5
                 || !itemStack.getItemMeta().hasCustomModelData()) {
+            Bukkit.getLogger().info("Not a custom spawn egg, returning");
             return;
         }
 
         int customModelData = itemStack.getItemMeta().getCustomModelData();
 
         if (customModelData != 1 && customModelData != 2 && customModelData != 3) {
+            Bukkit.getLogger().info("No valid customModelData, returning");
             return;
         }
 
         // From here we confirm it is a kingdom spawn egg (99% chance)
 
         if (player.getGameMode().equals(GameMode.SPECTATOR)) {
+            Bukkit.getLogger().info("[DEBUG] Player is in spectator mode, returning");
             return;
         }
+        Bukkit.getLogger().info("[DEBUG] Reached here");
 
 //        System.out.println("TEMP TEMP " + itemStack.getItemMeta().getAsString());
         UUID playerUUID = player.getUniqueId();
