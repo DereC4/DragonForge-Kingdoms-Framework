@@ -68,7 +68,7 @@ public class KingdomShopListener implements Listener {
         }
 
         Pattern pattern = Pattern.compile("kingdom|wood|stone|mobs|redstone|mining|hunting|fishing|farming|armor|tools|potions|extras|offense|mobility", Pattern.CASE_INSENSITIVE);
-        Pattern kingdomItems = Pattern.compile("kingdom", Pattern.CASE_INSENSITIVE);
+        Pattern kingdomItems = Pattern.compile("kingdom|mobs", Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(sectionTitle);
 
         if (matcher.find()) {
@@ -107,7 +107,7 @@ public class KingdomShopListener implements Listener {
                 // Get player current balance and add value to offset the spend
                 Economy.setMoney(playerID, playerBalanceFixed);
                 player.sendMessage(ChatColor.GREEN + "The cost of the item has been deducted from your kingdom's wealth.");
-            } else if (!isKingdomPurchase) {
+            } else if (isKingdomPurchase) {
                 Bukkit.getLogger().info("Kingdom does not have enough wealth, cancelling event");
                 player.sendMessage(ChatColor.RED + "Your kingdom does not have enough wealth to purchase this item.");
                 event.setCancelled(true);
