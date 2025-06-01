@@ -30,18 +30,20 @@ public class DenyArrowsListener implements Listener {
             return;
         }
 
-        if (event.getDamager() instanceof Arrow arrow) {
-            if (!(arrow.getShooter() instanceof Player player)) {
-                return;
-            }
+        if (!(event.getDamager() instanceof Arrow arrow)) {
+            return;
+        }
 
-            // oh... we don't even have to calculate it ;-;
-            double distance = player.getLocation().distance(damagedEntity.getLocation());
+        if (!(arrow.getShooter() instanceof Player player)) {
+            return;
+        }
 
-            if (distance > 10) {
-                event.setCancelled(true);
-                arrow.remove();
-            }
+        // oh... we don't even have to calculate it ;-;
+        double distance = player.getLocation().distanceSquared(damagedEntity.getLocation());
+
+        if (distance > 100) {
+            event.setCancelled(true);
+            arrow.remove();
         }
     }
 }

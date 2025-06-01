@@ -77,11 +77,11 @@ public final class DragonForgeKingdoms extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new KingdomProtectionListener(), this);
         getServer().getPluginManager().registerEvents(new TerritoryEnterExit(), this);
         getServer().getPluginManager().registerEvents(new TerritorySidebar(), this);
-        getServer().getPluginManager().registerEvents(new CustomSpawnEggListener(), this);
         getServer().getPluginManager().registerEvents(new EggListener(), this);
         getServer().getPluginManager().registerEvents(new EggBossBar(), this);
         getServer().getPluginManager().registerEvents(new EggExplosionListener(), this);
         getServer().getPluginManager().registerEvents(new EggEntityExplosionListener(), this);
+        getServer().getPluginManager().registerEvents(new CustomSpawnEggListener(), this);
         getServer().getPluginManager().registerEvents(new KingdomShopListener(),this);
         getServer().getPluginManager().registerEvents(new EntityDeathListener(), this);
         getServer().getPluginManager().registerEvents(new DenyArrowsListener(), this);

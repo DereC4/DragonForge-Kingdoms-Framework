@@ -13,6 +13,7 @@ import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -28,7 +29,7 @@ public class CustomSpawnEggListener implements Listener {
         this.kingdomManager = KingdomManager.getInstance();
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerInteract(PlayerInteractEvent event) {
         Bukkit.getLogger().info("[DEBUG] onPlayerInteract called");
 
