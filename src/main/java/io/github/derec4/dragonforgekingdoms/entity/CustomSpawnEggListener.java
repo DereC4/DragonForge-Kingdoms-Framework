@@ -23,19 +23,13 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class CustomSpawnEggListener implements Listener {
-    private final KingdomManager kingdomManager;
-
-    public CustomSpawnEggListener() {
-        this.kingdomManager = KingdomManager.getInstance();
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent event) {
         Bukkit.getLogger().info("[DEBUG] onPlayerInteract called");
 
         Block clickedBlock = event.getClickedBlock();
         if (clickedBlock == null) {
-            Bukkit.getLogger().info("[DEBUG] Clicked block is null, returning");
+//            Bukkit.getLogger().info("[DEBUG] Clicked block is null, returning");
 
             return;
         }
@@ -46,30 +40,31 @@ public class CustomSpawnEggListener implements Listener {
         if (itemStack.getType() != Material.SKELETON_SPAWN_EGG
                 || itemStack.getEnchantmentLevel(Enchantment.DURABILITY) != 5
                 || !itemStack.getItemMeta().hasCustomModelData()) {
-            Bukkit.getLogger().info("Not a custom spawn egg, returning");
+//            Bukkit.getLogger().info("Not a custom spawn egg, returning");
             return;
         }
 
         int customModelData = itemStack.getItemMeta().getCustomModelData();
 
         if (customModelData != 1 && customModelData != 2 && customModelData != 3) {
-            Bukkit.getLogger().info("No valid customModelData, returning");
+//            Bukkit.getLogger().info("No valid customModelData, returning");
             return;
         }
 
         // From here we confirm it is a kingdom spawn egg (99% chance)
 
         if (player.getGameMode().equals(GameMode.SPECTATOR)) {
-            Bukkit.getLogger().info("[DEBUG] Player is in spectator mode, returning");
+//            Bukkit.getLogger().info("[DEBUG] Player is in spectator mode, returning");
             return;
         }
-        Bukkit.getLogger().info("[DEBUG] Reached here");
+//        Bukkit.getLogger().info("[DEBUG] Reached here");
 
 //        System.out.println("TEMP TEMP " + itemStack.getItemMeta().getAsString());
+        KingdomManager kingdomManager = KingdomManager.getInstance();
         UUID playerUUID = player.getUniqueId();
-        Kingdom kingdom = kingdomManager.getPlayerKingdom(playerUUID);
+        Kingdom playerKingdom = kingdomManager.getPlayerKingdom(playerUUID);
 
-        if (kingdom == null) {
+        if (playerKingdom == null) {
             player.sendMessage("You are not part of a kingdom.");
             event.setCancelled(true);
             return;
@@ -78,13 +73,13 @@ public class CustomSpawnEggListener implements Listener {
         UUID worldUUID = player.getWorld().getUID();
         ChunkCoordinate chunkCoordinate = new ChunkCoordinate(clickedBlock.getChunk().getX(), clickedBlock.getChunk().getZ(), worldUUID);
 
-        if (!kingdomManager.isWithinKingdomTerritory(kingdom.getID(), chunkCoordinate)) {
+        if (!kingdomManager.isWithinKingdomTerritory(playerKingdom.getID(), chunkCoordinate)) {
             player.sendMessage(ChatColor.RED + "You can only use spawn eggs within your kingdom's territory.");
             event.setCancelled(true);
             return;
         }
 
-        if (!kingdom.canSpawnMoreMobs()) {
+        if (!playerKingdom.canSpawnMoreMobs()) {
             player.sendMessage("Your kingdom has reached the maximum number of mobs for its level.");
             event.setCancelled(true);
             return;
@@ -125,7 +120,7 @@ public class CustomSpawnEggListener implements Listener {
             itemStack.setAmount(itemStack.getAmount() - 1);
         }
 
-        kingdom.incrementMobCount();
+        playerKingdom.incrementMobCount();
         event.setCancelled(true);
     }
 }

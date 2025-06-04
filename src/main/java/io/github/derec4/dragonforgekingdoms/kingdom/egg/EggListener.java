@@ -24,7 +24,6 @@ public class EggListener implements Listener {
         }
 
         Block clickedBlock = event.getClickedBlock();
-        Player player = event.getPlayer();
 
         if (clickedBlock == null || clickedBlock.getType() != Material.DRAGON_EGG) {
             return;
@@ -44,11 +43,13 @@ public class EggListener implements Listener {
         }
 
         if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+            System.out.println("TEMP TEMP");
             event.setCancelled(true);
             return;
         }
 
         event.setCancelled(true);
+        Player player = event.getPlayer();
         Kingdom kingdom = kingdomManager.getKingdomFromID(uuid);
         Kingdom playerKingdom = kingdomManager.getPlayerKingdom(player.getUniqueId());
 

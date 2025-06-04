@@ -411,9 +411,7 @@ public class KingdomManager {
     }
 
     public boolean isWithinKingdomTerritory(UUID kingdomID, ChunkCoordinate chunkCoordinate) {
-        Kingdom kingdom = kingdoms.get(kingdomID);
-        if (kingdom == null) return false;
-
-        return territoryMappings.containsKey(chunkCoordinate);
+        UUID mappedKingdomID = territoryMappings.getOrDefault(chunkCoordinate, null);
+        return mappedKingdomID != null && mappedKingdomID.equals(kingdomID);
     }
 }

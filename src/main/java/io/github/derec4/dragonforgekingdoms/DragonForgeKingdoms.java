@@ -3,8 +3,8 @@ package io.github.derec4.dragonforgekingdoms;
 import io.github.derec4.dragonforgekingdoms.commands.AdminCommands;
 import io.github.derec4.dragonforgekingdoms.commands.CommandManager;
 import io.github.derec4.dragonforgekingdoms.database.CreateDB;
-import io.github.derec4.dragonforgekingdoms.entity.DenyArrowsListener;
 import io.github.derec4.dragonforgekingdoms.entity.CustomSpawnEggListener;
+import io.github.derec4.dragonforgekingdoms.entity.DenyArrowsListener;
 import io.github.derec4.dragonforgekingdoms.entity.EntityDeathListener;
 import io.github.derec4.dragonforgekingdoms.kingdom.KingdomManager;
 import io.github.derec4.dragonforgekingdoms.kingdom.egg.EggBossBar;
@@ -12,7 +12,10 @@ import io.github.derec4.dragonforgekingdoms.kingdom.egg.EggEntityExplosionListen
 import io.github.derec4.dragonforgekingdoms.kingdom.egg.EggExplosionListener;
 import io.github.derec4.dragonforgekingdoms.kingdom.egg.EggListener;
 import io.github.derec4.dragonforgekingdoms.shop.KingdomShopListener;
-import io.github.derec4.dragonforgekingdoms.territory.*;
+import io.github.derec4.dragonforgekingdoms.territory.KingdomProtectionListener;
+import io.github.derec4.dragonforgekingdoms.territory.PlayerEffects;
+import io.github.derec4.dragonforgekingdoms.territory.TerritoryEnterExit;
+import io.github.derec4.dragonforgekingdoms.territory.TerritorySidebar;
 import io.github.derec4.dragonforgekingdoms.util.DatabaseUtils;
 import io.github.derec4.dragonforgekingdoms.util.PlayerUtils;
 import org.bukkit.Bukkit;
@@ -25,9 +28,14 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 public final class DragonForgeKingdoms extends JavaPlugin {
-    private CreateDB databaseManager;
     private static DragonForgeKingdoms instance; // Static variable to store the instance of the plugin
+    private CreateDB databaseManager;
     private KingdomManager kingdomManager;
+
+    // Static method to get the instance of the plugin
+    public static DragonForgeKingdoms getInstance() {
+        return instance;
+    }
 
     @Override
     public void onEnable() {
@@ -81,8 +89,10 @@ public final class DragonForgeKingdoms extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new EggBossBar(), this);
         getServer().getPluginManager().registerEvents(new EggExplosionListener(), this);
         getServer().getPluginManager().registerEvents(new EggEntityExplosionListener(), this);
+        System.out.println("Spawn Listener check 1");
         getServer().getPluginManager().registerEvents(new CustomSpawnEggListener(), this);
-        getServer().getPluginManager().registerEvents(new KingdomShopListener(),this);
+        System.out.println("Spawn Listener check 2");
+        getServer().getPluginManager().registerEvents(new KingdomShopListener(), this);
         getServer().getPluginManager().registerEvents(new EntityDeathListener(), this);
         getServer().getPluginManager().registerEvents(new DenyArrowsListener(), this);
 
@@ -108,10 +118,5 @@ public final class DragonForgeKingdoms extends JavaPlugin {
             databaseManager.disconnect();
         }
         Bukkit.getScheduler().cancelTasks(this);
-    }
-
-    // Static method to get the instance of the plugin
-    public static DragonForgeKingdoms getInstance() {
-        return instance;
     }
 }
