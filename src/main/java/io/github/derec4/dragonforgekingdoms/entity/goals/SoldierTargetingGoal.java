@@ -33,7 +33,7 @@ public class SoldierTargetingGoal<T extends Mob> extends TargetGoal {
 
             Kingdom playerKingdom = kingdomManager.getPlayerKingdom(player.getUUID());
             UUID playerKingdomID = (playerKingdom != null) ? playerKingdom.getID() : null;
-            BlockPos targetPosition = this.customMob.getTarget().blockPosition();
+            BlockPos targetPosition = player.blockPosition();
             UUID worldID = this.customMob.level().getWorld().getUID();
 
             if ((playerKingdomID == null || !kingdomID.equals(playerKingdomID)) &&
